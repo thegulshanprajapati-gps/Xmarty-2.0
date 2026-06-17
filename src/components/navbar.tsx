@@ -90,6 +90,10 @@ export function Navbar() {
 
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [updates, setUpdates] = useState<any[]>([]);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [bellDropdownOpen, setBellDropdownOpen] = useState(false);
+
   const results = links.filter((l) =>
     (l.defaultLabel || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -105,6 +109,52 @@ export function Navbar() {
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
   }, []);
+
+  useEffect(() => {
+    const fetchUpdates = async () => {
+      try {
+        const res = await fetch('/api/updates');
+        if (res.ok) {
+          const json = await res.json();
+          const items = Array.isArray(json?.data) ? json.data : [];
+          setUpdates(items);
+
+          // Calculate unread count based on last seen timestamp stored in localStorage
+          const lastSeenTime = localStorage.getItem('xmarty_last_seen_update') || '0';
+          const newItems = items.filter((item: any) => {
+            const itemTime = new Date(item.created_at || item.updated_at).getTime();
+            return itemTime > Number(lastSeenTime);
+          });
+          setUnreadCount(newItems.length);
+        }
+      } catch (err) {
+        console.error('Failed to load updates in Navbar', err);
+      }
+    };
+    if (mounted) {
+      fetchUpdates();
+      // Poll every 60 seconds to check for new updates
+      const interval = setInterval(fetchUpdates, 60000);
+      return () => clearInterval(interval);
+    }
+  }, [mounted]);
+
+  useEffect(() => {
+    setBellDropdownOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.bell-container') && !target.closest('.bell-container-mobile')) {
+        setBellDropdownOpen(false);
+      }
+    };
+    if (bellDropdownOpen) {
+      document.addEventListener('click', handleOutsideClick);
+    }
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, [bellDropdownOpen]);
 
   return (
     <nav className={cn(
@@ -160,11 +210,73 @@ export function Navbar() {
           </div>
 
           <div className="hidden lg:flex items-center gap-2">
-            <Button variant="ghost" size="icon" asChild className="rounded-full h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
-              <Link href="/updates">
+            <div className="relative bell-container">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => {
+                  setBellDropdownOpen(!bellDropdownOpen);
+                  if (!bellDropdownOpen) {
+                    setUnreadCount(0);
+                    localStorage.setItem('xmarty_last_seen_update', Date.now().toString());
+                  }
+                }}
+                className="rounded-full h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors relative"
+              >
                 <Bell className="h-5 w-5" />
-              </Link>
-            </Button>
+                {unreadCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-background animate-pulse">
+                    {unreadCount}
+                  </span>
+                )}
+              </Button>
+
+              {bellDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-80 rounded-2xl border bg-popover text-popover-foreground shadow-xl z-50 p-4 animate-in fade-in slide-in-from-top-3 duration-200">
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-border/80">
+                    <h4 className="font-bold text-sm">Notifications & Updates</h4>
+                    <Link 
+                      href="/updates" 
+                      onClick={() => setBellDropdownOpen(false)}
+                      className="text-xs text-primary font-bold hover:underline"
+                    >
+                      View all
+                    </Link>
+                  </div>
+                  <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+                    {updates.length === 0 ? (
+                      <p className="text-xs text-muted-foreground text-center py-4">No recent updates.</p>
+                    ) : (
+                      updates.slice(0, 4).map((update: any) => (
+                        <div 
+                          key={update.id || update.slug} 
+                          onClick={() => {
+                            setBellDropdownOpen(false);
+                            router.push('/updates');
+                          }}
+                          className="group/item flex flex-col gap-1 p-2 rounded-xl hover:bg-muted/60 transition-colors cursor-pointer text-left"
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase">
+                              {update.tags?.[0] || 'general'}
+                            </span>
+                            <span className="text-[9px] text-muted-foreground">
+                              {new Date(update.created_at || update.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                            </span>
+                          </div>
+                          <h5 className="font-bold text-xs group-hover/item:text-primary transition-colors line-clamp-1">
+                            {update.title}
+                          </h5>
+                          <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+                            {update.excerpt || update.description || ''}
+                          </p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
             <Button 
               variant="ghost" 
@@ -226,11 +338,75 @@ export function Navbar() {
                 <span className="h-5 w-5 inline-block" />
               )}
             </Button>
-            <Button variant="ghost" size="icon" asChild className="rounded-full h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
-              <Link href="/updates">
+            
+            <div className="relative bell-container-mobile">
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => {
+                  setBellDropdownOpen(!bellDropdownOpen);
+                  if (!bellDropdownOpen) {
+                    setUnreadCount(0);
+                    localStorage.setItem('xmarty_last_seen_update', Date.now().toString());
+                  }
+                }}
+                className="rounded-full h-10 w-10 text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors relative"
+              >
                 <Bell className="h-5 w-5" />
-              </Link>
-            </Button>
+                {unreadCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white ring-2 ring-background animate-pulse">
+                    {unreadCount}
+                  </span>
+                )}
+              </Button>
+
+              {bellDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-72 rounded-2xl border bg-popover text-popover-foreground shadow-xl z-50 p-4 animate-in fade-in slide-in-from-top-3 duration-200">
+                  <div className="flex items-center justify-between pb-2 mb-2 border-b border-border/80">
+                    <h4 className="font-bold text-sm">Notifications & Updates</h4>
+                    <Link 
+                      href="/updates" 
+                      onClick={() => setBellDropdownOpen(false)}
+                      className="text-xs text-primary font-bold hover:underline"
+                    >
+                      View all
+                    </Link>
+                  </div>
+                  <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+                    {updates.length === 0 ? (
+                      <p className="text-xs text-muted-foreground text-center py-4">No recent updates.</p>
+                    ) : (
+                      updates.slice(0, 4).map((update: any) => (
+                        <div 
+                          key={update.id || update.slug} 
+                          onClick={() => {
+                            setBellDropdownOpen(false);
+                            router.push('/updates');
+                          }}
+                          className="group/item flex flex-col gap-1 p-2 rounded-xl hover:bg-muted/60 transition-colors cursor-pointer text-left"
+                        >
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-primary/10 text-primary uppercase">
+                              {update.tags?.[0] || 'general'}
+                            </span>
+                            <span className="text-[9px] text-muted-foreground">
+                              {new Date(update.created_at || update.updated_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                            </span>
+                          </div>
+                          <h5 className="font-bold text-xs group-hover/item:text-primary transition-colors line-clamp-1">
+                            {update.title}
+                          </h5>
+                          <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">
+                            {update.excerpt || update.description || ''}
+                          </p>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+
             <button 
               onClick={() => setIsOpen(!isOpen)} 
               className="p-2 rounded-lg hover:bg-muted transition-colors"

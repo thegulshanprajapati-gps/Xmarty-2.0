@@ -53,8 +53,7 @@ const MENU_ITEMS = [
     { label: "Allotted Certificates", icon: ShieldCheck, href: "/assessments/certificates" },
     { label: "Student Enrollments", icon: Users, href: "/enrollments" },
     { label: "Notification Panel", icon: Bell, href: "/notifications" },
-    { label: "Role Matrix", icon: ShieldCheck, href: "/settings/roles" },
-    { label: "System Branding", icon: Settings, href: "/settings" }
+    { label: "Role Matrix", icon: ShieldCheck, href: "/settings/roles" }
   ]}
 ];
 

@@ -1,0 +1,43 @@
+{
+  "manifest_version": 3,
+  "name": "AnaAutomate - UI Queue Orchestrator",
+  "version": "1.2.1",
+  "description": "Production-grade generic UI queue automation system with preconfigured selectors, retry engines, and state trackers.",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "scripting"
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "popup/icon.png",
+      "48": "popup/icon.png",
+      "128": "popup/icon.png"
+    }
+  },
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["content/content.css"],
+      "js": [
+        "utils/storage.js",
+        "utils/logger.js",
+        "utils/queue-manager.js",
+        "utils/dom-controller.js",
+        "utils/retry-engine.js",
+        "content/content.js"
+      ],
+      "run_at": "document_end"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["popup/icon.png"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

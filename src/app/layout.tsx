@@ -77,11 +77,19 @@ function buildThemeStyles(settings: any) {
   const accent = normalizeColor(secondaryColor);
   const primaryForeground = getReadableForeground(primary);
   const accentForeground = getReadableForeground(accent);
-  // SSR-safe font defaults — these are the initial values before CMSProvider overrides them client-side
-  const headingsFont = settings?.headingsFont || 'Times New Roman';
-  const bodyFont = settings?.bodyFont || 'Times New Roman';
+  // SSR-safe font defaults
+  const headingsFont = settings?.headingsFont || settings?.headings_font || 'Times New Roman';
+  const bodyFont = settings?.bodyFont || settings?.body_font || 'Times New Roman';
+  const sectionHeadingsFont = settings?.sectionHeadingsFont || settings?.section_headings_font || 'Space Grotesk';
+  const subtitlesFont = settings?.subtitlesFont || settings?.subtitles_font || 'Inter';
+  const buttonsFont = settings?.buttonsFont || settings?.buttons_font || 'Inter';
+  const navFont = settings?.navFont || settings?.nav_font || 'Inter';
+  const cardsFont = settings?.cardsFont || settings?.cards_font || 'Space Grotesk';
+  const codeFont = settings?.codeFont || settings?.code_font || 'JetBrains Mono';
+  const badgesFont = settings?.badgesFont || settings?.badges_font || 'Inter';
+  const bannersFont = settings?.bannersFont || settings?.banners_font || 'Space Grotesk';
 
-  return `:root{--primary:${primary} !important;--primary-foreground:${primaryForeground} !important;--ring:${primary} !important;--accent:${accent} !important;--accent-foreground:${accentForeground} !important;--font-headings:'${headingsFont}';--font-body:'${bodyFont}';}.dark{--primary:${primary} !important;--primary-foreground:${primaryForeground} !important;--ring:${primary} !important;--accent:${accent} !important;--accent-foreground:${accentForeground} !important;--font-headings:'${headingsFont}';--font-body:'${bodyFont}';}.bg-primary{background-color:hsl(${primary}) !important;}.text-primary{color:hsl(${primary}) !important;}.border-primary{border-color:hsl(${primary}) !important;}.decoration-primary{text-decoration-color:hsl(${primary}) !important;}.fill-primary{fill:hsl(${primary}) !important;}.bg-accent{background-color:hsl(${accent}) !important;}.text-accent{color:hsl(${accent}) !important;}`;
+  return `:root{--primary:${primary} !important;--primary-foreground:${primaryForeground} !important;--ring:${primary} !important;--accent:${accent} !important;--accent-foreground:${accentForeground} !important;--font-headings:'${headingsFont}';--font-body:'${bodyFont}';--font-section-headings:'${sectionHeadingsFont}';--font-subtitles:'${subtitlesFont}';--font-buttons:'${buttonsFont}';--font-nav:'${navFont}';--font-cards:'${cardsFont}';--font-code:'${codeFont}';--font-badges:'${badgesFont}';--font-banners:'${bannersFont}';}.dark{--primary:${primary} !important;--primary-foreground:${primaryForeground} !important;--ring:${primary} !important;--accent:${accent} !important;--accent-foreground:${accentForeground} !important;--font-headings:'${headingsFont}';--font-body:'${bodyFont}';--font-section-headings:'${sectionHeadingsFont}';--font-subtitles:'${subtitlesFont}';--font-buttons:'${buttonsFont}';--font-nav:'${navFont}';--font-cards:'${cardsFont}';--font-code:'${codeFont}';--font-badges:'${badgesFont}';--font-banners:'${bannersFont}';}.bg-primary{background-color:hsl(${primary}) !important;}.text-primary{color:hsl(${primary}) !important;}.border-primary{border-color:hsl(${primary}) !important;}.decoration-primary{text-decoration-color:hsl(${primary}) !important;}.fill-primary{fill:hsl(${primary}) !important;}.bg-accent{background-color:hsl(${accent}) !important;}.text-accent{color:hsl(${accent}) !important;} h1,.font-headline{font-family:var(--font-headings) !important;} h2,h3,.font-section-heading{font-family:var(--font-section-headings) !important;} h4,h5,h6,.font-subtitle{font-family:var(--font-subtitles) !important;} body,.font-body{font-family:var(--font-body) !important;} button,.btn{font-family:var(--font-buttons) !important;} nav,.nav-link,.menu-item{font-family:var(--font-nav) !important;} .card-title{font-family:var(--font-cards) !important;} code,pre,.monospace{font-family:var(--font-code) !important;} .badge,.chip,.mini-text{font-family:var(--font-badges) !important;} .banner-accent,.hero-highlight{font-family:var(--font-banners) !important;}`;
 }
 
 async function getInitialSettings() {
@@ -96,6 +104,14 @@ async function getInitialSettings() {
       siteName: row?.site_name || defaultSettings.siteName,
       headingsFont: row?.headings_font || 'Times New Roman',
       bodyFont: row?.body_font || 'Times New Roman',
+      sectionHeadingsFont: row?.section_headings_font || 'Space Grotesk',
+      subtitlesFont: row?.subtitles_font || 'Inter',
+      buttonsFont: row?.buttons_font || 'Inter',
+      navFont: row?.nav_font || 'Inter',
+      cardsFont: row?.cards_font || 'Space Grotesk',
+      codeFont: row?.code_font || 'JetBrains Mono',
+      badgesFont: row?.badges_font || 'Inter',
+      bannersFont: row?.banners_font || 'Space Grotesk',
     };
   } catch (error) {
     console.error('Failed to load site settings for SSR', error);
@@ -133,7 +149,6 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Abel&family=Abril+Fatface&family=Alfa+Slab+One&family=Alice&family=Amatic+SC&family=Anonymous+Pro&family=Archivo+Black&family=Arimo&family=Arizonia&family=Arvo&family=Asap&family=Assistant&family=Barlow&family=Bitter&family=Bree+Serif&family=Bricolage+Grotesque&family=Bungee&family=Cabin&family=Cardo&family=Caveat&family=Chivo&family=Cinzel&family=Comfortaa&family=Cormorant+Garamond&family=Courgette&family=Courier+Prime&family=Crimson+Text&family=Dancing+Script&family=DM+Sans&family=DM+Serif+Display&family=Domine&family=Dosis&family=EB+Garamond&family=Exo+2&family=Fira+Code&family=Fira+Sans&family=Fredoka&family=Garamond&family=Geist&family=Georgia&family=Gloria+Hallelujah&family=Gochi+Hand&family=Great+Vibes&family=Heebo&family=Hind&family=IBM+Plex+Mono&family=IBM+Plex+Sans&family=Inconsolata&family=Indie+Flower&family=Inter&family=JetBrains+Mono&family=Josefin+Sans&family=Kanit&family=Karla&family=Kaushan+Script&family=Lato&family=League+Script&family=Lexend&family=Libre+Baskerville&family=Libre+Franklin&family=Lobster&family=Lora&family=Lustria&family=Manrope&family=Maven+Pro&family=Merriweather&family=Montserrat&family=Mukta&family=Neuton&family=Noto+Sans&family=Noto+Serif&family=Nunito&family=Open+Sans&family=Oswald&family=Outfit&family=Overpass&family=Pacifico&family=Parisienne&family=Permanent+Marker&family=Playfair+Display&family=Plus+Jakarta+Sans&family=Poppins&family=Press+Start+2P&family=Quicksand&family=Raleway&family=Righteous&family=Roboto&family=Roboto+Mono&family=Sacramento&family=Satisfy&family=Space+Grotesk&family=Special+Elite&family=Spectral&family=Tangerine&family=Titan+One&family=Ubuntu&family=Urbanist&family=Varela+Round&family=Work+Sans&family=Yellowtail&family=Yeseva+One&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossOrigin="anonymous" referrerPolicy="no-referrer" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />

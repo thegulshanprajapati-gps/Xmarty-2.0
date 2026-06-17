@@ -123,6 +123,14 @@ export const CMSProvider = ({
         themeMode: row?.theme_settings?.themeMode || defaultSettings.themeMode,
         headingsFont: row?.headings_font || 'Times New Roman',
         bodyFont: row?.body_font || 'Times New Roman',
+        sectionHeadingsFont: row?.section_headings_font || 'Space Grotesk',
+        subtitlesFont: row?.subtitles_font || 'Inter',
+        buttonsFont: row?.buttons_font || 'Inter',
+        navFont: row?.nav_font || 'Inter',
+        cardsFont: row?.cards_font || 'Space Grotesk',
+        codeFont: row?.code_font || 'JetBrains Mono',
+        badgesFont: row?.badges_font || 'Inter',
+        bannersFont: row?.banners_font || 'Space Grotesk',
         logo: row?.logo || null,
         ...row,
       });
@@ -175,8 +183,51 @@ export const CMSProvider = ({
     const primaryForeground = getReadableForeground(primary);
     const accentForeground = getReadableForeground(accent);
 
-    const activeHeadingsFont = settings?.headingsFont || 'Times New Roman';
-    const activeBodyFont = settings?.bodyFont || 'Times New Roman';
+    const activeHeadingsFont = settings?.headingsFont || settings?.headings_font || 'Times New Roman';
+    const activeBodyFont = settings?.bodyFont || settings?.body_font || 'Times New Roman';
+    const activeSectionHeadingsFont = settings?.sectionHeadingsFont || settings?.section_headings_font || 'Space Grotesk';
+    const activeSubtitlesFont = settings?.subtitlesFont || settings?.subtitles_font || 'Inter';
+    const activeButtonsFont = settings?.buttonsFont || settings?.buttons_font || 'Inter';
+    const activeNavFont = settings?.navFont || settings?.nav_font || 'Inter';
+    const activeCardsFont = settings?.cardsFont || settings?.cards_font || 'Space Grotesk';
+    const activeCodeFont = settings?.codeFont || settings?.code_font || 'JetBrains Mono';
+    const activeBadgesFont = settings?.badgesFont || settings?.badges_font || 'Inter';
+    const activeBannersFont = settings?.bannersFont || settings?.banners_font || 'Space Grotesk';
+
+    // Deduplicate fonts before loading
+    const fontsToLoad = Array.from(new Set([
+      activeHeadingsFont,
+      activeBodyFont,
+      activeSectionHeadingsFont,
+      activeSubtitlesFont,
+      activeButtonsFont,
+      activeNavFont,
+      activeCardsFont,
+      activeCodeFont,
+      activeBadgesFont,
+      activeBannersFont
+    ]));
+
+    // Dynamically load Google Fonts if not custom/system
+    const loadGoogleFont = (fontName: string) => {
+      if (!fontName) return;
+      const isCustom = customFonts.some(f => f.name.toLowerCase() === fontName.toLowerCase());
+      if (isCustom) return;
+
+      const systemFonts = ['arial', 'times new roman', 'courier new', 'georgia', 'serif', 'sans-serif', 'monospace', 'helvetica'];
+      if (systemFonts.includes(fontName.toLowerCase())) return;
+
+      const id = `gfont-${fontName.toLowerCase().replace(/\s+/g, '-')}`;
+      if (!document.getElementById(id)) {
+        const link = document.createElement('link');
+        link.id = id;
+        link.rel = 'stylesheet';
+        link.href = `https://fonts.googleapis.com/css2?family=${fontName.replace(/\s+/g, '+')}:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap`;
+        document.head.appendChild(link);
+      }
+    };
+
+    fontsToLoad.forEach(loadGoogleFont);
 
     // Generate @font-face style declarations
     const fontFacesCss = customFonts.map(f => {
@@ -209,6 +260,14 @@ export const CMSProvider = ({
         --accent-foreground: ${accentForeground} !important;
         --font-headings: '${activeHeadingsFont}' !important;
         --font-body: '${activeBodyFont}' !important;
+        --font-section-headings: '${activeSectionHeadingsFont}' !important;
+        --font-subtitles: '${activeSubtitlesFont}' !important;
+        --font-buttons: '${activeButtonsFont}' !important;
+        --font-nav: '${activeNavFont}' !important;
+        --font-cards: '${activeCardsFont}' !important;
+        --font-code: '${activeCodeFont}' !important;
+        --font-badges: '${activeBadgesFont}' !important;
+        --font-banners: '${activeBannersFont}' !important;
       }
       .dark {
         --primary: ${primary} !important;
@@ -218,6 +277,14 @@ export const CMSProvider = ({
         --accent-foreground: ${accentForeground} !important;
         --font-headings: '${activeHeadingsFont}' !important;
         --font-body: '${activeBodyFont}' !important;
+        --font-section-headings: '${activeSectionHeadingsFont}' !important;
+        --font-subtitles: '${activeSubtitlesFont}' !important;
+        --font-buttons: '${activeButtonsFont}' !important;
+        --font-nav: '${activeNavFont}' !important;
+        --font-cards: '${activeCardsFont}' !important;
+        --font-code: '${activeCodeFont}' !important;
+        --font-badges: '${activeBadgesFont}' !important;
+        --font-banners: '${activeBannersFont}' !important;
       }
 
       .bg-primary { background-color: hsl(${primary}) !important; }
@@ -229,11 +296,35 @@ export const CMSProvider = ({
       .text-accent { color: hsl(${accent}) !important; }
 
       /* Global selector binds */
-      h1, h2, h3, h4, h5, h6, .font-headline {
-        font-family: var(--font-headings) !important;
+      h1, .font-headline {
+        font-family: var(--font-headings), system-ui, sans-serif !important;
+      }
+      h2, h3, .font-section-heading {
+        font-family: var(--font-section-headings), system-ui, sans-serif !important;
+      }
+      h4, h5, h6, .font-subtitle {
+        font-family: var(--font-subtitles), system-ui, sans-serif !important;
       }
       body, .font-body {
-        font-family: var(--font-body) !important;
+        font-family: var(--font-body), system-ui, sans-serif !important;
+      }
+      button, .btn {
+        font-family: var(--font-buttons), system-ui, sans-serif !important;
+      }
+      nav, .nav-link, .menu-item {
+        font-family: var(--font-nav), system-ui, sans-serif !important;
+      }
+      .card-title {
+        font-family: var(--font-cards), system-ui, sans-serif !important;
+      }
+      code, pre, .monospace {
+        font-family: var(--font-code), monospace !important;
+      }
+      .badge, .chip, .mini-text {
+        font-family: var(--font-badges), system-ui, sans-serif !important;
+      }
+      .banner-accent, .hero-highlight {
+        font-family: var(--font-banners), system-ui, sans-serif !important;
       }
     `;
     styleTag.innerHTML = css;
@@ -241,16 +332,42 @@ export const CMSProvider = ({
     // Direct property setting on documentElement
     document.documentElement.style.setProperty('--font-body', `'${activeBodyFont}'`);
     document.documentElement.style.setProperty('--font-headings', `'${activeHeadingsFont}'`);
+    document.documentElement.style.setProperty('--font-section-headings', `'${activeSectionHeadingsFont}'`);
+    document.documentElement.style.setProperty('--font-subtitles', `'${activeSubtitlesFont}'`);
+    document.documentElement.style.setProperty('--font-buttons', `'${activeButtonsFont}'`);
+    document.documentElement.style.setProperty('--font-nav', `'${activeNavFont}'`);
+    document.documentElement.style.setProperty('--font-cards', `'${activeCardsFont}'`);
+    document.documentElement.style.setProperty('--font-code', `'${activeCodeFont}'`);
+    document.documentElement.style.setProperty('--font-badges', `'${activeBadgesFont}'`);
+    document.documentElement.style.setProperty('--font-banners', `'${activeBannersFont}'`);
 
     // Runtime proof logs
     console.log('Theme Settings:', settings);
-    console.log('Body Font DB:', settings.bodyFont || settings.body_font);
-    console.log(
-      'Applied Font:',
-      getComputedStyle(document.documentElement)
-        .getPropertyValue('--font-body')
-    );
-  }, [settings?.primaryColor, settings?.secondaryColor, settings?.headingsFont, settings?.bodyFont, customFonts]);
+  }, [
+    settings?.primaryColor,
+    settings?.secondaryColor,
+    settings?.headingsFont,
+    settings?.headings_font,
+    settings?.bodyFont,
+    settings?.body_font,
+    settings?.sectionHeadingsFont,
+    settings?.section_headings_font,
+    settings?.subtitlesFont,
+    settings?.subtitles_font,
+    settings?.buttonsFont,
+    settings?.buttons_font,
+    settings?.navFont,
+    settings?.nav_font,
+    settings?.cardsFont,
+    settings?.cards_font,
+    settings?.codeFont,
+    settings?.code_font,
+    settings?.badgesFont,
+    settings?.badges_font,
+    settings?.bannersFont,
+    settings?.banners_font,
+    customFonts
+  ]);
 
   return (
     <CMSContext.Provider value={{ settings, contentBlocks, customFonts, loading, refreshSettings, refreshContentBlocks, refreshFonts }}>

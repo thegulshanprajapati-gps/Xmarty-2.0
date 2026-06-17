@@ -31,8 +31,12 @@ export async function GET() {
       if (id) courseMap.set(id, c.title);
     });
 
-    // 3. Fetch security logs representing views/traffic
-    const logs = await db.collection('security_logs').find({}).toArray();
+        // 3. Fetch security logs representing views/traffic
+    const logs = await db.collection('security_logs')
+      .find({
+        ip: { $nin: ['127.0.0.1', '::1', '::ffff:127.0.0.1', 'localhost', '::'] }
+      })
+      .toArray();
 
     // 4. Summarize view metrics dynamically
     const trafficMap = new Map<string, { type: 'blog' | 'course'; name: string; route: string; views: number; uniqueVisitors: Set<string>; lastActive: Date }>();

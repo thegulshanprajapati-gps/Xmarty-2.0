@@ -24,6 +24,18 @@ export function CustomizableBadge({ pageSlug, sectionKey, badgeKey, defaultText,
                       radiusBlock.value === 'lg' ? 'rounded-lg' :
                       radiusBlock.value === 'xl' ? 'rounded-2xl' : 'rounded-full';
 
+  // Check if explicitly empty
+  const isEmpty = textBlock.value === '' || (textBlock.block && (
+    textBlock.block.value === null || 
+    textBlock.block.value === undefined || 
+    String(textBlock.block.value).trim() === '' || 
+    String(textBlock.block.value).replace(/<[^>]*>/g, '').trim() === ''
+  ));
+
+  if (isEmpty && !textBlock.canEdit) {
+    return null;
+  }
+
   // Build styles dynamically
   const customStyles: React.CSSProperties = {};
   if (bgBlock.value) customStyles.backgroundColor = bgBlock.value;
@@ -32,6 +44,7 @@ export function CustomizableBadge({ pageSlug, sectionKey, badgeKey, defaultText,
 
   return (
     <div 
+      suppressHydrationWarning
       className={cn(
         "inline-flex items-center px-4 py-1.5 text-xs font-bold uppercase tracking-wider border select-none transition-all duration-300",
         radiusClass,

@@ -38,10 +38,13 @@ export async function GET() {
       ? payments.reduce((sum, payment: any) => sum + (typeof payment.amount === 'number' ? payment.amount : 0), 0)
       : 0;
 
-    const startDate = new Date();
+        const startDate = new Date();
     startDate.setDate(startDate.getDate() - 6);
     const rawLogs = await db.collection('security_logs')
-      .find({ timestamp: { $gte: startDate } })
+      .find({ 
+        timestamp: { $gte: startDate },
+        ip: { $nin: ['127.0.0.1', '::1', '::ffff:127.0.0.1', 'localhost', '::'] }
+      })
       .sort({ timestamp: 1 })
       .toArray()
       .catch(() => []);
@@ -56,14 +59,25 @@ export async function GET() {
         }))
       : [];
 
-    const countsByDay = new Map<string, number>();
+    // Group logs by day and map each day to a Set containing unique IPs
+    const uniqueIPsByDay = new Map<string, Set<string>>();
     if (Array.isArray(rawLogs)) {
       rawLogs.forEach((entry: any) => {
         const key = formatDateKey(entry.timestamp);
         if (!key) return;
-        countsByDay.set(key, (countsByDay.get(key) || 0) + 1);
+        if (!uniqueIPsByDay.has(key)) {
+          uniqueIPsByDay.set(key, new Set<string>());
+        }
+        if (entry.ip) {
+          uniqueIPsByDay.get(key)!.add(entry.ip);
+        }
       });
     }
+
+    const countsByDay = new Map<string, number>();
+    uniqueIPsByDay.forEach((ipSet, key) => {
+      countsByDay.set(key, ipSet.size);
+    });
 
     const chartData = buildChartPeriods().map((period) => ({
       name: period.label,

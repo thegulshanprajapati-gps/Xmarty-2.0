@@ -7,16 +7,19 @@ import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useContentBlock } from "@/hooks/use-content-block";
 import { cn } from "@/lib/utils";
+import { useTheme } from "@/hooks/use-theme";
 import { 
   User, Lock, Phone, Camera, Save, Loader2, Award, 
   MessageSquare, Calendar, Clock, ClipboardList, LogOut, 
   Copy, Check, BookOpen, Users, Sparkles, Send, Play, 
-  Download, ExternalLink, Settings, ShieldAlert, Award as CertificateIcon 
+  Download, ExternalLink, Settings, ShieldAlert, Award as CertificateIcon,
+  Home, Sun, Moon
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
 function ProfileContent() {
+  const { theme, setTheme } = useTheme();
   const { user, loading: userLoading } = useUser();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -27,7 +30,7 @@ function ProfileContent() {
   // Load active tab from URL query param if present
   useEffect(() => {
     const tab = searchParams.get('tab');
-    if (tab && ['community', 'profile', 'setting', 'test', 'certificate'].includes(tab)) {
+    if (tab && ['community', 'profile', 'setting', 'test', 'certificate', 'courses'].includes(tab)) {
       setActiveTab(tab);
     }
   }, [searchParams]);
@@ -56,8 +59,8 @@ function ProfileContent() {
   // Notifications states
   const [notifications, setNotifications] = useState<any[]>([]);
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
-
   const fetchNotifications = async () => {
+    if (typeof window !== "undefined" && !navigator.onLine) return;
     try {
       const res = await fetch('/api/notifications');
       if (res.ok) {
@@ -65,10 +68,9 @@ function ProfileContent() {
         setNotifications(data.notifications || []);
       }
     } catch (e) {
-      console.error("Error loading notifications:", e);
+      // Quietly ignore network failures during dev reloads/disconnects
     }
   };
-
   const markNotificationRead = async (id: string, link?: string) => {
     try {
       await fetch('/api/notifications', {
@@ -143,9 +145,9 @@ function ProfileContent() {
   const channelsAppLink = useContentBlock("community", "channels", "appLink", "#", "text");
   const channelsTelegramLink = useContentBlock("community", "channels", "telegramLink", "#", "text");
   const channelsYoutubeLink = useContentBlock("community", "channels", "youtubeLink", "#", "text");
-
   // Fetch Tests and Attempts
   const fetchTestsData = async () => {
+    if (typeof window !== "undefined" && !navigator.onLine) return;
     try {
       const res1 = await fetch('/api/tests/allotted');
       if (res1.ok) {
@@ -158,12 +160,11 @@ function ProfileContent() {
         setAttempts(data2.attempts || []);
       }
     } catch (e) {
-      console.error("Error loading tests data:", e);
+      // Quietly ignore network failures during reloads
     } finally {
       setLoadingTests(false);
     }
   };
-
   useEffect(() => {
     if (user) {
       fetchTestsData();
@@ -254,6 +255,30 @@ function ProfileContent() {
     }
   };
 
+  // Course data state
+  const [courses, setCourses] = useState<any[]>([]);
+  const [loadingCourses, setLoadingCourses] = useState(true);
+  // Fetch Courses Data
+  const fetchCoursesData = async () => {
+    if (typeof window !== "undefined" && !navigator.onLine) return;
+    try {
+      const res = await fetch('/api/folders?course_id=default');
+      if (res.ok) {
+        const data = await res.json();
+        setCourses(data || []);
+      }
+    } catch (e) {
+      // Quietly ignore network failures during dev reloads
+    } finally {
+      setLoadingCourses(false);
+    }
+  };
+  useEffect(() => {
+    if (user) {
+      fetchCoursesData();
+    }
+  }, [user]);
+
   // Copy User ID Helper
   const copyUserId = () => {
     if (user?.id) {
@@ -263,35 +288,122 @@ function ProfileContent() {
     }
   };
 
+  const [redirectingCourseId, setRedirectingCourseId] = useState<string | null>(null);
+
+  const handleGoToEnrolledCourse = async (courseId: string) => {
+    setRedirectingCourseId(courseId);
+    try {
+      const res = await fetch('/api/courses/enrolled-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ courseId })
+      });
+      const data = await res.json();
+      if (data.success && data.url) {
+        router.push(data.url);
+      } else {
+        alert(data.error || 'Failed to generate access link.');
+      }
+    } catch (e) {
+      console.error(e);
+      alert('An error occurred during course redirection.');
+    } finally {
+      setRedirectingCourseId(null);
+    }
+  };
+
   if (userLoading) {
     return (
-      <div className="w-full min-h-[70vh] flex flex-col items-center justify-center bg-slate-50 dark:bg-[#04060E] py-16">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="h-10 w-10 animate-spin text-primary" />
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-bold tracking-wider uppercase">Syncing Dashboard...</p>
+      <div className="w-full h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-[#04060E] relative overflow-hidden select-none">
+        {/* Animated grid network in background */}
+        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px]" />
+        
+        {/* Dynamic Background Glows */}
+        <div className="absolute top-[30%] left-[20%] w-[350px] h-[350px] bg-primary/20 rounded-full blur-[140px] animate-pulse pointer-events-none" />
+        <div className="absolute bottom-[30%] right-[20%] w-[350px] h-[350px] bg-accent/20 rounded-full blur-[140px] animate-pulse pointer-events-none" style={{ animationDelay: '1.5s' }} />
+
+        <div className="max-w-md w-full text-center space-y-8 px-6 relative z-10">
+          <div className="relative w-32 h-32 mx-auto">
+            {/* Outer spinning ring with gradient */}
+            <div className="absolute inset-0 rounded-full border border-primary/10" />
+            <div className="absolute inset-0 rounded-full border-t-2 border-l-2 border-primary animate-spin" style={{ animationDuration: '1s' }} />
+            
+            {/* Middle reverse spinning ring */}
+            <div className="absolute inset-3 rounded-full border border-indigo-500/10" />
+            <div className="absolute inset-3 rounded-full border-b-2 border-r-2 border-indigo-500 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
+            
+            {/* Inner pulsing core with glow */}
+            <div className="absolute inset-6 rounded-full bg-slate-100 dark:bg-slate-900 border border-slate-200/50 dark:border-white/5 shadow-2xl overflow-hidden flex items-center justify-center p-3.5">
+              <img src="/logo.png" alt="Logo" className="h-full w-full object-contain animate-pulse" />
+            </div>
+            
+            {/* Orbital node */}
+            <div className="absolute top-0 left-1/2 -ml-1 w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_#ff0000] animate-ping" />
+          </div>
+          <div className="space-y-3">
+            <h3 className="font-headline font-black text-2xl tracking-tight text-slate-800 dark:text-white uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-primary via-rose-500 to-indigo-500">
+              SYNCHRONIZING PROFILE
+            </h3>
+            <div className="w-24 h-1 bg-muted mx-auto rounded-full overflow-hidden relative">
+              <div className="absolute inset-y-0 w-8 bg-gradient-to-r from-primary to-indigo-500 rounded-full animate-infinite-scroll" style={{ animation: 'progress-bar 1.5s ease-in-out infinite' }} />
+            </div>
+            <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-[0.2em] leading-relaxed">
+              Loading secure student credentials...
+            </p>
+          </div>
         </div>
+        <style>{`
+          @keyframes progress-bar {
+            0% { left: -30%; }
+            100% { left: 110%; }
+          }
+        `}</style>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="w-full flex items-center justify-center p-4 py-16 bg-slate-50 dark:bg-[#04060E] text-slate-900 dark:text-white">
-        <div className="text-center space-y-4 max-w-sm w-full bg-white dark:bg-slate-950/80 p-8 rounded-[2rem] border border-slate-200 dark:border-white/10 shadow-xl">
-          <ShieldAlert className="h-12 w-12 text-rose-500 mx-auto" />
-          <p className="text-base font-semibold">You are not signed in.</p>
-          <Link href="/login" className="inline-block w-full">
-            <button className="w-full h-11 rounded-xl bg-gradient-to-r from-primary to-rose-600 text-white font-bold transition-all duration-200 shadow-md">
-              Go to Sign In
-            </button>
-          </Link>
+      <div className="w-full min-h-[85vh] flex items-center justify-center p-6 bg-slate-50 dark:bg-[#04060E] text-slate-900 dark:text-white relative overflow-hidden select-none">
+        {/* Animated grid network in background */}
+        <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:32px_32px]" />
+        
+        {/* Glowing mesh background */}
+        <div className="absolute top-1/4 left-1/3 w-[300px] h-[300px] bg-primary/10 rounded-full blur-[100px] animate-pulse" />
+        <div className="absolute bottom-1/4 right-1/3 w-[300px] h-[300px] bg-indigo-500/10 rounded-full blur-[100px] animate-pulse" style={{ animationDelay: '1.5s' }} />
+
+        <div className="text-center space-y-6 max-w-md w-full bg-white/70 dark:bg-slate-950/40 backdrop-blur-xl p-8 sm:p-10 rounded-[2.5rem] border border-slate-200/80 dark:border-white/5 shadow-2xl relative z-10">
+          <div className="relative w-20 h-20 mx-auto flex items-center justify-center">
+            {/* Pulsing ring background */}
+            <div className="absolute inset-0 rounded-full bg-rose-500/5 animate-ping" style={{ animationDuration: '2s' }} />
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-500/10 to-rose-600/20 border border-rose-500/20 flex items-center justify-center shadow-lg shadow-rose-500/5">
+              <ShieldAlert className="h-8 w-8 text-rose-500" />
+            </div>
+          </div>
+          
+          <div className="space-y-2.5">
+            <h2 className="font-headline font-black text-xl tracking-tight text-slate-800 dark:text-white uppercase italic">
+              Authentication Required
+            </h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-xs mx-auto">
+              Please sign in to your XmartyCreator account to view your personalized dashboard, assessments, and certifications.
+            </p>
+          </div>
+
+          <div className="pt-2">
+            <Link href="/login" className="inline-block w-full">
+              <button className="w-full h-12 rounded-2xl bg-gradient-to-r from-primary to-rose-600 hover:from-primary/95 hover:to-rose-650 text-white font-bold text-sm tracking-wide transition-all duration-300 shadow-xl shadow-primary/10 hover:shadow-primary/20 hover:scale-[1.01] active:scale-[0.99] cursor-pointer">
+                Sign In to Account
+              </button>
+            </Link>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="w-full min-h-screen bg-slate-50 dark:bg-[#04060E] text-slate-900 dark:text-white transition-colors duration-300 relative">
+    <div className="w-full h-screen overflow-hidden bg-slate-50 dark:bg-[#04060E] text-slate-900 dark:text-white transition-colors duration-300 relative">
       {/* Dynamic styling for node visual flow inside sidebar/tabs */}
       <style>{`
         @keyframes flow-dash { to { stroke-dashoffset: -20; } }
@@ -308,135 +420,251 @@ function ProfileContent() {
         <div className="absolute bottom-[10%] right-[5%] w-[450px] h-[450px] bg-indigo-500/5 rounded-full blur-[140px]" />
       </div>
 
-      <div className="max-w-7xl mx-auto min-h-screen flex flex-col lg:flex-row relative z-10">
+      <div className="w-full h-screen flex flex-col lg:flex-row relative z-10 overflow-hidden">
         
         {/* ── LEFT SIDEBAR (Side Panel for Students) ── */}
-        <aside className="w-full lg:w-72 shrink-0 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-white/5 p-6 flex flex-col justify-between bg-white/40 dark:bg-slate-950/20 backdrop-blur-md">
-          <div className="space-y-6">
-            
+        <aside className="w-full lg:w-64 shrink-0 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-white/5 p-3 lg:p-4 flex flex-col justify-between bg-white/70 dark:bg-slate-900/40 backdrop-blur-xl lg:h-full shadow-sm overflow-hidden">
+          
+          {/* MOBILE VIEW SIDEBAR HEADER & NAV */}
+          <div className="block lg:hidden w-full space-y-2.5">
+            {/* Top row: Brand & Profile info */}
+            <div className="flex items-center justify-between pb-2 border-b border-slate-200/80 dark:border-white/5">
+              <div className="flex items-center gap-2">
+                <img src="/logo.png" alt="Logo" className="h-6 w-6 object-contain" />
+                <span className="font-headline font-black text-xs text-slate-800 dark:text-indigo-400">Student Panel</span>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10 transition-all flex items-center justify-center shrink-0"
+                >
+                  {theme === 'dark' ? (
+                    <Sun className="h-3.5 w-3.5 text-amber-500" />
+                  ) : (
+                    <Moon className="h-3.5 w-3.5 text-indigo-400" />
+                  )}
+                </button>
+
+                <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200/60 dark:border-white/5">
+                  <div className="h-5 w-5 rounded-full overflow-hidden border border-primary/20 bg-slate-850 flex items-center justify-center shrink-0">
+                    {profilePicture ? (
+                      <img src={profilePicture} alt="Avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <User className="h-3.5 w-3.5 text-slate-500" />
+                    )}
+                  </div>
+                  <span className="text-[10px] font-black text-slate-900 dark:text-white max-w-[80px] truncate">{user.full_name || "Student"}</span>
+                </div>
+                
+                <button
+                  onClick={handleSignOut}
+                  className="p-1.5 rounded-lg bg-rose-500/[0.04] text-rose-500 hover:bg-rose-500 hover:text-white border border-rose-500/20 transition-all"
+                >
+                  <LogOut className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Horizontal navigation tabs */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 -mx-3 px-3 scrollbar-none select-none">
+              <Link
+                href="/"
+                className="px-3 py-1.5 rounded-lg font-bold text-[10px] flex items-center gap-1.5 text-slate-500 dark:text-slate-400 border border-slate-200/40 dark:border-white/5 hover:bg-slate-105 dark:hover:bg-white/[0.02] shrink-0"
+              >
+                <Home className="h-3.5 w-3.5" />
+                <span>Home</span>
+              </Link>
+
+              {[
+                { id: 'community', label: 'Community', icon: <MessageSquare className="h-3.5 w-3.5" /> },
+                { id: 'courses', label: 'My Courses', icon: <BookOpen className="h-3.5 w-3.5" /> },
+                { id: 'profile', label: 'Edit Profile', icon: <User className="h-3.5 w-3.5" /> },
+                { id: 'setting', label: 'Settings', icon: <Settings className="h-3.5 w-3.5" /> },
+                { id: 'test', label: 'Assessments', icon: <ClipboardList className="h-3.5 w-3.5" /> },
+                { id: 'certificate', label: 'Certificates', icon: <Award className="h-3.5 w-3.5" /> },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={cn(
+                    "px-3 py-1.5 rounded-lg font-bold text-[10px] flex items-center gap-1.5 transition-all border shrink-0",
+                    activeTab === tab.id
+                      ? "bg-gradient-to-r from-primary/10 to-rose-500/10 text-primary border-primary/20 font-black"
+                      : "text-slate-500 dark:text-slate-400 border-slate-200/40 dark:border-white/5 hover:bg-slate-100 dark:hover:bg-white/[0.02]"
+                  )}
+                >
+                  {tab.icon}
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* DESKTOP VIEW SIDEBAR (Only visible on lg) */}
+          <div className="hidden lg:flex flex-col flex-1 min-h-0 space-y-4">
             {/* Header / Brand */}
-            <div className="flex items-center gap-3 pb-5 border-b border-slate-200 dark:border-white/5">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-primary to-rose-600 flex items-center justify-center shadow-md shadow-primary/10">
-                <span className="text-white font-bold text-xs">XC</span>
+            <div className="flex items-center gap-3 pb-4 border-b border-slate-200/80 dark:border-white/5">
+              <div className="w-8 h-8 rounded-lg overflow-hidden flex items-center justify-center shrink-0">
+                <img src="/logo.png" alt="Logo" className="h-8 w-8 object-contain" />
               </div>
               <div className="flex flex-col">
-                <span className="font-headline font-bold text-sm leading-tight text-slate-800 dark:text-indigo-400">Student Panel</span>
-                <span className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-bold">Xmarty Dashboard</span>
+                <span className="font-headline font-black text-xs leading-tight text-slate-800 dark:text-indigo-400">Student Panel</span>
+                <span className="text-[9px] text-slate-400 dark:text-slate-500 uppercase tracking-widest font-extrabold">Xmarty Dashboard</span>
               </div>
             </div>
 
             {/* Profile Brief Info */}
-            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-white dark:bg-slate-950/50 border border-slate-100 dark:border-white/5 shadow-sm">
-              <div className="h-12 w-12 rounded-full overflow-hidden border-2 border-primary/20 shrink-0 bg-slate-800 flex items-center justify-center">
+            <div className="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50/50 dark:bg-slate-950/40 border border-slate-200/60 dark:border-white/5 shadow-sm hover:border-primary/20 transition-all duration-300">
+              <div className="h-9 w-9 rounded-full overflow-hidden border border-primary/20 shrink-0 bg-slate-850 flex items-center justify-center shadow-inner">
                 {profilePicture ? (
                   <img src={profilePicture} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
-                  <User className="h-5 w-5 text-slate-400" />
+                  <User className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                 )}
               </div>
               <div className="min-w-0">
-                <h3 className="text-xs font-bold text-slate-950 dark:text-white truncate">{user.full_name || "Student"}</h3>
-                <span className="text-[9px] text-slate-400 dark:text-slate-500 font-semibold truncate block">{user.email}</span>
+                <h3 className="text-xs font-black text-slate-900 dark:text-white truncate">{user.full_name || "Student"}</h3>
+                <span className="text-[9px] text-slate-500 dark:text-slate-400 font-bold truncate block mt-0.5">{user.email}</span>
               </div>
             </div>
 
             {/* Side Navigation Menu */}
-            <nav className="space-y-1.5 pt-2">
+            <nav className="space-y-1 overflow-y-auto flex-1 pr-1 scrollbar-thin">
+              <Link
+                href="/"
+                className="w-full h-9 px-3 rounded-lg font-bold text-xs flex items-center gap-2.5 text-slate-500 dark:text-slate-400 border border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.02] hover:text-slate-950 dark:hover:text-white hover:translate-x-0.5 transition-all"
+              >
+                <Home className="h-4 w-4 text-slate-400 dark:text-slate-500" />
+                <span>Go to Home</span>
+              </Link>
+
               <button
                 onClick={() => setActiveTab('community')}
                 className={cn(
-                  "w-full h-11 px-4 rounded-xl font-bold text-xs flex items-center gap-3 transition-all border",
+                  "w-full h-9 px-3 rounded-lg font-bold text-xs flex items-center gap-2.5 transition-all border",
                   activeTab === 'community'
-                    ? "bg-primary/15 text-primary border-primary/20 shadow-sm"
-                    : "text-slate-500 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-white/[0.03] hover:text-slate-950 dark:hover:text-white"
+                    ? "bg-gradient-to-r from-primary/10 to-rose-500/10 text-primary border-primary/20 shadow-sm font-black translate-x-0.5"
+                    : "text-slate-550 dark:text-slate-400 border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.02] hover:text-slate-950 dark:hover:text-white hover:translate-x-0.5"
                 )}
               >
-                <MessageSquare className="h-4.5 w-4.5" />
+                <MessageSquare className="h-4 w-4" />
                 <span>Community Hub</span>
-                {activeTab === 'community' && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+                {activeTab === 'community' && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('courses')}
+                className={cn(
+                  "w-full h-9 px-3 rounded-lg font-bold text-xs flex items-center gap-2.5 transition-all border",
+                  activeTab === 'courses'
+                    ? "bg-gradient-to-r from-primary/10 to-rose-500/10 text-primary border-primary/20 shadow-sm font-black translate-x-0.5"
+                    : "text-slate-550 dark:text-slate-400 border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.02] hover:text-slate-950 dark:hover:text-white hover:translate-x-0.5"
+                )}
+              >
+                <BookOpen className="h-4 w-4" />
+                <span>My Courses</span>
+                {activeTab === 'courses' && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
               </button>
 
               <button
                 onClick={() => setActiveTab('profile')}
                 className={cn(
-                  "w-full h-11 px-4 rounded-xl font-bold text-xs flex items-center gap-3 transition-all border",
+                  "w-full h-9 px-3 rounded-lg font-bold text-xs flex items-center gap-2.5 transition-all border",
                   activeTab === 'profile'
-                    ? "bg-primary/15 text-primary border-primary/20 shadow-sm"
-                    : "text-slate-500 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-white/[0.03] hover:text-slate-950 dark:hover:text-white"
+                    ? "bg-gradient-to-r from-primary/10 to-rose-500/10 text-primary border-primary/20 shadow-sm font-black translate-x-0.5"
+                    : "text-slate-550 dark:text-slate-400 border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.02] hover:text-slate-950 dark:hover:text-white hover:translate-x-0.5"
                 )}
               >
-                <User className="h-4.5 w-4.5" />
+                <User className="h-4 w-4" />
                 <span>Edit Profile</span>
-                {activeTab === 'profile' && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+                {activeTab === 'profile' && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
               </button>
 
               <button
                 onClick={() => setActiveTab('setting')}
                 className={cn(
-                  "w-full h-11 px-4 rounded-xl font-bold text-xs flex items-center gap-3 transition-all border",
+                  "w-full h-9 px-3 rounded-lg font-bold text-xs flex items-center gap-2.5 transition-all border",
                   activeTab === 'setting'
-                    ? "bg-primary/15 text-primary border-primary/20 shadow-sm"
-                    : "text-slate-500 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-white/[0.03] hover:text-slate-950 dark:hover:text-white"
+                    ? "bg-gradient-to-r from-primary/10 to-rose-500/10 text-primary border-primary/20 shadow-sm font-black translate-x-0.5"
+                    : "text-slate-550 dark:text-slate-400 border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.02] hover:text-slate-950 dark:hover:text-white hover:translate-x-0.5"
                 )}
               >
-                <Settings className="h-4.5 w-4.5" />
+                <Settings className="h-4 w-4" />
                 <span>Settings</span>
-                {activeTab === 'setting' && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+                {activeTab === 'setting' && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
               </button>
 
               <button
                 onClick={() => setActiveTab('test')}
                 className={cn(
-                  "w-full h-11 px-4 rounded-xl font-bold text-xs flex items-center gap-3 transition-all border",
+                  "w-full h-9 px-3 rounded-lg font-bold text-xs flex items-center gap-2.5 transition-all border",
                   activeTab === 'test'
-                    ? "bg-primary/15 text-primary border-primary/20 shadow-sm"
-                    : "text-slate-500 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-white/[0.03] hover:text-slate-950 dark:hover:text-white"
+                    ? "bg-gradient-to-r from-primary/10 to-rose-500/10 text-primary border-primary/20 shadow-sm font-black translate-x-0.5"
+                    : "text-slate-550 dark:text-slate-400 border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.02] hover:text-slate-950 dark:hover:text-white hover:translate-x-0.5"
                 )}
               >
-                <ClipboardList className="h-4.5 w-4.5" />
+                <ClipboardList className="h-4 w-4" />
                 <span>Assessments</span>
-                {activeTab === 'test' && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+                {activeTab === 'test' && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
               </button>
 
               <button
                 onClick={() => setActiveTab('certificate')}
                 className={cn(
-                  "w-full h-11 px-4 rounded-xl font-bold text-xs flex items-center gap-3 transition-all border",
+                  "w-full h-9 px-3 rounded-lg font-bold text-xs flex items-center gap-2.5 transition-all border",
                   activeTab === 'certificate'
-                    ? "bg-primary/15 text-primary border-primary/20 shadow-sm"
-                    : "text-slate-500 dark:text-slate-400 border-transparent hover:bg-slate-100 dark:hover:bg-white/[0.03] hover:text-slate-950 dark:hover:text-white"
+                    ? "bg-gradient-to-r from-primary/10 to-rose-500/10 text-primary border-primary/20 shadow-sm font-black translate-x-0.5"
+                    : "text-slate-550 dark:text-slate-400 border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.02] hover:text-slate-950 dark:hover:text-white hover:translate-x-0.5"
                 )}
               >
-                <Award className="h-4.5 w-4.5" />
+                <Award className="h-4 w-4" />
                 <span>Certificates</span>
-                {activeTab === 'certificate' && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-primary" />}
+                {activeTab === 'certificate' && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
               </button>
             </nav>
           </div>
 
-          {/* Footer Controls (User ID Badge & Sign Out) */}
-          <div className="pt-6 border-t border-slate-200 dark:border-white/5 space-y-4">
-            
+          {/* DESKTOP FOOTER CONTROLS */}
+          <div className="hidden lg:flex flex-col pt-3 border-t border-slate-200 dark:border-white/5 space-y-2">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="w-full h-9 rounded-xl bg-slate-100 dark:bg-white/10 hover:bg-slate-200 dark:hover:bg-white/15 text-slate-800 dark:text-white font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 border border-slate-200 dark:border-white/10 shadow-sm"
+            >
+              {theme === 'dark' ? (
+                <>
+                  <Sun className="h-3.5 w-3.5 text-amber-500" />
+                  <span>Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="h-3.5 w-3.5 text-indigo-400" />
+                  <span>Dark Mode</span>
+                </>
+              )}
+            </button>
+
             {/* User ID block */}
             <div 
               onClick={copyUserId}
-              className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-white/5 cursor-pointer hover:border-primary/25 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-all group flex items-center justify-between"
+              className="p-2 rounded-xl bg-slate-50/80 dark:bg-slate-950/40 border border-slate-200/60 dark:border-white/5 cursor-pointer hover:bg-slate-100/85 dark:hover:bg-slate-950/80 hover:border-primary/20 transition-all group flex items-center justify-between"
             >
               <div className="min-w-0">
-                <span className="text-[8px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block">My User ID</span>
-                <span className="text-[10px] text-slate-600 dark:text-slate-400 font-bold block truncate">{user.id}</span>
+                <span className="text-[7px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block">My User ID</span>
+                <span className="text-[9px] text-slate-600 dark:text-slate-400 font-bold block truncate">{user.id}</span>
               </div>
-              <button className="shrink-0 p-1 text-slate-400 hover:text-primary transition-colors">
-                {copiedId ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3 group-hover:scale-110" />}
+              <button className="shrink-0 p-0.5 text-slate-400 hover:text-primary transition-colors">
+                {copiedId ? <Check className="h-2.5 w-2.5 text-emerald-500" /> : <Copy className="h-2.5 w-2.5 group-hover:scale-110" />}
               </button>
             </div>
 
             {/* Logout Button */}
             <button
               onClick={handleSignOut}
-              className="w-full h-11 rounded-xl bg-rose-500/10 text-rose-500 hover:bg-rose-500 hover:text-white font-bold text-xs transition-all flex items-center justify-center gap-2 border border-rose-500/20"
+              className="w-full h-9 rounded-xl bg-rose-500/[0.04] text-rose-500 hover:bg-rose-500 hover:text-white font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 border border-rose-500/20 shadow-sm"
             >
-              <LogOut className="h-4 w-4" />
+              <LogOut className="h-3.5 w-3.5" />
               <span>Sign Out</span>
             </button>
           </div>
@@ -455,14 +683,14 @@ function ProfileContent() {
             </div>
 
             {/* Notification Dropdown Trigger */}
-            <div className="relative">
+            <div className="fixed top-6 right-6 lg:top-8 lg:right-12 z-50">
               <button
                 onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
-                className="h-10 w-10 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/5 flex items-center justify-center relative hover:scale-105 active:scale-95 transition-all text-slate-600 dark:text-slate-350"
+                className="h-11 w-11 rounded-full bg-white/90 dark:bg-slate-950/90 border border-slate-200/80 dark:border-white/10 flex items-center justify-center relative hover:scale-110 active:scale-95 transition-all text-slate-750 dark:text-slate-200 shadow-lg hover:shadow-xl backdrop-blur-md"
               >
-                <i className="fa-solid fa-bell text-sm"></i>
+                <i className="fa-solid fa-bell text-base"></i>
                 {notifications.filter(n => !n.read).length > 0 && (
-                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-rose-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center animate-bounce">
+                  <span className="absolute -top-1 -right-1 h-5 w-5 bg-rose-550 text-white rounded-full text-[9px] font-black flex items-center justify-center animate-bounce shadow">
                     {notifications.filter(n => !n.read).length}
                   </span>
                 )}
@@ -751,7 +979,6 @@ function ProfileContent() {
                 </div>
               </motion.div>
             )}
-
             {/* TAB 2: EDIT PROFILE */}
             {activeTab === 'profile' && (
               <motion.div
@@ -760,7 +987,7 @@ function ProfileContent() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.25 }}
-                className="max-w-xl space-y-6"
+                className="w-full space-y-6"
               >
                 <div className="border-b border-slate-200 dark:border-white/5 pb-4 mb-4">
                   <h1 className="text-2xl font-headline font-bold">Edit Profile Details</h1>
@@ -853,7 +1080,6 @@ function ProfileContent() {
                 </form>
               </motion.div>
             )}
-
             {/* TAB 3: ACCOUNT SETTINGS */}
             {activeTab === 'setting' && (
               <motion.div
@@ -862,7 +1088,7 @@ function ProfileContent() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.25 }}
-                className="max-w-xl space-y-6"
+                className="w-full space-y-6"
               >
                 <div className="border-b border-slate-200 dark:border-white/5 pb-4 mb-4">
                   <h1 className="text-2xl font-headline font-bold">Settings & Security</h1>
@@ -1113,6 +1339,105 @@ function ProfileContent() {
               </motion.div>
             )}
 
+            {/* TAB 6: COURSES ENROLLMENTS */}
+            {activeTab === 'courses' && (
+              <motion.div
+                key="courses"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.25 }}
+                className="space-y-6"
+              >
+                <div className="border-b border-slate-200 dark:border-white/5 pb-4 mb-4">
+                  <h1 className="text-2xl font-headline font-bold">Enrolled Courses</h1>
+                  <p className="text-xs text-slate-400">Access and track progress on all your active educational tracks.</p>
+                </div>
+
+                {loadingCourses ? (
+                  <div className="flex flex-col items-center justify-center py-12 text-slate-400">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary mb-2" />
+                    <p className="text-xs font-bold uppercase tracking-wider">Loading courses...</p>
+                  </div>
+                ) : courses.length === 0 ? (
+                  <div className="text-center py-16 border border-dashed rounded-3xl border-slate-200 dark:border-white/5 bg-white dark:bg-slate-950/20">
+                    <BookOpen className="h-10 w-10 text-slate-300 dark:text-slate-700 mx-auto mb-3" />
+                    <h3 className="text-sm font-bold text-slate-800 dark:text-white">No enrolled courses</h3>
+                    <p className="text-xs text-slate-400 mt-1 max-w-xs mx-auto">Explore our curriculum catalog to enroll in active learning paths and courses.</p>
+                    <Link href="/courses" className="mt-4 inline-block">
+                      <Button size="sm" className="bg-primary hover:bg-primary/95 text-white font-bold rounded-xl px-5 text-xs shadow-md">
+                        Browse Courses
+                      </Button>
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {courses.map((course) => {
+                      const displayThumbnail = course.thumbnail_url || `https://picsum.photos/seed/${course.id}/800/600`;
+                      return (
+                        <div key={course.id} className="group overflow-hidden rounded-[2rem] border border-slate-200 dark:border-white/5 bg-white dark:bg-slate-950/40 flex flex-col hover:shadow-xl transition-all duration-300">
+                          <div className="relative aspect-video w-full overflow-hidden">
+                            <img
+                              src={displayThumbnail}
+                              alt={course.title}
+                              className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
+                            />
+                            <div className="absolute top-4 left-4">
+                              <Badge className="bg-white/95 text-black backdrop-blur-sm border-none font-bold text-[10px] px-2.5 py-0.5">
+                                {course.category || "General"}
+                              </Badge>
+                            </div>
+                          </div>
+                          
+                          <div className="p-6 flex-1 flex flex-col justify-between space-y-4">
+                            <div className="space-y-2">
+                              <div className="flex items-center gap-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                                <User className="h-3 w-3" />
+                                <span>{course.instructor || "Guest Instructor"}</span>
+                              </div>
+                              <h3 className="text-lg font-headline font-bold text-slate-800 dark:text-white leading-snug group-hover:text-primary transition-colors duration-200">
+                                {course.title}
+                              </h3>
+                              {course.description && (
+                                <p className="text-xs text-slate-400 line-clamp-2 leading-relaxed">
+                                  {course.description}
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="pt-4 border-t border-slate-200 dark:border-white/5 flex items-center justify-between gap-4">
+                              <div className="flex items-center gap-1.5 text-xs font-medium text-slate-400">
+                                <Clock className="h-3.5 w-3.5 text-primary" />
+                                <span>{course.duration || "8 Hours"}</span>
+                              </div>
+                              <div className="shrink-0">
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => handleGoToEnrolledCourse(course.id || course.slug)}
+                                  disabled={redirectingCourseId === (course.id || course.slug)}
+                                  className="bg-primary hover:bg-primary/95 text-white font-bold rounded-xl px-4 text-xs min-w-[90px] flex items-center justify-center gap-1.5"
+                                >
+                                  {redirectingCourseId === (course.id || course.slug) ? (
+                                    <>
+                                      <Loader2 className="h-3 w-3 animate-spin text-white" /> Loading
+                                    </>
+                                  ) : (
+                                    <>
+                                      Continue <Play className="h-3 w-3 fill-current" />
+                                    </>
+                                  )}
+                                </Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </motion.div>
+            )}
+
           </AnimatePresence>
         </main>
 
@@ -1125,9 +1450,11 @@ export default function ProfilePage() {
   return (
     <Suspense fallback={
       <div className="w-full min-h-[70vh] flex flex-col items-center justify-center bg-slate-50 dark:bg-[#04060E] py-16">
-        <div className="flex flex-col items-center space-y-4">
-          <Loader2 className="h-10 w-10 animate-spin text-primary" />
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-bold tracking-wider uppercase">Syncing Dashboard...</p>
+        <div className="relative w-20 h-20 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full border-t-2 border-l-2 border-primary animate-spin" />
+          <div className="absolute inset-1.5 rounded-full overflow-hidden flex items-center justify-center p-2">
+            <img src="/logo.png" alt="Logo" className="h-full w-full object-contain animate-pulse" />
+          </div>
         </div>
       </div>
     }>

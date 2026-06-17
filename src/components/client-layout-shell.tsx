@@ -107,24 +107,40 @@ export function ClientLayoutShell({ children }: { children: React.ReactNode }) {
 
   const isHome = pathname === '/';
   const isProfile = pathname === '/profile' || pathname?.startsWith('/profile/');
-  const shouldHideSiteChrome = pathname === '/test' || pathname?.startsWith('/test/');
+  const isCertificate = pathname?.startsWith('/verify-certificate');
+  const shouldHideSiteChrome = pathname === '/test' || pathname?.startsWith('/test/') || isCertificate;
+  const hideNavbar = shouldHideSiteChrome || isProfile;
 
   if (!mounted) {
+    const isHome = pathname === '/';
+    const isProfile = pathname === '/profile' || pathname?.startsWith('/profile/');
+    const isCertificate = pathname?.startsWith('/verify-certificate');
+    const shouldHideSiteChrome = pathname === '/test' || pathname?.startsWith('/test/') || isCertificate;
+    const hideNavbar = shouldHideSiteChrome || isProfile;
+
     return (
-      <div className="min-h-screen flex flex-col">
-        <main className="flex-1 w-full">{children}</main>
+      <div className="min-h-screen flex flex-col w-full">
+        {!hideNavbar && <div className="h-16 shrink-0" />} {/* Empty placeholder matching Navbar height */}
+        <main
+          className={cn(
+            "flex-1 w-full max-w-full overflow-x-clip",
+            !hideNavbar && !isHome && "pt-20"
+          )}
+        >
+          {children}
+        </main>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex flex-col w-full">
-      {!shouldHideSiteChrome && <Navbar />}
+      {!hideNavbar && <Navbar />}
       <PageTransition onPendingChange={setIsPagePending}>
         <main
           className={cn(
             "flex-1 w-full max-w-full overflow-x-clip",
-            !shouldHideSiteChrome && !isHome && "pt-20"
+            !hideNavbar && !isHome && "pt-20"
           )}
         >
           {children}

@@ -35,19 +35,21 @@ export function EditableText({
   const { loading: cmsLoading } = useCMS();
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState('');
-  const displayValue = useMemo(() => {
-    const text = String(value || defaultValue || '');
-    return text;
-  }, [value, defaultValue]);
+  const isEmpty = useMemo(() => {
+    if (value === null || value === undefined) return false;
+    const str = String(value).trim();
+    if (str === '') return true;
+    const clean = str.replace(/<[^>]*>/g, '').trim();
+    return clean === '' || clean === '&nbsp;';
+  }, [value]);
 
-  if (cmsLoading) {
-    return (
-      <span className={cn(className, "inline-block animate-pulse bg-muted dark:bg-zinc-800 rounded min-w-[60px] h-[1.2em] align-middle")} />
-    );
-  }
+  const displayValue = useMemo(() => {
+    if (isEmpty) return '';
+    return String(value ?? defaultValue ?? '');
+  }, [value, defaultValue, isEmpty]);
 
   const handleEdit = async () => {
-    const next = window.prompt('Edit content for ' + contentKey, displayValue);
+    const next = window.prompt('Edit content for ' + contentKey, displayValue || defaultValue);
     if (next === null) return;
     if (next === displayValue) return;
     try {
@@ -58,12 +60,22 @@ export function EditableText({
     }
   };
 
+  // If empty and not admin, hide completely
+  if (isEmpty && !canEdit) {
+    return null;
+  }
+
+  const finalHTML = draft || displayValue || (canEdit ? (placeholder || defaultValue || '[Empty]') : '');
+
   return (
-    <Component className={cn(className, 'inline-flex items-center gap-2 group')}
+    <Component className={cn(className, 'inline-flex items-center gap-2 group', isEmpty && canEdit && 'opacity-40')}
       data-editable={canEdit ? 'true' : undefined}
       onDoubleClick={canEdit ? handleEdit : undefined}
     >
-      <span dangerouslySetInnerHTML={{ __html: draft || displayValue || placeholder || '' }} />
+      <span 
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{ __html: finalHTML }} 
+      />
       {canEdit && (
         <button
           type="button"

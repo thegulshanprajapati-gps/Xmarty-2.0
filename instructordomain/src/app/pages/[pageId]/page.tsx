@@ -193,6 +193,24 @@ export default function PageEditor() {
         return;
       }
 
+      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.startsWith('csrf_token='))?.split('=')[1] : null;
+      if (!csrfToken) {
+        try {
+          const csrfRes = await fetch('/api/auth/csrf');
+          const csrfJson = await csrfRes.json();
+          csrfToken = csrfJson.csrfToken;
+        } catch (e) {
+          console.error('Failed to initialize CSRF token:', e);
+        }
+      }
+
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json'
+      };
+      if (csrfToken) {
+        headers['x-csrf-token'] = csrfToken;
+      }
+
       for (let i = 0; i < blocksToSave.length; i++) {
         const block = blocksToSave[i];
         if (block.value === null || block.value === '') {
@@ -203,7 +221,7 @@ export default function PageEditor() {
         
         const res = await fetch('/api/mongodb-gateway', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers,
           body: JSON.stringify({
             action: 'upsert',
             collection: 'content_blocks',
@@ -637,7 +655,7 @@ export default function PageEditor() {
   return (
     <SidebarProvider>
       <AdminSidebar />
-      <SidebarInset className="bg-background/95 relative">
+      <SidebarInset className="bg-background/95 relative overflow-x-hidden min-w-0 w-full">
         {/* Background blur decorative elements */}
         <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
           <div className="absolute top-32 -right-20 w-[300px] h-[300px] bg-primary/[0.03] rounded-full blur-[100px]" />
@@ -670,18 +688,18 @@ export default function PageEditor() {
           </div>
         </header>
 
-        <main className="p-3 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-10 relative z-10">
+        <main className="p-3 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-10 relative z-10 w-full min-w-0 overflow-x-hidden">
            <Tabs defaultValue={defaultTab} className="space-y-8">
-            <TabsList className="bg-muted/40 p-1 md:p-1.5 h-auto md:h-16 rounded-xl md:rounded-[2rem] flex flex-nowrap w-full items-center gap-1 md:gap-2 border border-primary/5 shadow-inner overflow-x-auto">
+            <TabsList className="bg-muted/40 p-1 md:p-1.5 h-auto rounded-xl md:rounded-2xl flex flex-wrap w-full items-center justify-start gap-1 md:gap-1.5 border border-primary/5 shadow-inner">
               {schemas.map(section => (
-                <TabsTrigger key={section.key} value={section.key} className="flex-shrink-0 md:flex-1 min-w-fit md:min-w-[120px] rounded-xl md:rounded-2xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-2 md:py-2.5 px-3 md:px-4 whitespace-nowrap h-9 md:h-12 flex items-center justify-center text-xs md:text-sm">
+                <TabsTrigger key={section.key} value={section.key} className="flex-shrink-0 rounded-lg md:rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-1.5 md:py-2 px-3 md:px-4 whitespace-nowrap h-8 md:h-10 flex items-center justify-center text-xs md:text-sm">
                   {section.label}
                 </TabsTrigger>
               ))}
-              <TabsTrigger value="preview" className="flex-shrink-0 md:flex-1 min-w-fit md:min-w-[120px] rounded-xl md:rounded-2xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-2 md:py-2.5 px-3 md:px-4 whitespace-nowrap h-9 md:h-12 flex items-center justify-center text-xs md:text-sm">
+              <TabsTrigger value="preview" className="flex-shrink-0 rounded-lg md:rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-1.5 md:py-2 px-3 md:px-4 whitespace-nowrap h-8 md:h-10 flex items-center justify-center text-xs md:text-sm">
                 Live Preview
               </TabsTrigger>
-              <TabsTrigger value="assets" className="flex-shrink-0 md:flex-1 min-w-fit md:min-w-[120px] rounded-xl md:rounded-2xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-2 md:py-2.5 px-3 md:px-4 whitespace-nowrap h-9 md:h-12 flex items-center justify-center text-xs md:text-sm">
+              <TabsTrigger value="assets" className="flex-shrink-0 rounded-lg md:rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-1.5 md:py-2 px-3 md:px-4 whitespace-nowrap h-8 md:h-10 flex items-center justify-center text-xs md:text-sm">
                 Global Assets
               </TabsTrigger>
             </TabsList>
@@ -723,7 +741,7 @@ export default function PageEditor() {
                     </CardHeader>
                     
                     <CardContent className="p-4 md:p-10">
-                      <div className="grid gap-6 md:gap-10 lg:grid-cols-2">
+                      <div className="grid gap-6 md:gap-10 lg:grid-cols-2 w-full min-w-0">
                         {section.fields.map(field => {
                           const val = content[section.key]?.[field.key] || '';
                           
@@ -769,7 +787,7 @@ export default function PageEditor() {
                                         
                                         <div className="grid gap-6 md:grid-cols-2">
                                           {field.itemFields!.map(subField => (
-                                            <div key={subField.key} className={`space-y-3 ${subField.type === 'richtext' || subField.type === 'textarea' ? 'col-span-full' : ''}`}>
+                                            <div key={subField.key} className={`space-y-3 w-full min-w-0 ${subField.type === 'richtext' || subField.type === 'textarea' ? 'col-span-full' : ''}`}>
                                               <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">{subField.label}</Label>
                                               {renderField(subField, section.key, item[subField.key] || '', idx, subField.key, field.key)}
                                             </div>
@@ -784,7 +802,7 @@ export default function PageEditor() {
                           }
                           
                           return (
-                            <div key={field.key} className={`space-y-4 ${field.type === 'richtext' || field.type === 'textarea' || field.type === 'json' ? 'col-span-full' : ''}`}>
+                            <div key={field.key} className={`space-y-4 w-full min-w-0 ${field.type === 'richtext' || field.type === 'textarea' || field.type === 'json' ? 'col-span-full' : ''}`}>
                               <Label className="text-sm font-bold uppercase tracking-wider text-muted-foreground ml-1">{field.label}</Label>
                               {renderField(field, section.key, val)}
                             </div>

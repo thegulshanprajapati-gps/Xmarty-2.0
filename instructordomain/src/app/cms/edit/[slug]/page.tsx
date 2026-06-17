@@ -41,8 +41,8 @@ export default function CmsEditPage() {
   return (
     <SidebarProvider>
       <AdminSidebar />
-      <SidebarInset>
-        <main className="p-8 max-w-5xl mx-auto">
+      <SidebarInset className="overflow-x-hidden min-w-0 w-full">
+        <main className="p-8 max-w-5xl mx-auto w-full min-w-0 overflow-x-hidden">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h1 className="text-2xl font-headline font-bold">Edit Page — {slug}</h1>

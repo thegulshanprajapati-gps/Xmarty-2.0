@@ -28,9 +28,9 @@ function LoginPageInner() {
 
   useEffect(() => {
     if (user && user.role !== 'admin' && user.role !== 'super_admin' && user.role !== 'instructor') {
-      router.push('/profile');
+      router.push(redirectUrl);
     }
-  }, [user, router]);
+  }, [user, router, redirectUrl]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

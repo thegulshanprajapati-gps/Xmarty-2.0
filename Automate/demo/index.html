@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>FlowAutomate Sandbox UI</title>
+  <style>
+    body {
+      background-color: #0b0f19;
+      color: #f8fafc;
+      font-family: system-ui, -apple-system, sans-serif;
+      margin: 40px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: #0f172a;
+      padding: 24px;
+      border: 1px solid #1e293b;
+      border-radius: 12px;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+    }
+    h1 {
+      color: #007aff;
+      font-size: 24px;
+      margin-top: 0;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      background: #020617;
+      border: 1px solid #334155;
+      color: #fff;
+      border-radius: 6px;
+      box-sizing: border-box;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    input[type="text"]:focus {
+      border-color: #007aff;
+      outline: none;
+    }
+    .results-box {
+      border: 1px solid #1e293b;
+      background: #020617;
+      border-radius: 6px;
+      max-height: 200px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      background: #0f172a;
+      transition: background 0.15s;
+    }
+    .result-row:hover {
+      background: #1e293b;
+    }
+    .checkbox-mock {
+      width: 16px;
+      height: 16px;
+      border: 2px solid #64748b;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .checkbox-mock[aria-checked="true"] {
+      border-color: #34c759;
+      background: #34c759;
+    }
+    .checkbox-mock[aria-checked="true"]::after {
+      content: '✓';
+      color: #000;
+      font-size: 10px;
+      font-weight: bold;
+    }
+    .success-alert {
+      padding: 10px;
+      background: #064e3b;
+      color: #34d399;
+      border-radius: 6px;
+      margin-top: 14px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>FlowAutomate Testing Sandbox</h1>
+  <p style="font-size: 13px; color: #94a3b8;">Use this mock searchable list to verify default selector configurations.</p>
+
+  <label for="search-input" style="font-size: 12px; font-weight: 600; display: block; margin-bottom: 6px;">Search Items</label>
+  <!-- Match input[placeholder] preset -->
+  <input type="text" id="search-input" placeholder="Type items search term...">
+
+  <!-- Match [role="listitem"] selector preset -->
+  <div class="results-box" id="results-box" role="listitem"></div>
+
+  <div class="success-alert" id="success-alert">
+    ✓ Item selected and confirmed!
+  </div>
+</div>
+
+<script>
+  const items = ["123456", "987654", "456789", "John Doe", "Jane Smith", "Sam Altman"];
+  const searchInput = document.getElementById('search-input');
+  const resultsBox = document.getElementById('results-box');
+  const successAlert = document.getElementById('success-alert');
+
+  searchInput.addEventListener('input', (e) => {
+    const val = e.target.value.toLowerCase().trim();
+    resultsBox.innerHTML = '';
+    successAlert.style.display = 'none';
+
+    if (!val) return;
+
+    const matched = items.filter(i => i.toLowerCase().includes(val));
+
+    matched.forEach(name => {
+      // Create element matching [data-testid*="list-item"] selector preset
+      const row = document.createElement('div');
+      row.className = 'result-row';
+      row.setAttribute('data-testid', 'list-item-container');
+      
+      const label = document.createElement('span');
+      label.innerText = name;
+      row.appendChild(label);
+
+      // Create checkbox matching [role="checkbox"] and [aria-checked="false"] selectable preset
+      const chk = document.createElement('div');
+      chk.className = 'checkbox-mock';
+      chk.setAttribute('role', 'checkbox');
+      chk.setAttribute('aria-checked', 'false');
+      row.appendChild(chk);
+
+      row.addEventListener('click', () => {
+        chk.setAttribute('aria-checked', 'true'); // Selected detection matches
+        successAlert.style.display = 'block';
+        successAlert.innerText = `✓ Selected: ${name}`;
+        
+        setTimeout(() => {
+          searchInput.value = '';
+          resultsBox.innerHTML = '';
+        }, 300);
+      });
+
+      resultsBox.appendChild(row);
+    });
+  });
+</script>
+
+</body>
+</html>

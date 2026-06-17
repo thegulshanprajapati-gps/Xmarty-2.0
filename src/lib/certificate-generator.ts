@@ -1,7 +1,8 @@
 import { PDFDocument, rgb, StandardFonts } from "pdf-lib";
 import JSZip from "jszip";
 import { Db } from "mongodb";
-
+import fs from "fs";
+import path from "path";
 // Hex to RGB color helper
 function hexToRgb(hex: string): { r: number; g: number; b: number } {
   let cleanHex = hex.replace("#", "");
@@ -52,79 +53,84 @@ export async function generateCertificateFile(
   const certType = cert.type || "completion";
   const certTitle = certType === "participation" ? "CERTIFICATE OF PARTICIPATION" : "CERTIFICATE OF COMPLETION";
 
-  // PPTX templates disabled — always generate PDF
-  /*
   const pptxTemplate = await db.collection("certificate_templates").findOne({ type: certType });
 
-  if (pptxTemplate && pptxTemplate.fileData) {
-    try {
-      const base64Data = pptxTemplate.fileData;
-      const base64String = base64Data.includes(",") ? base64Data.split(",")[1] : base64Data;
-      const pptxBuffer = Buffer.from(base64String, 'base64');
-
-      const zip = await JSZip.loadAsync(pptxBuffer);
-      const slideFiles = Object.keys(zip.files).filter(name => name.startsWith("ppt/slides/slide") && name.endsWith(".xml"));
-
-      const studentName = cert.studentName;
-      const examTitle = cert.examTitle;
-      const docDate = new Date(cert.generatedAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-
-      for (const slideName of slideFiles) {
-        let xmlContent = await zip.file(slideName)!.async("string");
-        
-        xmlContent = replacePPTXPlaceholder(xmlContent, "name", studentName);
-        xmlContent = replacePPTXPlaceholder(xmlContent, "Test", examTitle);
-        xmlContent = replacePPTXPlaceholder(xmlContent, "v-key", cert.certificateId);
-        xmlContent = replacePPTXPlaceholder(xmlContent, "c-id", cert.certificateId);
-        xmlContent = replacePPTXPlaceholder(xmlContent, "doc", docDate);
-
-        zip.file(slideName, xmlContent);
-      }
-
-      const generatedBuffer = await zip.generateAsync({ type: "nodebuffer" });
-      const base64Pptx = generatedBuffer.toString("base64");
-
-      return { fileType: 'pptx', base64Data: base64Pptx };
-    } catch (err) {
-      console.error("Failed to generate PPTX dynamic template, falling back to PDF:", err);
-    }
-  }
-  */
-
-  // FALLBACK: PDF Generation
   const settings = await db.collection("site_settings").findOne({}, { sort: { updated_at: -1 } });
   const templateBase64 = settings?.certificate_template || "";
 
-  const certFontFamily = settings?.cert_font_family || "helvetica";
   const isBold = settings?.cert_font_bold !== false;
   const isItalic = settings?.cert_font_italic === true;
   const fontColorHex = settings?.cert_font_color || "#cc3333";
   const titleColorHex = settings?.cert_title_color || "#1e3a8a";
   const examColorHex = settings?.cert_exam_color || "#33994c";
 
-  // Select the font
-  let fontName = StandardFonts.Helvetica;
-  if (certFontFamily === "times") {
-    if (isBold && isItalic) fontName = StandardFonts.TimesRomanBoldItalic;
-    else if (isBold) fontName = StandardFonts.TimesRomanBold;
-    else if (isItalic) fontName = StandardFonts.TimesRomanItalic;
-    else fontName = StandardFonts.TimesRoman;
-  } else if (certFontFamily === "courier") {
-    if (isBold && isItalic) fontName = StandardFonts.CourierBoldOblique;
-    else if (isBold) fontName = StandardFonts.CourierBold;
-    else if (isItalic) fontName = StandardFonts.CourierOblique;
-    else fontName = StandardFonts.Courier;
-  } else { // helvetica
-    if (isBold && isItalic) fontName = StandardFonts.HelveticaBoldOblique;
-    else if (isBold) fontName = StandardFonts.HelveticaBold;
-    else if (isItalic) fontName = StandardFonts.HelveticaOblique;
-    else fontName = StandardFonts.Helvetica;
+  let pdfDoc;
+  let page;
+  let isFromPptx = false;
+
+  if (pptxTemplate && pptxTemplate.fileDataPdf) {
+    try {
+      const base64String = pptxTemplate.fileDataPdf.includes(",") ? pptxTemplate.fileDataPdf.split(",")[1] : pptxTemplate.fileDataPdf;
+      const pdfBuffer = Buffer.from(base64String, 'base64');
+      pdfDoc = await PDFDocument.load(pdfBuffer);
+      page = pdfDoc.getPages()[0];
+      isFromPptx = true;
+    } catch (err) {
+      console.error("Failed to load PDF background from PPTX template, falling back:", err);
+    }
   }
 
-  const pdfDoc = await PDFDocument.create();
-  const page = pdfDoc.addPage([800, 600]);
+  if (!pdfDoc || !page) {
+    pdfDoc = await PDFDocument.create();
+    page = pdfDoc.addPage([800, 600]);
+    
+    // Draw default border/image template if not using PPTX template
+    const hasImageTemplate = templateBase64 && (templateBase64.startsWith("data:image/") || templateBase64.startsWith("http://") || templateBase64.startsWith("https://"));
+
+    if (hasImageTemplate) {
+      try {
+        let imageBytes: Buffer;
+        let isPng = false;
+        if (templateBase64.startsWith("http://") || templateBase64.startsWith("https://")) {
+          const fetchRes = await fetch(templateBase64);
+          const arrayBuffer = await fetchRes.arrayBuffer();
+          imageBytes = Buffer.from(arrayBuffer);
+          const contentType = fetchRes.headers.get("content-type") || "";
+          isPng = contentType.includes("image/png") || templateBase64.toLowerCase().endsWith(".png");
+        } else {
+          imageBytes = Buffer.from(templateBase64.split(",")[1], 'base64');
+          isPng = templateBase64.includes("image/png");
+        }
+
+        let img;
+        if (isPng) {
+          img = await pdfDoc.embedPng(imageBytes);
+        } else {
+          img = await pdfDoc.embedJpg(imageBytes);
+        }
+        page.drawImage(img, {
+          x: 0,
+          y: 0,
+          width: 800,
+          height: 600
+        });
+      } catch (err) {
+        console.error("Failed to embed background template image:", err);
+      }
+    } else {
+      const { width, height } = page.getSize();
+      page.drawRectangle({
+        x: 20,
+        y: 20,
+        width: width - 40,
+        height: height - 40,
+        borderColor: rgb(0.2, 0.4, 0.8),
+        borderWidth: 5,
+      });
+    }
+  }
+
   const { width, height } = page.getSize();
-  const font = await pdfDoc.embedFont(fontName);
 
   // Parse colors
   const parsedFontColor = hexToRgb(fontColorHex);
@@ -136,46 +142,48 @@ export async function generateCertificateFile(
   const parsedExamColor = hexToRgb(examColorHex);
   const examColor = rgb(parsedExamColor.r, parsedExamColor.g, parsedExamColor.b);
 
-  const hasImageTemplate = templateBase64 && templateBase64.startsWith("data:image/");
-
-  if (hasImageTemplate) {
-    try {
-      const imageBytes = Buffer.from(templateBase64.split(",")[1], 'base64');
-      let img;
-      if (templateBase64.includes("image/png")) {
-        img = await pdfDoc.embedPng(imageBytes);
-      } else {
-        img = await pdfDoc.embedJpg(imageBytes);
+  // Helper to resolve font per element
+  let cachedCursiveFont: any = null;
+  const resolveFontForElement = async (family: string, elementBold: boolean, elementItalic: boolean) => {
+    const fontName = family || "helvetica";
+    if (fontName === "times") {
+      if (elementBold && elementItalic) return await pdfDoc.embedFont(StandardFonts.TimesRomanBoldItalic);
+      if (elementBold) return await pdfDoc.embedFont(StandardFonts.TimesRomanBold);
+      if (elementItalic) return await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
+      return await pdfDoc.embedFont(StandardFonts.TimesRoman);
+    } else if (fontName === "courier") {
+      if (elementBold && elementItalic) return await pdfDoc.embedFont(StandardFonts.CourierBoldOblique);
+      if (elementBold) return await pdfDoc.embedFont(StandardFonts.CourierBold);
+      if (elementItalic) return await pdfDoc.embedFont(StandardFonts.CourierOblique);
+      return await pdfDoc.embedFont(StandardFonts.Courier);
+    } else if (fontName === "cursive") {
+      if (cachedCursiveFont) return cachedCursiveFont;
+      try {
+        const fontPath = path.join(process.cwd(), "src", "lib", "assets", "GreatVibes.ttf");
+        if (fs.existsSync(fontPath)) {
+          const fontBytes = fs.readFileSync(fontPath);
+          cachedCursiveFont = await pdfDoc.embedFont(fontBytes);
+          return cachedCursiveFont;
+        }
+      } catch (err) {
+        console.error("Failed to load cursive font, falling back to Helvetica:", err);
       }
-      page.drawImage(img, {
-        x: 0,
-        y: 0,
-        width: 800,
-        height: 600
-      });
-    } catch (err) {
-      console.error("Failed to embed background template image:", err);
     }
-  } else {
-    // Draw default border if no background image is present
-    page.drawRectangle({
-      x: 20,
-      y: 20,
-      width: width - 40,
-      height: height - 40,
-      borderColor: rgb(0.2, 0.4, 0.8),
-      borderWidth: 5,
-    });
-  }
+    // Default/fallback to Helvetica
+    if (elementBold && elementItalic) return await pdfDoc.embedFont(StandardFonts.HelveticaBoldOblique);
+    if (elementBold) return await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    if (elementItalic) return await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+    return await pdfDoc.embedFont(StandardFonts.Helvetica);
+  };
 
-  // 1. Draw Title
-  // ONLY draw dynamic title if there's no custom image template.
-  if (!hasImageTemplate) {
+  // 1. Draw Title ONLY if NOT using PPTX template and NOT using custom image template.
+  if (!isFromPptx && !(templateBase64 && (templateBase64.startsWith("data:image/") || templateBase64.startsWith("http://") || templateBase64.startsWith("https://")))) {
+    const titleFont = await resolveFontForElement("helvetica", true, false);
     page.drawText(certTitle, {
       x: 180,
       y: 480,
       size: 30,
-      font,
+      font: titleFont,
       color: titleColor,
     });
 
@@ -183,7 +191,7 @@ export async function generateCertificateFile(
       x: 280,
       y: 390,
       size: 16,
-      font,
+      font: titleFont,
       color: rgb(0.3, 0.3, 0.3),
     });
 
@@ -191,53 +199,87 @@ export async function generateCertificateFile(
       x: 230,
       y: 260,
       size: 14,
-      font,
+      font: titleFont,
       color: rgb(0.3, 0.3, 0.3),
     });
   }
 
-  // 2. Draw student name centered
+  // Mapped/custom layout configurations
+  const layout = (certType === "participation"
+    ? (settings?.cert_layout_participation || settings?.cert_layout)
+    : (settings?.cert_layout_completion || settings?.cert_layout)) || {
+    studentName: { x: 400, y: 310, fontSize: 26, color: fontColorHex },
+    examTitle: { x: 400, y: 200, fontSize: 20, color: examColorHex },
+    certificateId: { x: 50, y: 60, fontSize: 10, color: "#808080" },
+    verificationKey: { x: 50, y: 45, fontSize: 10, color: "#808080" },
+    dateOfCompletion: { x: 400, y: 120, fontSize: 12, color: "#808080" }
+  };
+
+  // Helper to draw centered text at coordinate X
+  const drawTextCentered = (text: string, config: { x: number; y: number; fontSize: number; color: string }, elementFont: any) => {
+    const size = config.fontSize || 12;
+    const colorHex = config.color || "#000000";
+    const rgbColor = hexToRgb(colorHex);
+    const textWidth = elementFont.widthOfTextAtSize(text, size);
+    page.drawText(text, {
+      x: Math.max(10, config.x - textWidth / 2),
+      y: Math.max(10, config.y - size / 3),
+      size: size,
+      font: elementFont,
+      color: rgb(rgbColor.r, rgbColor.g, rgbColor.b)
+    });
+  };
+
+  // Helper to draw left-aligned metadata
+  const drawTextNormal = (text: string, config: { x: number; y: number; fontSize: number; color: string }, elementFont: any) => {
+    const size = config.fontSize || 10;
+    const colorHex = config.color || "#808080";
+    const rgbColor = hexToRgb(colorHex);
+    page.drawText(text, {
+      x: Math.max(10, config.x),
+      y: Math.max(10, config.y - size / 3),
+      size: size,
+      font: elementFont,
+      color: rgb(rgbColor.r, rgbColor.g, rgbColor.b)
+    });
+  };
+
+  // 2. Draw student name
   const studentName = cert.studentName || "Student";
-  const nameWidth = font.widthOfTextAtSize(studentName, 26);
-  const nameX = Math.max(50, (width - nameWidth) / 2);
-  
-  page.drawText(studentName, {
-    x: nameX,
-    y: 310,
-    size: 26,
-    font,
-    color: fontColor,
-  });
+  if (layout.studentName) {
+    const studentFont = await resolveFontForElement(layout.studentName.fontFamily, isBold, isItalic);
+    drawTextCentered(studentName, layout.studentName, studentFont);
+  }
 
-  // 3. Draw Assessment Title centered
+  // 3. Draw Assessment Title
   const examTitle = cert.examTitle || "Skill Assessment";
-  const examWidth = font.widthOfTextAtSize(examTitle, 20);
-  const examX = Math.max(50, (width - examWidth) / 2);
+  if (layout.examTitle) {
+    const examFont = await resolveFontForElement(layout.examTitle.fontFamily, false, false);
+    drawTextCentered(examTitle, layout.examTitle, examFont);
+  }
 
-  page.drawText(examTitle, {
-    x: examX,
-    y: 200,
-    size: 20,
-    font,
-    color: examColor,
-  });
+  // 4. Draw Certificate ID (No Prefix)
+  if (layout.certificateId) {
+    const certIdFont = await resolveFontForElement(layout.certificateId.fontFamily, false, false);
+    drawTextNormal(cert.certificateId, layout.certificateId, certIdFont);
+  }
 
-  // 4. Draw credential keys at the bottom left cleanly
-  page.drawText(`Certificate ID: ${cert.certificateId}`, {
-    x: 50,
-    y: 60,
-    size: 10,
-    font,
-    color: rgb(0.5, 0.5, 0.5),
-  });
+  // 5. Draw Verification Key (No Prefix)
+  if (layout.verificationKey) {
+    const vKeyFont = await resolveFontForElement(layout.verificationKey.fontFamily, false, false);
+    drawTextNormal(cert.certificateId, layout.verificationKey, vKeyFont);
+  }
 
-  page.drawText(`Verification Key: ${cert.certificateId}`, {
-    x: 50,
-    y: 45,
-    size: 10,
-    font,
-    color: rgb(0.5, 0.5, 0.5),
-  });
+  // 6. Draw Date of Completion
+  if (layout.dateOfCompletion) {
+    const docFont = await resolveFontForElement(layout.dateOfCompletion.fontFamily, false, false);
+    const docDate = new Date(cert.generatedAt).toLocaleDateString('en-US', { 
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric' 
+    });
+    drawTextCentered(docDate, layout.dateOfCompletion, docFont);
+  }
 
   const pdfBytes = await pdfDoc.save();
   const base64Pdf = Buffer.from(pdfBytes).toString("base64");

@@ -33,7 +33,7 @@ function InnerEditor({ value, onChange, placeholder, className }: RichTextEditor
   };
 
   return (
-    <div className="space-y-2 w-full">
+    <div className="space-y-2 w-full min-w-0 overflow-hidden">
       <div className="flex justify-between items-center">
         <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Editor Panel</span>
         <EditorSwitcher />

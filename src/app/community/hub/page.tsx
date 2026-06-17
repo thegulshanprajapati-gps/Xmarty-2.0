@@ -16,6 +16,7 @@ export default function CommunityHubPage() {
 
   const [posts, setPosts] = useState<any[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
+  const [onlineCount, setOnlineCount] = useState(184);
 
   // Thread creation form state
   const [newTitle, setNewTitle] = useState("");
@@ -35,6 +36,9 @@ export default function CommunityHubPage() {
       const data = await res.json();
       if (data.success) {
         setPosts(data.posts || []);
+        if (data.onlineCount !== undefined) {
+          setOnlineCount(data.onlineCount);
+        }
       }
     } catch (e) {
       console.error("Failed to load community posts:", e);
@@ -48,6 +52,8 @@ export default function CommunityHubPage() {
       router.push(`/login?redirect=${encodeURIComponent("/community/hub")}`);
     } else if (user) {
       fetchPosts();
+      const interval = setInterval(fetchPosts, 15000); // Poll every 15s
+      return () => clearInterval(interval);
     }
   }, [user, userLoading, router]);
 
@@ -185,7 +191,7 @@ export default function CommunityHubPage() {
               <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">ONLINE NOW</span>
               <span className="text-base font-black text-primary flex items-center justify-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse inline-block"></span>
-                184
+                {onlineCount}
               </span>
             </div>
             <div className="text-center px-4">

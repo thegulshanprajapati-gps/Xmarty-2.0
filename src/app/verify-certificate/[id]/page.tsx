@@ -3,8 +3,23 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Award, Calendar, ShieldAlert, ArrowLeft, Download, ShieldCheck, Instagram, Youtube } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  Award, 
+  Calendar, 
+  ShieldAlert, 
+  ArrowLeft, 
+  Download, 
+  ShieldCheck, 
+  Share2, 
+  Linkedin, 
+  Copy, 
+  Check, 
+  Sparkles, 
+  FileText,
+  FileSpreadsheet
+} from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 function VerifyCertificateContent() {
   const params = useParams();
@@ -13,6 +28,8 @@ function VerifyCertificateContent() {
   const [loading, setLoading] = useState(true);
   const [certData, setCertData] = useState<any>(null);
   const [error, setError] = useState("");
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [copiedCaption, setCopiedCaption] = useState(false);
 
   useEffect(() => {
     if (certId) {
@@ -35,18 +52,72 @@ function VerifyCertificateContent() {
     }
   }, [certId]);
 
+  const verificationUrl = typeof window !== "undefined" 
+    ? `${window.location.origin}/verify-certificate/${certId}`
+    : `https://xmartycreator.com/verify-certificate/${certId}`;
+
+  const shareCaption = `🎓 I'm proud to share that I have successfully completed the assessment for "${certData?.examTitle || 'Course'}" and earned my verified ${certData?.type === 'participation' ? 'Participation' : 'Completion'} Certificate! \n\nVerify my credential here: ${verificationUrl} \n\n#learning #certification #achievement #education`;
+
   const handleDownload = () => {
     if (certData?.fileType === 'pptx' && certData?.pptxData) {
       const link = document.createElement("a");
       link.href = `data:application/vnd.openxmlformats-officedocument.presentationml.presentation;base64,${certData.pptxData}`;
       link.download = `Certificate_${certId}.pptx`;
       link.click();
+      toast({ title: "PPTX Downloaded", description: "Your presentation template is ready." });
     } else if (certData?.pdfData) {
       const link = document.createElement("a");
       link.href = `data:application/pdf;base64,${certData.pdfData}`;
       link.download = `Certificate_${certId}.pdf`;
       link.click();
+      toast({ title: "PDF Downloaded", description: "Your digital certificate is saved." });
     }
+  };
+
+  const copyToClipboard = async (text: string, isCaption: boolean = false) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      if (isCaption) {
+        setCopiedCaption(true);
+        setTimeout(() => setCopiedCaption(false), 2000);
+        toast({ title: "Caption Copied!", description: "Share caption copied to clipboard." });
+      } else {
+        setCopiedLink(true);
+        setTimeout(() => setCopiedLink(false), 2000);
+        toast({ title: "Link Copied!", description: "Verification link copied to clipboard." });
+      }
+    } catch (err) {
+      toast({ variant: "destructive", title: "Copy Failed", description: "Please copy it manually." });
+    }
+  };
+
+  const handleSharePlatform = (platform: 'linkedin' | 'whatsapp') => {
+    // Copy caption immediately inside click event loop to avoid browser blocking
+    try {
+      const textarea = document.createElement("textarea");
+      textarea.value = shareCaption;
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      document.body.removeChild(textarea);
+      toast({ title: "Caption Auto-Copied!", description: "The caption has been copied to your clipboard. Paste it when sharing!" });
+    } catch (e) {
+      try {
+        navigator.clipboard.writeText(shareCaption);
+      } catch (err) {}
+    }
+
+    let shareUrl = "";
+    if (platform === 'linkedin') {
+      shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(verificationUrl)}`;
+    } else if (platform === 'whatsapp') {
+      shareUrl = `https://wa.me/?text=${encodeURIComponent(shareCaption)}`;
+    }
+
+    // Open immediately without timeout to satisfy popup-blocker restrictions
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
   };
 
   if (loading) {
@@ -87,99 +158,167 @@ function VerifyCertificateContent() {
   }
 
   return (
-    <div className="w-full min-h-screen flex items-center justify-center p-4 py-16 relative overflow-hidden bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-body">
-      <div 
-        className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full blur-[120px] pointer-events-none" 
-        style={{ backgroundColor: 'hsl(var(--primary))', opacity: 0.08 }}
-      />
-      <div 
-        className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full blur-[120px] pointer-events-none" 
-        style={{ backgroundColor: 'hsl(var(--accent))', opacity: 0.08 }}
-      />
+    <div className="w-full h-screen relative flex flex-col items-center justify-center p-3 lg:p-4 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-body overflow-y-auto lg:overflow-hidden select-none">
+      {/* Decorative Orbs */}
+      <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full blur-[150px] pointer-events-none bg-primary/10 dark:bg-primary/5" />
+      <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full blur-[150px] pointer-events-none bg-accent/10 dark:bg-accent/5" />
 
-      <div className="relative z-10 w-full max-w-lg mx-auto">
-        <motion.div 
-          initial={{ y: 15, opacity: 0 }} 
-          animate={{ y: 0, opacity: 1 }} 
-          transition={{ duration: 0.4, ease: "easeOut" }} 
-          className="relative group"
-        >
-          <div className="absolute -inset-0.5 rounded-[2rem] blur opacity-25 dark:opacity-45 group-hover:opacity-60 transition duration-700 pointer-events-none bg-gradient-to-r from-primary to-accent" />
-          
-          <div className="relative p-6 sm:p-8 rounded-[2rem] border backdrop-blur-2xl shadow-xl space-y-6 bg-white/95 dark:bg-slate-950/80 border-slate-200 dark:border-white/10 text-center text-slate-900 dark:text-white">
-            
-            <div 
-              className="h-16 w-16 rounded-2xl flex items-center justify-center mx-auto border"
-              style={{ backgroundColor: 'hsla(var(--primary), 0.1)', borderColor: 'hsla(var(--primary), 0.2)', color: 'hsl(var(--primary))' }}
-            >
-              <ShieldCheck className="h-8 w-8 animate-bounce" />
-            </div>
-
-            <div className="space-y-1">
-              <span 
-                className="text-[10px] tracking-widest font-black px-3 py-1 rounded-full uppercase border"
-                style={{ backgroundColor: 'hsla(var(--primary), 0.1)', borderColor: 'hsla(var(--primary), 0.2)', color: 'hsl(var(--primary))' }}
-              >
-                Cryptographically Verified
-              </span>
-              <h1 className="text-xl font-headline font-black text-slate-900 dark:text-white pt-3">Credential Verification</h1>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-slate-100/50 dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 space-y-4 text-left text-xs">
-              <div className="flex justify-between items-center border-b border-slate-200/60 dark:border-white/5 pb-2">
-                <span className="text-slate-500 dark:text-slate-400">Student Name</span>
-                <span className="font-bold text-slate-900 dark:text-white">{certData.studentName}</span>
+      <div className="relative z-10 w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch lg:h-full lg:max-h-[calc(100vh-2rem)] py-1">
+        
+        {/* LEFT COLUMN: Premium Preview & File View */}
+        <div className="lg:col-span-7 flex flex-col justify-start lg:h-full">
+          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-white/5 rounded-[2rem] p-4 shadow-2xl flex flex-col h-[480px] lg:h-full w-full">
+            <div className="flex items-center justify-between mb-3 border-b border-slate-100 dark:border-white/5 pb-3 shrink-0">
+              <div className="flex items-center gap-2">
+                <Award className="h-4 w-4 text-amber-500" />
+                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Official Document Preview</span>
               </div>
-              <div className="flex justify-between items-center border-b border-slate-200/60 dark:border-white/5 pb-2">
-                <span className="text-slate-500 dark:text-slate-400">Assessment Title</span>
-                <span className="font-bold text-slate-900 dark:text-white">{certData.examTitle}</span>
-              </div>
-              <div className="flex justify-between items-center border-b border-slate-200/60 dark:border-white/5 pb-2">
-                <span className="text-slate-500 dark:text-slate-400">Credential Type</span>
-                <span className="font-bold text-slate-900 dark:text-white capitalize">{certData.type === 'participation' ? 'Participation' : 'Completion'}</span>
-              </div>
-              <div className="flex justify-between items-center border-b border-slate-200/60 dark:border-white/5 pb-2">
-                <span className="text-slate-500 dark:text-slate-400">Date Verified</span>
-                <span className="font-bold text-slate-900 dark:text-white flex items-center gap-1">
-                  <Calendar className="h-3 w-3 text-primary" />
-                  {new Date(certData.generatedAt).toLocaleDateString()}
+              {certData.fileType === 'pdf' ? (
+                <span className="text-[9px] bg-red-500/10 text-red-500 font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <FileText className="h-2.5 w-2.5" /> PDF format
                 </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-slate-500 dark:text-slate-400">Certificate Key</span>
-                <span className="font-mono font-bold text-primary">{certData.certificateId}</span>
+              ) : (
+                <span className="text-[9px] bg-orange-500/10 text-orange-500 font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                  <FileSpreadsheet className="h-2.5 w-2.5" /> PPTX format
+                </span>
+              )}
+            </div>
+
+            {/* Embedded interactive PDF or elegant mock visualizer */}
+            <div className="flex-1 rounded-xl bg-slate-100/60 dark:bg-slate-950/40 border border-slate-200/50 dark:border-white/5 overflow-hidden relative w-full h-full flex items-center justify-center">
+              {certData.fileType === 'pdf' && certData.pdfData ? (
+                <iframe 
+                  src={`data:application/pdf;base64,${certData.pdfData}#toolbar=0&navpanes=0&scrollbar=0&view=Fit&zoom=page-fit`} 
+                  className="w-full h-full border-0 rounded-xl absolute inset-0"
+                  title="Certificate Preview"
+                />
+              ) : (
+                // Beautiful Fallback Mock Card for PPTX or if PDF fails
+                <div className="p-4 text-center space-y-4 max-w-sm w-full relative">
+                  <div className="absolute -inset-0.5 rounded-2xl blur-md bg-gradient-to-r from-amber-500/20 to-orange-500/20 opacity-50" />
+                  <div className="relative border-4 border-double border-amber-500/40 p-4 rounded-xl bg-white dark:bg-slate-900 shadow-xl space-y-3">
+                    <Award className="h-10 w-10 text-amber-500 mx-auto animate-pulse" />
+                    <div>
+                      <h4 className="font-headline text-base font-black tracking-tight text-slate-800 dark:text-slate-100 uppercase">{certData.studentName}</h4>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 uppercase tracking-widest font-semibold">Has completed the assessment for</p>
+                      <p className="font-bold text-xs text-amber-600 dark:text-amber-400 mt-1">{certData.examTitle}</p>
+                    </div>
+                    <div className="pt-3 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-[8px] text-slate-500 dark:text-slate-400 font-mono">
+                      <span>ID: {certData.certificateId}</span>
+                      <span>Verified: {new Date(certData.generatedAt).toLocaleDateString()}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* RIGHT COLUMN: Attractive Details, Downloads, Share Platform */}
+        <div className="lg:col-span-5 flex flex-col justify-start lg:h-full">
+          <div className="bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl border border-slate-200/80 dark:border-white/5 rounded-[2rem] p-4 sm:p-5 shadow-2xl space-y-3 w-full lg:h-full flex flex-col justify-between overflow-y-auto">
+            
+            {/* Status Header */}
+            <div className="flex items-center gap-2.5 bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-2.5 rounded-xl text-emerald-600 dark:text-emerald-400">
+              <ShieldCheck className="h-5 w-5 shrink-0" />
+              <div className="text-left">
+                <p className="text-[10px] font-bold uppercase tracking-wider">Verifiable Credential</p>
+                <p className="text-[9px] text-emerald-600/80 dark:text-emerald-400/80">Valid and secure digital signature registered.</p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3 pt-2">
+            {/* Info Table */}
+            <div className="space-y-4">
+              <h2 className="text-lg font-headline font-black text-slate-900 dark:text-white">Credential Verification</h2>
+              
+              <div className="space-y-2 text-xs">
+                {[
+                  { label: "Student Name", value: certData.studentName },
+                  { label: "Assessment Title", value: certData.examTitle },
+                  { label: "Credential Type", value: certData.type === 'participation' ? '🏆 Certificate of Participation' : '🎓 Certificate of Completion' },
+                  { label: "Date Issued", value: new Date(certData.generatedAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' }) },
+                  { label: "Verification Key", value: certData.certificateId, isMono: true }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex justify-between items-center py-2.5 border-b border-slate-100 dark:border-white/5">
+                    <span className="text-slate-500 dark:text-slate-400 font-medium">{item.label}</span>
+                    <span className={`font-bold text-slate-800 dark:text-white text-right max-w-[65%] truncate ${item.isMono ? 'font-mono text-primary' : ''}`}>
+                      {item.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-2 pt-1 shrink-0">
               <button
                 onClick={handleDownload}
-                className="w-full h-11 text-xs font-bold bg-primary hover:opacity-90 text-white rounded-xl flex items-center justify-center gap-1.5 shadow-md shadow-primary/10 transition-all"
+                className="w-full h-10 text-[11px] font-bold bg-primary hover:bg-primary/90 text-white rounded-lg flex items-center justify-center gap-1.5 shadow-md shadow-primary/20 transition-all duration-200"
               >
-                <Download className="h-4 w-4" /> Download {certData?.fileType === 'pptx' ? 'PPTX' : 'PDF'}
+                <Download className="h-3.5 w-3.5" /> Download {certData?.fileType === 'pptx' ? 'PPTX' : 'PDF'}
               </button>
               <Link href="/" className="w-full">
-                <button className="w-full h-11 text-xs font-bold border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300 rounded-xl flex items-center justify-center gap-1.5 transition-colors">
-                  <ArrowLeft className="h-4 w-4" /> Return Home
+                <button className="w-full h-10 text-[11px] font-bold border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 text-slate-700 dark:text-slate-300 rounded-lg flex items-center justify-center gap-1.5 transition-colors duration-200">
+                  <ArrowLeft className="h-3.5 w-3.5" /> Return Home
                 </button>
               </Link>
             </div>
 
-            {/* Social media shortcuts */}
-            <div className="flex items-center justify-center gap-6 pt-6 border-t border-slate-200/60 dark:border-white/5 w-full mt-4">
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-colors flex items-center gap-1.5 text-xs font-semibold">
-                <Instagram className="h-4 w-4" /> Instagram
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-colors flex items-center gap-1.5 text-xs font-semibold">
-                <Youtube className="h-4 w-4" /> YouTube
-              </a>
-              <a href="https://wa.me" target="_blank" rel="noopener noreferrer" className="text-slate-500 dark:text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors flex items-center gap-1.5 text-xs font-semibold">
-                <span className="font-bold">WA</span> WhatsApp
-              </a>
+            {/* Premium Social Sharing Segment */}
+            <div className="pt-3 border-t border-slate-100 dark:border-white/5 space-y-2 shrink-0">
+              <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-800 dark:text-slate-200">
+                <Share2 className="h-3.5 w-3.5 text-primary" />
+                <span>Share Verification & Showcase Success</span>
+              </div>
+
+              {/* Editable/Copyable Share Caption Container */}
+              <div className="relative group">
+                <div className="absolute top-1.5 right-1.5 z-20">
+                  <button 
+                    onClick={() => copyToClipboard(shareCaption, true)}
+                    className="p-1.5 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-slate-600 dark:text-slate-300 transition-colors"
+                    title="Copy Caption"
+                  >
+                    {copiedCaption ? <Check className="h-3 w-3 text-emerald-500" /> : <Copy className="h-3 w-3" />}
+                  </button>
+                </div>
+                <textarea 
+                  readOnly
+                  value={shareCaption}
+                  className="w-full h-16 text-[10px] p-2 pr-8 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200/80 dark:border-white/5 resize-none outline-none font-mono text-slate-500 dark:text-slate-400 select-all leading-normal"
+                />
+              </div>
+
+              {/* Platform Shortcuts */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => handleSharePlatform('linkedin')}
+                  className="h-9 rounded-lg bg-[#0077b5] text-white hover:opacity-90 font-bold text-[11px] flex items-center justify-center gap-1.5 transition-opacity"
+                >
+                  <Linkedin className="h-3.5 w-3.5" /> Share to LinkedIn
+                </button>
+                <button
+                  onClick={() => handleSharePlatform('whatsapp')}
+                  className="h-9 rounded-lg bg-[#25d366] text-white hover:opacity-90 font-bold text-[11px] flex items-center justify-center gap-1.5 transition-opacity"
+                >
+                  <span className="font-black text-xs">WA</span> Share to WhatsApp
+                </button>
+              </div>
+
+              {/* Copy URL option */}
+              <button
+                onClick={() => copyToClipboard(verificationUrl)}
+                className="w-full h-9 rounded-lg border border-dashed border-slate-300 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 font-semibold text-[11px] text-slate-600 dark:text-slate-300 flex items-center justify-center gap-1.5 transition-colors"
+              >
+                {copiedLink ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                {copiedLink ? "Link Copied!" : "Copy Verification URL"}
+              </button>
+
             </div>
 
           </div>
-        </motion.div>
+        </div>
+
       </div>
     </div>
   );
@@ -208,3 +347,4 @@ export default function VerifyCertificatePage() {
     </Suspense>
   );
 }
+

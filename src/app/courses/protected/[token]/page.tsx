@@ -57,14 +57,14 @@ export default async function ProtectedCoursePage({ params }: Props) {
       details: { action: 'protected_token_page' }
     });
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-        <Card className="max-w-md border-amber-500/30 bg-slate-900 text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
+        <Card className="max-w-md border-amber-500/30 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
           <div className="h-16 w-16 mx-auto rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 border border-amber-500/20">
             <AlertTriangle className="h-8 w-8 animate-bounce" />
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-xl font-headline font-bold text-amber-400">Too Many Requests</CardTitle>
-            <CardDescription className="text-slate-400 text-xs leading-relaxed">
+            <CardTitle className="text-xl font-headline font-bold text-amber-500 dark:text-amber-400">Too Many Requests</CardTitle>
+            <CardDescription className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
               Rate limit exceeded. Please wait a moment before trying again.
             </CardDescription>
           </div>
@@ -77,18 +77,18 @@ export default async function ProtectedCoursePage({ params }: Props) {
   const payload = await verifySecureAccessToken(token, fingerprint, { ip, userAgent, email: sessionEmail });
   if (!payload) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-        <Card className="max-w-md border-rose-500/30 bg-slate-900 text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
+        <Card className="max-w-md border-rose-500/30 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
           <div className="h-16 w-16 mx-auto rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 border border-rose-500/20">
             <AlertTriangle className="h-8 w-8" />
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-xl font-headline font-bold text-rose-400">Access Denied</CardTitle>
-            <CardDescription className="text-slate-400 text-xs leading-relaxed">
+            <CardTitle className="text-xl font-headline font-bold text-rose-500 dark:text-rose-400">Access Denied</CardTitle>
+            <CardDescription className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
               The access link is invalid, expired, or bound to a different browser session fingerprint.
             </CardDescription>
           </div>
-          <div className="bg-slate-950 p-4 rounded-xl border border-white/5 font-mono text-[10px] text-slate-500 text-left space-y-1">
+          <div className="bg-slate-100 dark:bg-slate-950 p-4 rounded-xl border border-slate-205 dark:border-white/5 font-mono text-[10px] text-slate-550 dark:text-slate-500 text-left space-y-1">
             <p>IP Address: {ip}</p>
             <p>Timestamp: {new Date().toISOString()}</p>
             <p>Verification Status: FAILED</p>
@@ -104,14 +104,14 @@ export default async function ProtectedCoursePage({ params }: Props) {
   // Verify that the token email matches the active session email
   if (payload.email.toLowerCase() !== sessionEmailLower) {
     return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-        <Card className="max-w-md border-rose-500/30 bg-slate-900 text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
+        <Card className="max-w-md border-rose-500/30 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
           <div className="h-16 w-16 mx-auto rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 border border-rose-500/20">
             <AlertTriangle className="h-8 w-8" />
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-xl font-headline font-bold text-rose-400">Session Mismatch</CardTitle>
-            <CardDescription className="text-slate-400 text-xs leading-relaxed">
+            <CardTitle className="text-xl font-headline font-bold text-rose-500 dark:text-rose-400">Session Mismatch</CardTitle>
+            <CardDescription className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
               This link was issued to {payload.email}, but you are currently logged in as {sessionEmail}.
             </CardDescription>
           </div>
@@ -166,14 +166,14 @@ export default async function ProtectedCoursePage({ params }: Props) {
     const isEnrolled = enrolledCourses.includes(parentCourseIdStr) || enrolledCourses.includes(parentCourseSlug);
     if (!isEnrolled) {
       return (
-        <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-          <Card className="max-w-md border-amber-500/30 bg-slate-900 text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
+          <Card className="max-w-md border-amber-500/30 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
             <div className="h-16 w-16 mx-auto rounded-full bg-amber-500/10 flex items-center justify-center text-amber-500 border border-amber-500/20">
               <Award className="h-8 w-8" />
             </div>
             <div className="space-y-2">
-              <CardTitle className="text-xl font-headline font-bold text-amber-400">Enrollment Required</CardTitle>
-              <CardDescription className="text-slate-400 text-xs leading-relaxed">
+              <CardTitle className="text-xl font-headline font-bold text-amber-500 dark:text-amber-400">Enrollment Required</CardTitle>
+              <CardDescription className="text-slate-550 dark:text-slate-400 text-xs leading-relaxed">
                 You must purchase or enroll in this course before accessing premium modules.
               </CardDescription>
             </div>
@@ -215,36 +215,36 @@ export default async function ProtectedCoursePage({ params }: Props) {
   ).length;
 
   return (
-    <div className="w-full bg-slate-950 text-slate-100 min-h-screen pb-16">
+    <div className="w-full bg-slate-50 dark:bg-[#04060E] text-slate-900 dark:text-slate-100 min-h-screen pb-16">
       {/* Session Security Banner */}
-      <div className="bg-gradient-to-r from-violet-600/20 via-primary/20 to-emerald-600/20 border-b border-white/5 py-2 px-4 text-center">
-        <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2 text-[10px] sm:text-xs font-bold text-slate-300">
-          <div className="flex items-center gap-1.5 text-emerald-400">
+      <div className="bg-gradient-to-r from-violet-600/20 via-primary/20 to-emerald-600/20 border-b border-slate-200 dark:border-white/5 py-2 px-4 text-center">
+        <div className="max-w-7xl mx-auto flex items-center justify-between flex-wrap gap-2 text-[10px] sm:text-xs font-bold text-slate-600 dark:text-slate-300">
+          <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
             <ShieldCheck className="h-4 w-4 animate-pulse" />
             <span>Cryptographic Session Bind Active</span>
           </div>
-          <span className="text-violet-400">Linked to Account: {sessionEmail}</span>
+          <span className="text-violet-600 dark:text-violet-400">Linked to Account: {sessionEmail}</span>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         {/* Navigation / Learning Breadcrumbs */}
-        <div className="flex items-center justify-between border-b border-white/10 pb-4">
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400">
-            <Link href="/courses" className="hover:text-white transition-colors">Courses</Link>
+        <div className="flex items-center justify-between border-b border-slate-200 dark:border-white/10 pb-4">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+            <Link href="/courses" className="hover:text-primary dark:hover:text-white transition-colors">Courses</Link>
             <ChevronRight className="h-3 w-3" />
             {parentCourse && (
               <>
-                <Link href={`/courses/${parentCourse.slug || parentCourse._id?.toString()}`} className="hover:text-white transition-colors">
+                <Link href={`/courses/${parentCourse.slug || parentCourse._id?.toString()}`} className="hover:text-primary dark:hover:text-white transition-colors">
                   {parentCourse.title}
                 </Link>
                 <ChevronRight className="h-3 w-3" />
               </>
             )}
-            <span className="text-white truncate max-w-[120px] sm:max-w-[200px]">{folder.title}</span>
+            <span className="text-slate-800 dark:text-white truncate max-w-[120px] sm:max-w-[200px]">{folder.title}</span>
           </div>
 
-          <Button asChild variant="ghost" className="text-slate-400 hover:text-white hover:bg-white/5 gap-2 rounded-xl">
+          <Button asChild variant="ghost" className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 gap-2 rounded-xl">
             <Link href={folder.parent_folder_id ? `/courses/${folder.parent_folder_id}` : '/courses'}>
               <ArrowLeft className="h-4 w-4" /> Curriculum
             </Link>
@@ -255,8 +255,8 @@ export default async function ProtectedCoursePage({ params }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           {/* Main Module Viewer */}
           <div className="lg:col-span-2 space-y-6">
-            <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border border-white/10 bg-slate-900 shadow-2xl flex flex-col justify-center items-center text-center p-6">
-              <div className="absolute inset-0 opacity-[0.03] select-none pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent font-mono text-[6vw] flex items-center justify-center font-black">
+            <div className="relative aspect-video w-full rounded-[2rem] overflow-hidden border border-slate-200 dark:border-white/10 bg-slate-100 dark:bg-slate-900 shadow-2xl flex flex-col justify-center items-center text-center p-6">
+              <div className="absolute inset-0 opacity-[0.03] select-none pointer-events-none bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-slate-900 dark:from-white via-transparent to-transparent font-mono text-[6vw] flex items-center justify-center font-black">
                 {sessionEmail}
               </div>
               
@@ -264,9 +264,9 @@ export default async function ProtectedCoursePage({ params }: Props) {
                 <div className="h-16 w-16 mx-auto rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shadow-lg">
                   <Play className="h-6 w-6 fill-primary ml-1" />
                 </div>
-                <h3 className="text-lg font-headline font-bold">Secure Video Player</h3>
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  Stream protection verified for IP <strong className="text-slate-300">{ip}</strong>. Session fingerprinting is active.
+                <h3 className="text-lg font-headline font-bold text-slate-800 dark:text-white">Secure Video Player</h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                  Stream protection verified for IP <strong className="text-slate-700 dark:text-slate-300">{ip}</strong>. Session fingerprinting is active.
                 </p>
                 <Button className="h-10 bg-primary hover:bg-primary/95 text-white font-bold rounded-xl px-6">
                   Play Lesson Video
@@ -275,7 +275,7 @@ export default async function ProtectedCoursePage({ params }: Props) {
             </div>
 
             {/* Next/Prev Navigation Controls */}
-            <div className="flex justify-between items-center bg-slate-900/20 border border-white/5 p-4 rounded-2xl">
+            <div className="flex justify-between items-center bg-white dark:bg-slate-900/20 border border-slate-200 dark:border-white/5 p-4 rounded-2xl shadow-sm">
               {prevModule ? (
                 (() => {
                   const prevToken = createSecureAccessToken({
@@ -286,7 +286,7 @@ export default async function ProtectedCoursePage({ params }: Props) {
                     fingerprint
                   });
                   return (
-                    <Button asChild variant="outline" className="h-10 text-xs font-bold border-white/10 hover:bg-white/5 text-slate-300 rounded-xl gap-1">
+                    <Button asChild variant="outline" className="h-10 text-xs font-bold border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-600 dark:text-slate-300 rounded-xl gap-1">
                       <Link href={`/courses/protected/${prevToken}`}>
                         <ChevronLeft className="h-4 w-4" /> Previous Lesson
                       </Link>
@@ -315,7 +315,7 @@ export default async function ProtectedCoursePage({ params }: Props) {
                   );
                 })()
               ) : (
-                <div className="flex items-center gap-1 text-emerald-400 font-bold text-xs">
+                <div className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-bold text-xs">
                   <CheckCircle className="h-4 w-4" /> Curriculum Completed!
                 </div>
               )}
@@ -331,24 +331,24 @@ export default async function ProtectedCoursePage({ params }: Props) {
             />
 
             {/* Lesson Body Overview */}
-            <div className="space-y-4 bg-slate-900/40 p-6 sm:p-8 rounded-[2rem] border border-white/5">
-              <h2 className="text-2xl font-headline font-bold text-white tracking-tight">{folder.title}</h2>
-              <p className="text-xs text-slate-400 leading-relaxed">
+            <div className="space-y-4 bg-white dark:bg-slate-900/40 p-6 sm:p-8 rounded-[2rem] border border-slate-200 dark:border-white/5 shadow-sm">
+              <h2 className="text-2xl font-headline font-bold text-slate-900 dark:text-white tracking-tight">{folder.title}</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                 {folder.description || "Study guides, worksheets, and resources for this module section."}
               </p>
               {folder.body_content && (
                 <div
-                  className="prose prose-invert max-w-none text-xs text-slate-400 mt-4 pt-4 border-t border-white/5 leading-relaxed"
+                  className="prose dark:prose-invert max-w-none text-xs text-slate-600 dark:text-slate-400 mt-4 pt-4 border-t border-slate-200 dark:border-white/5 leading-relaxed font-medium"
                   dangerouslySetInnerHTML={{ __html: folder.body_content }}
                 />
               )}
             </div>
 
             {/* Lesson Files Resource Viewer */}
-            <div className="bg-slate-900/40 p-6 sm:p-8 rounded-[2rem] border border-white/5 space-y-4">
-              <div className="border-b border-white/5 pb-2 flex items-center gap-2">
+            <div className="bg-white dark:bg-slate-900/40 p-6 sm:p-8 rounded-[2rem] border border-slate-200 dark:border-white/5 space-y-4 shadow-sm">
+              <div className="border-b border-slate-200 dark:border-white/5 pb-2 flex items-center gap-2">
                 <FileText className="h-5 w-5 text-primary" />
-                <h3 className="text-lg font-headline font-bold">Materials &amp; Attachments</h3>
+                <h3 className="text-lg font-headline font-bold text-slate-800 dark:text-white">Materials &amp; Attachments</h3>
               </div>
               {contents && contents.length > 0 ? (
                 <CourseFileViewer
@@ -362,7 +362,7 @@ export default async function ProtectedCoursePage({ params }: Props) {
                   }))}
                 />
               ) : (
-                <p className="text-center py-6 text-xs text-slate-500 uppercase font-black tracking-wider">
+                <p className="text-center py-6 text-xs text-slate-450 dark:text-slate-500 uppercase font-black tracking-wider">
                   No additional attachments uploaded for this lesson.
                 </p>
               )}
@@ -371,11 +371,11 @@ export default async function ProtectedCoursePage({ params }: Props) {
 
           {/* Sibling Playlist Sidebar */}
           <div className="space-y-6">
-            <Card className="border-white/5 bg-slate-900/60 rounded-[2rem] overflow-hidden">
-              <CardHeader className="bg-slate-900/80 p-5 border-b border-white/5">
+            <Card className="border-slate-200 dark:border-white/5 bg-white dark:bg-slate-900/60 rounded-[2rem] overflow-hidden shadow-sm">
+              <CardHeader className="bg-slate-50 dark:bg-slate-900/80 p-5 border-b border-slate-200 dark:border-white/5">
                 <div className="flex items-center gap-2">
                   <BookOpen className="h-4.5 w-4.5 text-primary" />
-                  <CardTitle className="text-sm font-bold text-white">Curriculum Playlist ({siblingModules.length})</CardTitle>
+                  <CardTitle className="text-sm font-bold text-slate-800 dark:text-white">Curriculum Playlist ({siblingModules.length})</CardTitle>
                 </div>
               </CardHeader>
               <CardContent className="p-4 space-y-2 max-h-[500px] overflow-y-auto">
@@ -396,14 +396,14 @@ export default async function ProtectedCoursePage({ params }: Props) {
                       href={`/courses/protected/${itemToken}`}
                       className={`flex gap-3 items-center p-3 rounded-xl transition-all ${
                         isCurrent
-                          ? 'bg-primary/10 border border-primary/20 text-white font-bold'
-                          : 'hover:bg-white/5 text-slate-400 hover:text-white'
+                          ? 'bg-primary/10 border border-primary/20 text-slate-800 dark:text-white font-bold'
+                          : 'hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white'
                       }`}
                     >
                       <span className={`h-6 w-6 rounded-lg flex items-center justify-center shrink-0 text-xs font-mono transition-colors ${
                         isCompleted
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                          : 'bg-white/5 text-slate-400'
+                          ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                          : 'bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400'
                       }`}>
                         {isCompleted ? '✓' : index + 1}
                       </span>
@@ -411,7 +411,7 @@ export default async function ProtectedCoursePage({ params }: Props) {
                         <p className="text-xs truncate">{sm.title}</p>
                         <p className="text-[10px] opacity-60">Lesson section</p>
                       </div>
-                      {isCurrent && <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0" />}
+                      {isCurrent && <CheckCircle className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />}
                     </Link>
                   );
                 })}

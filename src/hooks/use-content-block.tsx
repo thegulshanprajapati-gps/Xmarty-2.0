@@ -57,9 +57,16 @@ export function useContentBlock(
           payload.json_value = null;
         }
 
+        const csrfCookie = typeof document !== 'undefined'
+          ? document.cookie.split('; ').find(row => row.trim().startsWith('csrf_token='))?.split('=')[1]
+          : '';
+
         const res = await fetch('/api/content', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'x-csrf-token': csrfCookie || ''
+          },
           body: JSON.stringify(payload),
         });
 

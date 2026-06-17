@@ -40,8 +40,23 @@ export async function POST(req: Request) {
     const payload = await req.json();
     
     // Fallbacks for local testing and header proxy resolvers
+    const host = req.headers.get('host') || '';
     const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || '127.0.0.1';
     
+    const isLocal = 
+      ip === '127.0.0.1' || 
+      ip === '::1' || 
+      ip === '::ffff:127.0.0.1' || 
+      ip === '::' ||
+      !ip ||
+      host.includes('localhost') || 
+      host.includes('127.0.0.1') || 
+      host.includes('[::1]');
+
+    if (isLocal) {
+      return NextResponse.json({ success: true, message: 'Local/Loopback tracking skipped' });
+    }
+
     const logItem = {
       ip,
       route: payload.route || '/',

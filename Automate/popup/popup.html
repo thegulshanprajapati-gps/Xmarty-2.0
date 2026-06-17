@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <img src="icon.png" alt="Logo" class="logo">
+    <div>
+      <h1>AnaAutomate</h1>
+      <p class="subtitle">UI Queue Orchestrator</p>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" data-tab="queue-tab">Queue</button>
+    <button class="tab-btn" data-tab="selectors-tab">Selectors</button>
+    <button class="tab-btn" data-tab="settings-tab">Settings</button>
+  </div>
+
+  <!-- Queue Management Tab -->
+  <div id="queue-tab" class="tab-content active">
+    <div class="field-group">
+      <label for="queue-input">Add Items (Comma Separated)</label>
+      <textarea id="queue-input" placeholder="e.g. John Doe, Jane Smith, Ash Prajapati"></textarea>
+    </div>
+
+    <div class="actions-row">
+      <button id="import-csv-btn" class="btn btn-secondary">Import CSV</button>
+      <button id="export-queue-btn" class="btn btn-secondary">Export Queue</button>
+      <button id="clear-queue-btn" class="btn btn-secondary" style="background: #ff3b30; color: #fff; border: none;">Clear Queue</button>
+    </div>
+    <div class="actions-row" style="margin-top: -6px;">
+      <button id="add-queue-btn" class="btn btn-primary" style="background: #5856d6; color: #fff;">Add to Queue</button>
+      <button id="load-queue-btn" class="btn btn-primary">Load Queue</button>
+    </div>
+    <input type="file" id="csv-file-input" style="display: none;" accept=".csv,.txt" />
+
+    <div class="preview-section">
+      <div class="section-title">Queue Preview (<span id="preview-count">0</span>)</div>
+      <div id="queue-list" class="queue-list">
+        <div class="empty-state">No items loaded yet.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selectors Tab -->
+  <div id="selectors-tab" class="tab-content">
+    <div class="field-group">
+      <label for="selector-input-field">Search Input CSS (One per line)</label>
+      <textarea id="selector-input-field" placeholder="input[aria-label]&#10;input[placeholder]&#10;input[role='textbox']&#10;input[type='text']"></textarea>
+    </div>
+    <div class="field-group">
+      <label for="selector-result-item">Result Item CSS (One per line)</label>
+      <textarea id="selector-result-item" placeholder="[data-testid*='list-item']&#10;[data-testid*='container']&#10;[role='listitem']&#10;[role='checkbox']"></textarea>
+    </div>
+    <div class="field-group">
+      <label for="selector-selectable-item">Selectable Item CSS (One per line)</label>
+      <textarea id="selector-selectable-item" placeholder="[aria-checked='false']&#10;input[type='checkbox']&#10;[role='checkbox']"></textarea>
+    </div>
+    <button id="save-selectors-btn" class="btn btn-primary" style="width: 100%;">Save Selectors</button>
+  </div>
+
+  <!-- Settings Tab -->
+  <div id="settings-tab" class="tab-content">
+    <div class="grid-2">
+      <div class="field-group">
+        <label for="delay-time">Action Delay (ms)</label>
+        <input type="number" id="delay-time" value="1500" min="100">
+      </div>
+      <div class="field-group">
+        <label for="retry-count">Retry Count</label>
+        <input type="number" id="retry-count" value="3" min="0">
+      </div>
+    </div>
+    <button id="save-settings-btn" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Save Settings</button>
+  </div>
+
+  <div class="control-actions">
+    <button id="pop-stop-btn" class="btn btn-danger">Stop</button>
+    <button id="pop-pause-btn" class="btn btn-warning">Pause</button>
+    <button id="pop-start-btn" class="btn btn-success">Start</button>
+  </div>
+
+  <script src="../utils/storage.js"></script>
+  <script src="../utils/queue-manager.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
