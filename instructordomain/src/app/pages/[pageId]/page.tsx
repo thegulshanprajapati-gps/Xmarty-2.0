@@ -94,6 +94,7 @@ export default function PageEditor() {
       const res = await fetch('/api/mongodb-gateway', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           action: 'find',
           collection: 'content_blocks',
@@ -193,7 +194,7 @@ export default function PageEditor() {
         return;
       }
 
-      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.startsWith('csrf_token='))?.split('=')[1] : null;
+      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.trim().startsWith('csrf_token='))?.split('=')[1] : null;
       if (!csrfToken) {
         try {
           const csrfRes = await fetch('/api/auth/csrf');
@@ -222,6 +223,7 @@ export default function PageEditor() {
         const res = await fetch('/api/mongodb-gateway', {
           method: 'POST',
           headers,
+          credentials: 'include',
           body: JSON.stringify({
             action: 'upsert',
             collection: 'content_blocks',

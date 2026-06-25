@@ -16,7 +16,7 @@ import { TextStyle } from '@tiptap/extension-text-style';
 import FontFamily from '@tiptap/extension-font-family';
 import { GOOGLE_FONTS_LIST } from '@/lib/font-list';
 import { useCMS } from '@/components/cms-provider';
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { 
@@ -41,22 +41,24 @@ export default function TiptapEditor({ value, onChange, placeholder, className }
     ...(customFonts || []).map((f: any) => f.name),
   ].filter((v, i, arr) => arr.indexOf(v) === i).sort((a, b) => a.localeCompare(b));
 
+  const extensions = useMemo(() => [
+    StarterKit.configure(),
+    Underline.configure(),
+    Color.configure(),
+    TextStyle.configure(),
+    FontFamily.configure(),
+    Highlight.configure({ multicolor: true }),
+    TextAlign.configure({ types: ['heading', 'paragraph'] }),
+    Link.configure({ openOnClick: false }),
+    Image.configure({ inline: true, allowBase64: true }),
+    Table.configure({ resizable: true }),
+    TableRow.configure(),
+    TableHeader.configure(),
+    TableCell.configure(),
+  ], []);
+
   const editor = useEditor({
-    extensions: [
-      StarterKit,
-      Underline,
-      Color,
-      TextStyle,
-      FontFamily,
-      Highlight.configure({ multicolor: true }),
-      TextAlign.configure({ types: ['heading', 'paragraph'] }),
-      Link.configure({ openOnClick: false }),
-      Image.configure({ inline: true, allowBase64: true }),
-      Table.configure({ resizable: true }),
-      TableRow,
-      TableHeader,
-      TableCell,
-    ],
+    extensions,
     content: value,
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());

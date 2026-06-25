@@ -61,6 +61,7 @@ export default function PlatformUpdatesAdminPage() {
       const res = await fetch('/api/mongodb-gateway', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           action: 'find',
           collection: 'updates',
@@ -154,7 +155,7 @@ export default function PlatformUpdatesAdminPage() {
     if (!isConfirmed) return;
 
     try {
-      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.startsWith('csrf_token='))?.split('=')[1] : null;
+      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.trim().startsWith('csrf_token='))?.split('=')[1] : null;
       if (!csrfToken) {
         try {
           const csrfRes = await fetch('/api/auth/csrf');
@@ -174,6 +175,7 @@ export default function PlatformUpdatesAdminPage() {
       const res = await fetch('/api/mongodb-gateway', {
         method: 'POST',
         headers,
+        credentials: 'include',
         body: JSON.stringify({
           action: 'deleteOne',
           collection: 'updates',
@@ -220,7 +222,7 @@ export default function PlatformUpdatesAdminPage() {
     
     setSaving(true);
     try {
-      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.startsWith('csrf_token='))?.split('=')[1] : null;
+      let csrfToken = typeof document !== 'undefined' ? document.cookie.split('; ').find(row => row.trim().startsWith('csrf_token='))?.split('=')[1] : null;
       if (!csrfToken) {
         try {
           const csrfRes = await fetch('/api/auth/csrf');
@@ -255,6 +257,7 @@ export default function PlatformUpdatesAdminPage() {
       const res = await fetch('/api/mongodb-gateway', {
         method: 'POST',
         headers,
+        credentials: 'include',
         body: JSON.stringify({
           action: 'upsert',
           collection: 'updates',

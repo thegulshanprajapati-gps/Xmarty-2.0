@@ -349,7 +349,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="w-full bg-background">
+    <div className="w-full max-w-full overflow-x-hidden bg-background">
       <title>{seoTitleBlock.value}</title>
       <meta name="description" content={seoDescBlock.value} />
       <meta name="keywords" content={seoKeywordsBlock.value} />
