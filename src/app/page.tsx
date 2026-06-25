@@ -354,7 +354,7 @@ export default function HomePage() {
       <meta name="description" content={seoDescBlock.value} />
       <meta name="keywords" content={seoKeywordsBlock.value} />
       <main>
-        <section className="relative overflow-hidden border-b bg-muted/20 flex flex-col justify-center py-16 sm:py-20 lg:py-24">
+        <section className="relative overflow-hidden border-b bg-muted/20 flex flex-col justify-center min-h-[100dvh] pt-20 pb-10 lg:py-0">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
             <div className="grid grid-cols-1 lg:grid-cols-[1.02fr_0.98fr] gap-14 lg:gap-20 items-center">
               <motion.div
