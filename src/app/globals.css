@@ -185,3 +185,85 @@ html, body {
   animation: liquid-drop-in 0.9s cubic-bezier(0.19, 1, 0.22, 1) forwards !important;
   transform-origin: top center;
 }
+
+/* ─── CMS Rich Text Custom Overrides ─── */
+
+/* 1. Disable global heading gradients for CMS-editable titles so custom colors and fonts work */
+h1 [data-editable="true"],
+h2 [data-editable="true"],
+h3 [data-editable="true"],
+[data-editable="true"] h1,
+[data-editable="true"] h2,
+[data-editable="true"] h3,
+[data-editable="true"] {
+  -webkit-text-fill-color: currentColor !important;
+  background: transparent !important;
+  background-clip: initial !important;
+}
+
+/* 2. In dark mode, automatically adapt default dark text colors to high-contrast light colors */
+.dark [data-editable="true"] span[style*="color: rgb(51, 65, 85)"],
+.dark [data-editable="true"] span[style*="color: rgb(15, 23, 42)"],
+.dark [data-editable="true"] span[style*="color: rgb(71, 85, 105)"],
+.dark [data-editable="true"] span[style*="color:#334155"],
+.dark [data-editable="true"] span[style*="color:#0f172a"],
+.dark [data-editable="true"] span[style*="color:#475569"],
+.dark [data-editable="true"] span[style*="color: rgb(0, 0, 0)"],
+.dark [data-editable="true"] span[style*="color:#000000"],
+.dark [data-editable="true"] span[style*="color:#000"] {
+  color: #f1f5f9 !important; /* light slate-100 */
+}
+
+.dark [data-editable="true"] p,
+.dark [data-editable="true"] span:not([style*="color"]) {
+  color: #e2e8f0 !important; /* default light slate-200 for uncolored text */
+}
+
+/* ─── Home Page Hero Section Dark Mode Force Styling ─── */
+
+/* Force all text in the title to use the CMS dark mode color by default */
+.dark .hero-title-container [data-editable="true"],
+.dark .hero-title-container [data-editable="true"] span,
+.dark .hero-title-container [data-editable="true"] p,
+.dark .hero-title-container [data-editable="true"] h1 {
+  color: var(--title-dark-color, #ffffff) !important;
+}
+
+/* Force red-highlighted text to stay premium red in dark mode */
+.dark .hero-title-container [data-editable="true"] span[style*="color: rgb(255, 0, 0)"],
+.dark .hero-title-container [data-editable="true"] span[style*="color: red"],
+.dark .hero-title-container [data-editable="true"] span[style*="color:#ff0000"],
+.dark .hero-title-container [data-editable="true"] span[style*="color:#ef4444"] {
+  color: hsl(var(--primary)) !important;
+}
+
+/* Force all text in the subtitle to use the CMS dark mode color by default */
+.dark .hero-subtitle-container [data-editable="true"],
+.dark .hero-subtitle-container [data-editable="true"] span,
+.dark .hero-subtitle-container [data-editable="true"] p {
+  color: var(--subtitle-dark-color, #cbd5e1) !important;
+}
+
+/* ─── Support background highlights in headings (gradient text clipping conflict fix) ─── */
+h1 span[style*="background-color"],
+h2 span[style*="background-color"],
+h3 span[style*="background-color"],
+h4 span[style*="background-color"],
+h5 span[style*="background-color"],
+h6 span[style*="background-color"],
+h1 mark, h2 mark, h3 mark, h4 mark, h5 mark, h6 mark {
+  -webkit-text-fill-color: #0f172a !important;
+  color: #0f172a !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
+}
+
+/* Force red-highlighted text in the subtitle to stay premium red in dark mode */
+.dark .hero-subtitle-container [data-editable="true"] span[style*="color: rgb(255, 0, 0)"],
+.dark .hero-subtitle-container [data-editable="true"] span[style*="color: red"],
+.dark .hero-subtitle-container [data-editable="true"] span[style*="color:#ff0000"],
+.dark .hero-subtitle-container [data-editable="true"] span[style*="color:#ef4444"] {
+  color: hsl(var(--primary)) !important;
+}
+
+

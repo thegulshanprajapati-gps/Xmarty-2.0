@@ -170,6 +170,161 @@ const defaultCommunityFeatures = [
   { icon: GraduationCap, label: "Career updates" },
 ];
 
+function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroImageInfo: any; heroMobileImageInfo: any }) {
+  const [rotate, setRotate] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left - width / 2;
+    const mouseY = e.clientY - rect.top - height / 2;
+    
+    // Rotate up to 15 degrees max
+    const rX = -(mouseY / (height / 2)) * 12;
+    const rY = (mouseX / (width / 2)) * 12;
+    
+    setRotate({ x: rX, y: rY });
+  };
+
+  const handleMouseLeave = () => {
+    setRotate({ x: 0, y: 0 });
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.7, delay: 0.15 }}
+      className="hidden lg:block lg:col-span-5 relative w-full"
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div 
+        className="relative w-full aspect-[4/4.2] flex items-center justify-center p-4 select-none transition-transform duration-200 ease-out"
+        style={{
+          transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale3d(1.02, 1.02, 1.02)`,
+        }}
+      >
+        {/* Dynamic Dual-Color Ambient Glow: Royal Blue & Crimson Red */}
+        <div className="absolute w-[85%] h-[85%] rounded-full bg-gradient-to-tr from-blue-600/20 via-red-500/10 to-amber-500/15 blur-[90px] animate-pulse pointer-events-none" />
+        
+        {/* Borderless Floating Character Container (Desktop View) */}
+        <div className="hidden lg:flex relative w-[95%] h-[95%] overflow-visible items-center justify-center filter drop-shadow-[0_25px_30px_rgba(0,0,0,0.18)] dark:drop-shadow-[0_30px_40px_rgba(0,0,0,0.45)]">
+          {(() => {
+            const isWNumeric = heroImageInfo.width && !isNaN(Number(heroImageInfo.width));
+            const isHNumeric = heroImageInfo.height && !isNaN(Number(heroImageInfo.height));
+            if (isWNumeric && isHNumeric) {
+              return (
+                <Image
+                  src={heroImageInfo.url}
+                  alt={heroImageInfo.alt || "XmartyCreator"}
+                  width={Number(heroImageInfo.width)}
+                  height={Number(heroImageInfo.height)}
+                  priority
+                  className="object-contain w-full h-full select-none pointer-events-none"
+                />
+              );
+            }
+            return (
+              <Image
+                src={heroImageInfo.url}
+                alt={heroImageInfo.alt || "XmartyCreator"}
+                fill
+                priority
+                className="object-contain w-full h-full select-none pointer-events-none"
+              />
+            );
+          })()}
+        </div>
+
+        {/* Borderless Floating Character Container (Mobile/Tablet View) */}
+        <div className="flex lg:hidden relative w-[95%] h-[95%] overflow-visible items-center justify-center filter drop-shadow-[0_15px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.35)]">
+          {(() => {
+            const isWNumeric = heroMobileImageInfo.width && !isNaN(Number(heroMobileImageInfo.width));
+            const isHNumeric = heroMobileImageInfo.height && !isNaN(Number(heroMobileImageInfo.height));
+            if (isWNumeric && isHNumeric) {
+              return (
+                <Image
+                  src={heroMobileImageInfo.url}
+                  alt={heroMobileImageInfo.alt || "XmartyCreator"}
+                  width={Number(heroMobileImageInfo.width)}
+                  height={Number(heroMobileImageInfo.height)}
+                  priority
+                  className="object-contain w-full h-full select-none pointer-events-none"
+                />
+              );
+            }
+            return (
+              <Image
+                src={heroMobileImageInfo.url}
+                alt={heroMobileImageInfo.alt || "XmartyCreator"}
+                fill
+                priority
+                className="object-contain w-full h-full select-none pointer-events-none"
+              />
+            );
+          })()}
+        </div>
+
+        {/* Floating Widget 1: Vasant AI Chat Bubble */}
+        <motion.div
+          style={{
+            x: rotate.y * -2.5,
+            y: rotate.x * -2.5,
+          }}
+          className="absolute top-[5%] left-2 sm:-left-[8%] bg-background/90 border border-slate-200/80 dark:border-slate-800/80 shadow-2xl rounded-[1.25rem] p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 backdrop-blur-md max-w-[180px] sm:max-w-[220px] transition-all duration-300 hover:border-blue-500/50"
+        >
+          <div className="h-8 w-8 sm:h-9.5 sm:w-9.5 rounded-xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center shrink-0">
+            <BrainCircuit className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 animate-pulse" />
+          </div>
+          <div className="font-sans">
+            <p className="text-[9px] sm:text-[10px] font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-widest leading-none">Vasant AI</p>
+            <p className="text-[11px] sm:text-xs font-extrabold text-slate-850 dark:text-slate-100 mt-1 sm:mt-1.5 leading-snug">Code optimized! 🚀</p>
+          </div>
+        </motion.div>
+
+        {/* Floating Widget 2: Student Placement Stat */}
+        <motion.div
+          style={{
+            x: rotate.y * 2,
+            y: rotate.x * 2,
+          }}
+          className="absolute bottom-[10%] right-2 sm:-right-[8%] bg-background/90 border border-slate-200/80 dark:border-slate-800/80 shadow-2xl rounded-[1.25rem] p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 backdrop-blur-md max-w-[190px] sm:max-w-[230px] transition-all duration-300 hover:border-red-500/50"
+        >
+          <div className="h-8 w-8 sm:h-9.5 sm:w-9.5 rounded-xl bg-red-500/15 border border-red-500/20 flex items-center justify-center shrink-0">
+            <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-red-600 dark:text-red-400" />
+          </div>
+          <div className="font-sans">
+            <p className="text-[9px] sm:text-[10px] font-extrabold text-red-600 dark:text-red-400 uppercase tracking-widest leading-none">PLACEMENT</p>
+            <p className="text-[11px] sm:text-xs font-extrabold text-slate-850 dark:text-slate-100 mt-1 sm:mt-1.5 leading-snug">Aman hired @ Razorpay</p>
+          </div>
+        </motion.div>
+
+        {/* Floating Widget 3: Live Rating Badge */}
+        <motion.div
+          style={{
+            y: rotate.x * -1.5,
+          }}
+          className="absolute -bottom-[2%] left-[10%] bg-slate-950 text-white dark:bg-white dark:text-slate-950 shadow-2xl rounded-full px-4 py-2 sm:px-5 sm:py-2.5 flex items-center gap-2 sm:gap-2.5 border border-slate-800 dark:border-slate-200 transition-all duration-300"
+        >
+          <div className="flex gap-0.5 text-amber-400">
+            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
+            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
+            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
+            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
+            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
+          </div>
+          <span className="text-[10px] sm:text-xs font-extrabold font-sans tracking-wide">4.9 / 5.0 Rating</span>
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
 export default function HomePage() {
   const seoTitleBlock = useContentBlock(
     "home",
@@ -209,7 +364,19 @@ export default function HomePage() {
     "text"
   );
 
+  const heroMobileImageBlock = useContentBlock(
+    "home",
+    "hero",
+    "mobileImage",
+    "https://picsum.photos/seed/xmarty-home-lab-mobile/600/800",
+    "text"
+  );
+
   const heroImageInfo = parseCmsImage(heroImageBlock.value, "https://picsum.photos/seed/xmarty-home-lab/1100/850");
+  const heroMobileImageInfo = parseCmsImage(heroMobileImageBlock.value, "https://picsum.photos/seed/xmarty-home-lab-mobile/600/800");
+
+  const titleDarkColorBlock = useContentBlock('home', 'hero', 'titleDarkColor', '', 'text');
+  const subtitleDarkColorBlock = useContentBlock('home', 'hero', 'subtitleDarkColor', '', 'text');
 
   const primaryCtaBlock = useContentBlock('home', 'hero', 'primaryCta', 'Explore Courses', 'text');
   const secondaryCtaBlock = useContentBlock('home', 'hero', 'secondaryCta', 'Join Community', 'text');
@@ -354,46 +521,70 @@ export default function HomePage() {
       <meta name="description" content={seoDescBlock.value} />
       <meta name="keywords" content={seoKeywordsBlock.value} />
       <main>
-        <section className="relative overflow-hidden border-b bg-muted/20 flex flex-col justify-center min-h-[100dvh] pt-20 pb-10 lg:py-0">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div className="grid grid-cols-1 lg:grid-cols-[1.02fr_0.98fr] gap-14 lg:gap-20 items-center">
+        <section 
+          className="relative overflow-hidden border-b bg-gradient-to-b from-background via-primary/[0.03] to-background flex flex-col justify-center min-h-[100dvh] pt-28 pb-16 lg:py-0"
+          style={{
+            ['--title-dark-color' as any]: titleDarkColorBlock.value || '#ffffff',
+            ['--subtitle-dark-color' as any]: subtitleDarkColorBlock.value || '#cbd5e1',
+          }}
+        >
+          {/* Ambient background glow meshes */}
+          <div className="absolute top-[10%] left-[-10%] w-[35rem] h-[35rem] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+          <div className="absolute bottom-[10%] right-[-5%] w-[40rem] h-[40rem] rounded-full bg-accent/10 blur-[130px] pointer-events-none" />
+          
+          {/* Mobile-only central background glow */}
+          <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-primary/10 blur-[80px] lg:hidden pointer-events-none" />
+          
+          {/* Subtle dot pattern overlay */}
+          <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] pointer-events-none" />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+              {/* Left Column: Text & CTAs */}
               <motion.div
-                initial={{ opacity: 0, y: 24 }}
+                initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="space-y-8 text-center lg:text-left"
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                className="lg:col-span-7 space-y-8 text-center lg:text-left relative"
               >
-                <CustomizableBadge
-                  pageSlug="home"
-                  sectionKey="hero"
-                  badgeKey="badge"
-                  defaultText="INDUSTRY READY EDTECH"
-                  className="border-muted/20 text-foreground"
-                />
-                <div className="space-y-4">
-                  <h1 className="font-headline text-4xl sm:text-6xl lg:text-8xl font-bold tracking-tight leading-[0.95]">
+                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary tracking-wide uppercase font-sans animate-fade-in shadow-sm shadow-primary/5">
+                  <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+                  <CustomizableBadge
+                    pageSlug="home"
+                    sectionKey="hero"
+                    badgeKey="badge"
+                    defaultText="INDUSTRY READY EDTECH"
+                    className="bg-transparent border-none text-primary p-0 font-sans tracking-wider"
+                  />
+                </div>
+                
+                <div className="space-y-5 relative">
+                  <h1 className="hero-title-container font-sans text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.05] relative inline-block">
                     <EditableText
                       pageSlug="home"
                       sectionKey="hero"
                       contentKey="title"
                       defaultValue="Learn skills that actually ship."
                       as="span"
+                      className="text-slate-900 dark:text-white font-sans"
                     />
                   </h1>
-                  <div className="mx-auto max-w-2xl text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground leading-relaxed lg:mx-0">
+                  
+                  <div className="hero-subtitle-container mx-auto lg:mx-0 max-w-2xl text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-sans font-medium pt-2">
                     <EditableText
                       pageSlug="home"
                       sectionKey="hero"
                       contentKey="subtitle"
                       defaultValue="XmartyCreator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support."
                       as="span"
-                      className="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed"
+                      className="font-sans"
                     />
                   </div>
                 </div>
-                 <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start">
+
+                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative">
                   {showPrimaryCta && (
-                    <Button asChild size="lg" className="h-11 sm:h-14 rounded-xl sm:rounded-2xl px-6 sm:px-8 text-sm sm:text-base font-bold shadow-xl shadow-muted/20">
+                    <Button asChild size="lg" className="h-14 rounded-2xl px-8 text-base font-bold bg-primary text-primary-foreground hover:bg-primary/95 shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10">
                       <Link href="/courses">
                         <EditableText
                           pageSlug="home"
@@ -403,14 +594,14 @@ export default function HomePage() {
                           as="span"
                           className="inline-flex items-center"
                         />
-                        <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
+                        <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </Button>
                   )}
                   {showSecondaryCta && (
-                    <Button asChild variant="outline" size="lg" className="h-11 sm:h-14 rounded-xl sm:rounded-2xl border-2 px-6 sm:px-8 text-sm sm:text-base font-bold">
+                    <Button asChild variant="outline" size="lg" className="h-14 rounded-2xl border-2 border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-background/50 hover:bg-background/80 px-8 text-base font-bold transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10">
                       <Link href="/community">
-                        <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                        <Play className="mr-2 h-4 w-4 fill-current" />
                         <EditableText
                           pageSlug="home"
                           sectionKey="hero"
@@ -422,7 +613,7 @@ export default function HomePage() {
                     </Button>
                   )}
                   {showLoginCta && (
-                    <Button asChild variant="secondary" size="lg" className="h-11 sm:h-14 rounded-xl sm:rounded-2xl px-6 sm:px-8 text-sm sm:text-base font-bold">
+                    <Button asChild variant="secondary" size="lg" className="h-14 rounded-2xl px-8 text-base font-bold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all hover:-translate-y-0.5 font-sans z-10">
                       <Link href="/login">
                         <EditableText
                           pageSlug="home"
@@ -435,96 +626,21 @@ export default function HomePage() {
                     </Button>
                   )}
                 </div>
-                <div className="grid grid-cols-3 gap-3 pt-4">
+
+                <div className="grid grid-cols-3 gap-4 pt-6 max-w-xl mx-auto lg:mx-0">
                   {statisticItems.map((item: any) => (
-                    <div key={item.label} className="rounded-2xl border bg-background/80 p-4 shadow-sm">
-                      <p className="text-2xl sm:text-3xl font-bold text-foreground">
+                    <div key={item.label} className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-background/80 p-4 shadow-sm backdrop-blur-md hover:border-primary/30 dark:hover:border-primary/40 transition-all duration-300 group">
+                      <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white group-hover:text-primary transition-colors font-sans">
                         <CountUp value={item.value} />
                       </p>
-                      <p className="mt-1 text-xs sm:text-sm font-medium text-muted-foreground">{item.label}</p>
+                      <p className="mt-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 font-sans uppercase tracking-wider">{item.label}</p>
                     </div>
                   ))}
                 </div>
               </motion.div>
 
-              <motion.div
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.55, delay: 0.1 }}
-                className="hidden lg:block relative"
-              >
-                <div 
-                  className="relative overflow-hidden rounded-[3rem] border-[10px] border-background shadow-2xl flex items-center justify-center"
-                  style={{ aspectRatio: (!heroImageInfo.width && !heroImageInfo.height) ? '4/3' : undefined }}
-                >
-                  {(() => {
-                    const isWNumeric = heroImageInfo.width && !isNaN(Number(heroImageInfo.width));
-                    const isHNumeric = heroImageInfo.height && !isNaN(Number(heroImageInfo.height));
-                    if (isWNumeric && isHNumeric) {
-                      return (
-                        <Image
-                          src={heroImageInfo.url}
-                          alt={heroImageInfo.alt || "XmartyCreator learners building software together"}
-                          width={Number(heroImageInfo.width)}
-                          height={Number(heroImageInfo.height)}
-                          priority
-                          className="object-cover rounded-[3rem]"
-                        />
-                      );
-                    }
-                    if (!heroImageInfo.width && !heroImageInfo.height) {
-                      return (
-                        <Image
-                          src={heroImageInfo.url}
-                          alt={heroImageInfo.alt || "XmartyCreator learners building software together"}
-                          fill
-                          priority
-                          className="object-cover w-full h-full"
-                        />
-                      );
-                    }
-                    return (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={heroImageInfo.url}
-                        alt={heroImageInfo.alt || "XmartyCreator learners building software together"}
-                        style={{
-                          width: heroImageInfo.width ? (isNaN(Number(heroImageInfo.width)) ? heroImageInfo.width : `${heroImageInfo.width}px`) : 'auto',
-                          height: heroImageInfo.height ? (isNaN(Number(heroImageInfo.height)) ? heroImageInfo.height : `${heroImageInfo.height}px`) : 'auto',
-                        }}
-                        className="rounded-[3rem] object-cover"
-                      />
-                    );
-                  })()}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent p-6 sm:p-8 text-white">
-                    <div className="flex items-center gap-3">
-                      <div className="grid h-12 w-12 place-items-center rounded-2xl bg-white/15 backdrop-blur">
-                        <Sparkles className="h-6 w-6 text-accent" />
-                      </div>
-                      <div>
-                        <p className="font-bold text-lg">
-                          <EditableText
-                            pageSlug="home"
-                            sectionKey="hero"
-                            contentKey="imageBadgeTitle"
-                            defaultValue="Vasant AI Mentor"
-                            as="span"
-                          />
-                        </p>
-                        <p className="text-sm text-white/75">
-                          <EditableText
-                            pageSlug="home"
-                            sectionKey="hero"
-                            contentKey="imageBadgeSubtitle"
-                            defaultValue="Always-on help for your learning path."
-                            as="span"
-                          />
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              {/* Right Column: Multi-layered Interactive Visual Mockup with 3D Tilt */}
+              <InteractiveHeroVisual heroImageInfo={heroImageInfo} heroMobileImageInfo={heroMobileImageInfo} />
             </div>
           </div>
         </section>
