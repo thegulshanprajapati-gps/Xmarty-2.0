@@ -269,57 +269,6 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
             );
           })()}
         </div>
-
-        {/* Floating Widget 1: Vasant AI Chat Bubble */}
-        <motion.div
-          style={{
-            x: rotate.y * -2.5,
-            y: rotate.x * -2.5,
-          }}
-          className="absolute top-[5%] left-2 sm:-left-[8%] bg-background/90 border border-slate-200/80 dark:border-slate-800/80 shadow-2xl rounded-[1.25rem] p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 backdrop-blur-md max-w-[180px] sm:max-w-[220px] transition-all duration-300 hover:border-blue-500/50"
-        >
-          <div className="h-8 w-8 sm:h-9.5 sm:w-9.5 rounded-xl bg-blue-500/15 border border-blue-500/20 flex items-center justify-center shrink-0">
-            <BrainCircuit className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400 animate-pulse" />
-          </div>
-          <div className="font-sans">
-            <p className="text-[9px] sm:text-[10px] font-extrabold text-blue-600 dark:text-blue-400 uppercase tracking-widest leading-none">Vasant AI</p>
-            <p className="text-[11px] sm:text-xs font-extrabold text-slate-850 dark:text-slate-100 mt-1 sm:mt-1.5 leading-snug">Code optimized! 🚀</p>
-          </div>
-        </motion.div>
-
-        {/* Floating Widget 2: Student Placement Stat */}
-        <motion.div
-          style={{
-            x: rotate.y * 2,
-            y: rotate.x * 2,
-          }}
-          className="absolute bottom-[10%] right-2 sm:-right-[8%] bg-background/90 border border-slate-200/80 dark:border-slate-800/80 shadow-2xl rounded-[1.25rem] p-3 sm:p-4 flex items-center gap-2.5 sm:gap-3.5 backdrop-blur-md max-w-[190px] sm:max-w-[230px] transition-all duration-300 hover:border-red-500/50"
-        >
-          <div className="h-8 w-8 sm:h-9.5 sm:w-9.5 rounded-xl bg-red-500/15 border border-red-500/20 flex items-center justify-center shrink-0">
-            <GraduationCap className="h-4 w-4 sm:h-5 sm:w-5 text-red-600 dark:text-red-400" />
-          </div>
-          <div className="font-sans">
-            <p className="text-[9px] sm:text-[10px] font-extrabold text-red-600 dark:text-red-400 uppercase tracking-widest leading-none">PLACEMENT</p>
-            <p className="text-[11px] sm:text-xs font-extrabold text-slate-850 dark:text-slate-100 mt-1 sm:mt-1.5 leading-snug">Aman hired @ Razorpay</p>
-          </div>
-        </motion.div>
-
-        {/* Floating Widget 3: Live Rating Badge */}
-        <motion.div
-          style={{
-            y: rotate.x * -1.5,
-          }}
-          className="absolute -bottom-[2%] left-[10%] bg-slate-950 text-white dark:bg-white dark:text-slate-950 shadow-2xl rounded-full px-4 py-2 sm:px-5 sm:py-2.5 flex items-center gap-2 sm:gap-2.5 border border-slate-800 dark:border-slate-200 transition-all duration-300"
-        >
-          <div className="flex gap-0.5 text-amber-400">
-            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
-            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
-            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
-            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
-            <Star className="h-3 w-3 sm:h-4 sm:w-4 fill-current" />
-          </div>
-          <span className="text-[10px] sm:text-xs font-extrabold font-sans tracking-wide">4.9 / 5.0 Rating</span>
-        </motion.div>
       </div>
     </motion.div>
   );
@@ -534,9 +483,6 @@ export default function HomePage() {
           
           {/* Mobile-only central background glow */}
           <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-primary/10 blur-[80px] lg:hidden pointer-events-none" />
-          
-          {/* Subtle dot pattern overlay */}
-          <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)] dark:bg-[radial-gradient(#1e293b_1px,transparent_1px)] pointer-events-none" />
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -545,10 +491,10 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className="lg:col-span-7 space-y-8 text-center lg:text-left relative"
+                className="lg:col-span-7 space-y-6 md:space-y-8 flex flex-col items-center lg:items-start text-center lg:text-left relative"
               >
-                <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary tracking-wide uppercase font-sans animate-fade-in shadow-sm shadow-primary/5">
-                  <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+                <div className="badge-doodle-container inline-flex items-center justify-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary tracking-wide uppercase font-sans animate-fade-in shadow-sm shadow-primary/5 relative">
+                  <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse max-md:hidden" />
                   <CustomizableBadge
                     pageSlug="home"
                     sectionKey="hero"
@@ -556,10 +502,14 @@ export default function HomePage() {
                     defaultText="INDUSTRY READY EDTECH"
                     className="bg-transparent border-none text-primary p-0 font-sans tracking-wider"
                   />
+                  {/* Decorative hand-drawn circle for mobile */}
+                  <svg className="absolute inset-0 w-full h-full text-primary/40 stroke-current stroke-[2] fill-none md:hidden pointer-events-none" viewBox="0 0 160 36" preserveAspectRatio="none">
+                    <rect x="2" y="2" width="156" height="32" rx="16" strokeLinecap="round" />
+                  </svg>
                 </div>
                 
-                <div className="space-y-5 relative">
-                  <h1 className="hero-title-container font-sans text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.05] relative inline-block">
+                <div className="space-y-5 relative w-full flex flex-col items-center lg:items-start">
+                  <h1 className="hero-title-container font-sans text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] relative w-full text-center lg:text-left pb-4">
                     <EditableText
                       pageSlug="home"
                       sectionKey="hero"
@@ -568,9 +518,13 @@ export default function HomePage() {
                       as="span"
                       className="text-slate-900 dark:text-white font-sans"
                     />
+                    {/* Hand-drawn underline SVG overlay */}
+                    <svg className="absolute bottom-0 left-1/2 -translate-x-1/2 w-64 h-4 text-primary/80 fill-none stroke-current stroke-[3.5] md:hidden" viewBox="0 0 100 10" preserveAspectRatio="none">
+                      <path d="M 2 8 C 30 2, 70 2, 98 8 C 80 9, 40 9, 10 9" strokeLinecap="round" />
+                    </svg>
                   </h1>
                   
-                  <div className="hero-subtitle-container mx-auto lg:mx-0 max-w-2xl text-base sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-sans font-medium pt-2">
+                  <div className="hero-subtitle-container w-full max-w-2xl text-sm sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-sans font-medium pt-2 text-center lg:text-left">
                     <EditableText
                       pageSlug="home"
                       sectionKey="hero"
@@ -582,10 +536,10 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start relative">
+                 <div className="flex flex-row flex-wrap gap-2 md:gap-4 justify-center lg:justify-start items-center relative z-10 w-full pt-2">
                   {showPrimaryCta && (
-                    <Button asChild size="lg" className="h-14 rounded-2xl px-8 text-base font-bold bg-primary text-primary-foreground hover:bg-primary/95 shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10">
-                      <Link href="/courses">
+                    <Button asChild size="lg" className="h-10 md:h-14 rounded-xl md:rounded-2xl px-3 md:px-8 text-xs md:text-base font-bold bg-primary text-primary-foreground hover:bg-primary/95 shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10 w-auto shrink-0">
+                      <Link href="/courses" className="inline-flex items-center">
                         <EditableText
                           pageSlug="home"
                           sectionKey="hero"
@@ -594,14 +548,14 @@ export default function HomePage() {
                           as="span"
                           className="inline-flex items-center"
                         />
-                        <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="ml-1 md:ml-2 h-3.5 w-3.5 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </Button>
                   )}
                   {showSecondaryCta && (
-                    <Button asChild variant="outline" size="lg" className="h-14 rounded-2xl border-2 border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-background/50 hover:bg-background/80 px-8 text-base font-bold transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10">
-                      <Link href="/community">
-                        <Play className="mr-2 h-4 w-4 fill-current" />
+                    <Button asChild variant="outline" size="lg" className="h-10 md:h-14 rounded-xl md:rounded-2xl border-2 border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-background/50 hover:bg-background/80 px-3 md:px-8 text-xs md:text-base font-bold transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10 w-auto shrink-0">
+                      <Link href="/community" className="inline-flex items-center">
+                        <Play className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 fill-current" />
                         <EditableText
                           pageSlug="home"
                           sectionKey="hero"
@@ -613,7 +567,7 @@ export default function HomePage() {
                     </Button>
                   )}
                   {showLoginCta && (
-                    <Button asChild variant="secondary" size="lg" className="h-14 rounded-2xl px-8 text-base font-bold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all hover:-translate-y-0.5 font-sans z-10">
+                    <Button asChild variant="secondary" size="lg" className="h-10 md:h-14 rounded-xl md:rounded-2xl px-3 md:px-8 text-xs md:text-base font-bold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all hover:-translate-y-0.5 font-sans z-10 w-auto shrink-0">
                       <Link href="/login">
                         <EditableText
                           pageSlug="home"

@@ -6,25 +6,25 @@
 
 @layer base {
   :root {
-    --background: 228 40% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 99%;
+    --foreground: 0 0% 9%;
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 0 0% 9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 0 0% 9%;
     /* Default brand color: red + shades */
     --primary: 0 85% 52%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 228 40% 94%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 95%;
     --secondary-foreground: 0 85% 52%;
-    --muted: 228 40% 94%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 95%;
+    --muted-foreground: 0 0% 45%;
     --accent: 45 100% 51%;
-    --accent-foreground: 222 47% 11%;
+    --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 228 40% 90%;
-    --input: 228 40% 90%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
     --ring: 0 85% 52%;
     --radius: 0.75rem;
     /* Scrollbar thumb defaults (red shades) */
@@ -35,24 +35,24 @@
     --font-body: '';
   }
   .dark {
-    --background: 222 47% 4%;
-    --foreground: 210 40% 98%;
-    --card: 222 47% 6%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222 47% 6%;
-    --popover-foreground: 210 40% 98%;
+    --background: 0 0% 3%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 98%;
     --primary: 0 85% 60%;
-    --primary-foreground: 222 47% 11%;
-    --secondary: 217.2 32.6% 12%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 12%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
     --accent: 45 100% 51%;
-    --accent-foreground: 222 47% 11%;
+    --accent-foreground: 0 0% 9%;
     --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 12%;
-    --input: 217.2 32.6% 12%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 12%;
+    --input: 0 0% 12%;
     --ring: 0 85% 60%;
   }
 }
@@ -265,5 +265,16 @@ h1 mark, h2 mark, h3 mark, h4 mark, h5 mark, h6 mark {
 .dark .hero-subtitle-container [data-editable="true"] span[style*="color:#ef4444"] {
   color: hsl(var(--primary)) !important;
 }
+
+/* Force transparency of backgrounds inside the hero title container to prevent boxed background errors */
+.hero-title-container,
+.hero-title-container *,
+.hero-title-container [data-editable="true"],
+.hero-title-container [data-editable="true"] * {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+
 
 

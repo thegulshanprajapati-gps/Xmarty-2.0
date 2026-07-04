@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import { getDb } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import { NextRequest } from "next/server";

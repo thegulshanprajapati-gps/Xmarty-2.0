@@ -67,9 +67,9 @@ function normalizeColor(color?: string): string {
 
 function getReadableForeground(hsl: string): string {
   const match = hsl.trim().match(/^(\d+(?:\.\d+)?)\s+(\d+(?:\.\d+)?)%\s+(\d+(?:\.\d+)?)%$/);
-  if (!match) return '210 40% 98%';
+  if (!match) return '0 0% 98%';
   const l = Number(match[3]);
-  return l > 60 ? '222 47% 11%' : '210 40% 98%';
+  return l > 60 ? '0 0% 9%' : '0 0% 98%';
 }
 
 function buildThemeStyles(settings: any) {
@@ -150,7 +150,7 @@ export default async function RootLayout({
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Caveat:wght@400;700&display=swap" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossOrigin="anonymous" referrerPolicy="no-referrer" />
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/favicon-96x96.png" type="image/png" sizes="96x96" />

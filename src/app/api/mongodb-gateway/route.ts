@@ -82,6 +82,22 @@ export async function POST(req: NextRequest) {
 
     const queryOptions = isCriticalWrite ? { ...options, session: sessionConn } : options;
 
+    // Prevent deletion or role modification for the primary Super Admin (admin@xmartycreator.com)
+    if (collectionName === 'users' && mutationActions.has(action)) {
+      const targetUsers = await db.collection('users').find(filter).toArray();
+      const containsSuperAdmin = targetUsers.some((u: any) => u.email === 'admin@xmartycreator.com');
+      if (containsSuperAdmin) {
+        if (action === 'deleteOne' || action === 'deleteMany') {
+          return NextResponse.json({ error: 'Super Admin character cannot be deleted. Access Denied!' }, { status: 403 });
+        }
+        if (action === 'updateOne' || action === 'upsert') {
+          if (data.role && data.role !== 'super-admin' && data.role !== 'super_admin') {
+            return NextResponse.json({ error: 'Super Admin role modification is not allowed! Access Denied.' }, { status: 403 });
+          }
+        }
+      }
+    }
+
     switch (action) {
       case 'find':
         const cursor = collection.find(filter);
