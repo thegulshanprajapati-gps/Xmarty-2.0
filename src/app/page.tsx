@@ -198,7 +198,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.7, delay: 0.15 }}
-      className="hidden lg:block lg:col-span-5 relative w-full"
+      className="lg:col-span-5 relative w-full mt-10 lg:mt-0"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -309,7 +309,7 @@ export default function HomePage() {
     "home",
     "hero",
     "image",
-    "https://picsum.photos/seed/xmarty-home-lab/1100/850",
+    "/uploads/hero_mockup.png",
     "text"
   );
 
@@ -317,12 +317,12 @@ export default function HomePage() {
     "home",
     "hero",
     "mobileImage",
-    "https://picsum.photos/seed/xmarty-home-lab-mobile/600/800",
+    "/uploads/hero_mockup.png",
     "text"
   );
 
-  const heroImageInfo = parseCmsImage(heroImageBlock.value, "https://picsum.photos/seed/xmarty-home-lab/1100/850");
-  const heroMobileImageInfo = parseCmsImage(heroMobileImageBlock.value, "https://picsum.photos/seed/xmarty-home-lab-mobile/600/800");
+  const heroImageInfo = parseCmsImage(heroImageBlock.value, "/uploads/hero_mockup.png");
+  const heroMobileImageInfo = parseCmsImage(heroMobileImageBlock.value, "/uploads/hero_mockup.png");
 
   const titleDarkColorBlock = useContentBlock('home', 'hero', 'titleDarkColor', '', 'text');
   const subtitleDarkColorBlock = useContentBlock('home', 'hero', 'subtitleDarkColor', '', 'text');
@@ -469,7 +469,6 @@ export default function HomePage() {
       <title>{seoTitleBlock.value}</title>
       <meta name="description" content={seoDescBlock.value} />
       <meta name="keywords" content={seoKeywordsBlock.value} />
-      <main>
         <section 
           className="relative overflow-hidden border-b bg-gradient-to-b from-background via-primary/[0.03] to-background flex flex-col justify-center min-h-[100dvh] pt-28 pb-16 lg:py-0"
           style={{
@@ -477,12 +476,7 @@ export default function HomePage() {
             ['--subtitle-dark-color' as any]: subtitleDarkColorBlock.value || '#cbd5e1',
           }}
         >
-          {/* Ambient background glow meshes */}
-          <div className="absolute top-[10%] left-[-10%] w-[35rem] h-[35rem] rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
-          <div className="absolute bottom-[10%] right-[-5%] w-[40rem] h-[40rem] rounded-full bg-accent/10 blur-[130px] pointer-events-none" />
-          
-          {/* Mobile-only central background glow */}
-          <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-72 h-72 rounded-full bg-primary/10 blur-[80px] lg:hidden pointer-events-none" />
+
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -518,10 +512,6 @@ export default function HomePage() {
                       as="span"
                       className="text-slate-900 dark:text-white font-sans"
                     />
-                    {/* Hand-drawn underline SVG overlay */}
-                    <svg className="absolute bottom-0 left-1/2 -translate-x-1/2 w-64 h-4 text-primary/80 fill-none stroke-current stroke-[3.5] md:hidden" viewBox="0 0 100 10" preserveAspectRatio="none">
-                      <path d="M 2 8 C 30 2, 70 2, 98 8 C 80 9, 40 9, 10 9" strokeLinecap="round" />
-                    </svg>
                   </h1>
                   
                   <div className="hero-subtitle-container w-full max-w-2xl text-sm sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-sans font-medium pt-2 text-center lg:text-left">
@@ -992,7 +982,6 @@ export default function HomePage() {
             )}
           </div>
         </section>
-      </main>
     </div>
   );
 }

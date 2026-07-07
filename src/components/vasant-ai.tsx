@@ -59,11 +59,11 @@ export function VasantAI() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[100]">
+    <div className="fixed bottom-24 sm:bottom-6 right-6 z-[100]">
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(true)}
-          className="h-14 w-14 rounded-full shadow-2xl bg-primary hover:scale-105 transition-transform"
+          className="h-14 w-14 rounded-full shadow-2xl bg-background border border-border text-primary hover:bg-muted hover:scale-105 transition-transform"
           size="icon"
         >
           <Bot className="h-6 w-6" />

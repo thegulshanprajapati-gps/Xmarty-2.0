@@ -69,7 +69,7 @@ export function Footer() {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   return (
-    <footer className="relative overflow-hidden border-t bg-muted/30 pt-20 pb-10 select-none">
+    <footer className="relative overflow-hidden border-t bg-muted/30 pt-20 pb-24 lg:pb-10 select-none">
       {/* Decorative background (always clipped to footer) */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
         <div className="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
