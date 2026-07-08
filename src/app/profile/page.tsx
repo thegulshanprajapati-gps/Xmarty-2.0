@@ -435,6 +435,73 @@ function ProfileContent() {
               </div>
               
               <div className="flex items-center gap-2">
+                {/* Notification Dropdown Trigger (Mobile View) */}
+                <div className="relative">
+                  <button
+                    onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
+                    className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10 transition-all flex items-center justify-center shrink-0 relative"
+                  >
+                    <i className="fa-solid fa-bell text-[13px]"></i>
+                    {notifications.filter(n => !n.read).length > 0 && (
+                      <span className="absolute -top-1.5 -right-1.5 h-4 w-4 bg-rose-550 text-white rounded-full text-[8px] font-black flex items-center justify-center animate-bounce shadow">
+                        {notifications.filter(n => !n.read).length}
+                      </span>
+                    )}
+                  </button>
+                  
+                  <AnimatePresence>
+                    {notifDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="fixed right-4 top-14 w-72 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-white/10 shadow-2xl p-3 z-50 space-y-2 text-left"
+                      >
+                        <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/5 pb-2">
+                          <span className="text-[10px] font-bold text-slate-850 dark:text-white flex items-center gap-1">
+                            <i className="fa-solid fa-bell text-indigo-500"></i> Notifications
+                          </span>
+                          {notifications.filter(n => !n.read).length > 0 && (
+                            <button 
+                              onClick={markAllRead}
+                              className="text-[9px] text-primary hover:underline font-bold"
+                            >
+                              Mark all read
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="max-h-48 overflow-y-auto space-y-2 scrollbar-hide pr-1">
+                          {notifications.length === 0 ? (
+                            <div className="py-6 text-center text-[10px] text-slate-400 font-medium">
+                              No notifications yet.
+                            </div>
+                          ) : (
+                            notifications.map((notif: any) => (
+                              <div 
+                                key={notif._id || notif.id}
+                                onClick={() => markNotificationRead(notif._id || notif.id, notif.link)}
+                                className={cn(
+                                  "p-2 rounded-lg text-[10px] leading-relaxed cursor-pointer transition-colors border",
+                                  notif.read 
+                                    ? "bg-slate-50/50 dark:bg-white/[0.01] border-slate-100 dark:border-white/[0.02] text-slate-400" 
+                                    : "bg-primary/[0.02] dark:bg-primary/[0.04] border-primary/10 text-slate-750 dark:text-slate-200 font-medium hover:bg-primary/[0.05]"
+                                )}
+                              >
+                                <p>{notif.message}</p>
+                                <p className="text-[8px] text-slate-400 dark:text-slate-500 mt-1 font-mono">
+                                  {new Date(notif.createdAt || notif.created_at).toLocaleDateString()}
+                                </p>
+                              </div>
+                            ))
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
                 <button
                   onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
                   className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white border border-slate-200 dark:border-white/10 transition-all flex items-center justify-center shrink-0"
@@ -683,7 +750,7 @@ function ProfileContent() {
             </div>
 
             {/* Notification Dropdown Trigger */}
-            <div className="fixed top-6 right-6 lg:top-8 lg:right-12 z-50">
+            <div className="hidden lg:block lg:fixed lg:top-8 lg:right-12 z-50">
               <button
                 onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
                 className="h-11 w-11 rounded-full bg-white/90 dark:bg-slate-950/90 border border-slate-200/80 dark:border-white/10 flex items-center justify-center relative hover:scale-110 active:scale-95 transition-all text-slate-750 dark:text-slate-200 shadow-lg hover:shadow-xl backdrop-blur-md"
