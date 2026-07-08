@@ -198,7 +198,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.7, delay: 0.15 }}
-      className="lg:col-span-5 absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:relative w-full max-w-[360px] lg:max-w-none h-[42vh] lg:h-auto aspect-[4/4.5] lg:aspect-[4/4.2] flex items-end justify-center pointer-events-none lg:pointer-events-auto z-0 lg:z-10 opacity-35 lg:opacity-100 lg:mt-0"
+      className="lg:col-span-5 absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:relative w-full max-w-[360px] lg:max-w-none h-[42vh] lg:h-auto aspect-[4/4.5] lg:aspect-[4/4.2] flex items-end justify-center pointer-events-none lg:pointer-events-auto z-0 lg:z-10 opacity-20 lg:opacity-100 lg:mt-0"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -476,6 +476,10 @@ export default function HomePage() {
             ['--subtitle-dark-color' as any]: subtitleDarkColorBlock.value || '#cbd5e1',
           }}
         >
+          {/* Animated decorative grid and ambient glows */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:40px_40px] opacity-[0.03] dark:opacity-[0.05] pointer-events-none" />
+          <div className="absolute top-[20%] left-[-10%] w-[350px] h-[350px] bg-primary/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
+          <div className="absolute bottom-[20%] right-[-10%] w-[350px] h-[350px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
 
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
