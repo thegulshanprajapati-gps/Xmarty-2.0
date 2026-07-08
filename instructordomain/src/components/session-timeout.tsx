@@ -100,27 +100,27 @@ export function SessionTimeout() {
   // Render the header widget
   const renderHeaderWidget = () => {
     return (
-      <div className="flex items-center gap-2 md:gap-3 bg-neutral-950 border border-neutral-800 text-neutral-200 px-3 py-1.5 rounded-full font-mono text-[12px] md:text-sm tracking-tight shadow-lg select-none">
-        <Clock className="h-3.5 w-3.5 text-neutral-400 animate-pulse" />
+      <div className="flex items-center gap-1.5 md:gap-3 bg-neutral-950 border border-neutral-800 text-neutral-200 px-2.5 md:px-3 py-1 md:py-1.5 rounded-full font-mono text-[11px] md:text-sm tracking-tight shadow-lg select-none shrink-0">
+        <Clock className="h-3.5 w-3.5 text-neutral-400 animate-pulse shrink-0" />
         <span className="font-bold text-white tracking-wider">{formatTime(timeLeft)}</span>
-        <span className="text-neutral-700">|</span>
+        <span className="text-neutral-700 hidden sm:inline">|</span>
         <button
           onClick={() => subtractTime(1)}
-          className="hover:text-red-400 font-bold transition-colors duration-200 px-1"
+          className="hover:text-red-400 font-bold transition-colors duration-200 px-1 hidden sm:inline-block"
           title="Subtract 1 Minute"
         >
           -1M
         </button>
-        <span className="text-neutral-700">|</span>
+        <span className="text-neutral-700 hidden sm:inline">|</span>
         <button
           onClick={() => addTime(5)}
-          className="hover:text-emerald-400 font-bold transition-colors duration-200 px-1"
+          className="hover:text-emerald-400 font-bold transition-colors duration-200 px-1 hidden sm:inline-block"
           title="Add 5 Minutes"
         >
           +5M
         </button>
-        <span className="text-neutral-700">|</span>
-        <Timer className="h-3.5 w-3.5 text-neutral-400" />
+        <span className="text-neutral-700 hidden sm:inline">|</span>
+        <Timer className="h-3.5 w-3.5 text-neutral-400 shrink-0 hidden sm:inline" />
       </div>
     );
   };

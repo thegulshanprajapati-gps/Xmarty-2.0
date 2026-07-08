@@ -204,7 +204,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
       onMouseLeave={handleMouseLeave}
     >
       <div 
-        className="relative w-full aspect-[4/4.2] flex items-center justify-center p-4 select-none transition-transform duration-200 ease-out"
+        className="relative w-full aspect-[4/3.5] sm:aspect-[4/4.2] flex items-center justify-center p-4 select-none transition-transform duration-200 ease-out"
         style={{
           transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale3d(1.02, 1.02, 1.02)`,
         }}
@@ -470,7 +470,7 @@ export default function HomePage() {
       <meta name="description" content={seoDescBlock.value} />
       <meta name="keywords" content={seoKeywordsBlock.value} />
         <section 
-          className="relative overflow-hidden border-b bg-gradient-to-b from-background via-primary/[0.03] to-background flex flex-col justify-center min-h-[100dvh] pt-28 pb-16 lg:py-0"
+          className="relative overflow-hidden border-b bg-gradient-to-b from-background via-primary/[0.03] to-background flex flex-col justify-center min-h-[100dvh] pt-28 pb-32 sm:pb-24 lg:py-0"
           style={{
             ['--title-dark-color' as any]: titleDarkColorBlock.value || '#ffffff',
             ['--subtitle-dark-color' as any]: subtitleDarkColorBlock.value || '#cbd5e1',

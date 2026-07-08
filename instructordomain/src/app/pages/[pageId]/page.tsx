@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AdminSidebar } from "@/components/admin/sidebar";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -82,6 +82,13 @@ export default function PageEditor() {
 
   const schemas: SectionSchema[] = PAGE_SCHEMAS[pageSlug] || [];
   const defaultTab = schemas.length > 0 ? schemas[0].key : 'preview';
+  const [activeTab, setActiveTab] = useState(defaultTab);
+
+  useEffect(() => {
+    if (defaultTab) {
+      setActiveTab(defaultTab);
+    }
+  }, [defaultTab]);
 
   useEffect(() => {
     if (!pageSlug) return;
@@ -392,14 +399,14 @@ export default function PageEditor() {
                 value={effectiveVal}
                 onChange={handleChange}
                 placeholder={field.placeholder || "e.g. #FF0000, hsl(var(--primary)) or transparent"}
-                className="h-14 rounded-2xl text-lg pl-14 pr-10 border-primary/10 bg-background shadow-sm"
+                className="h-10 rounded-xl text-sm pl-11 pr-10 border-primary/10 bg-background shadow-sm"
               />
               <div 
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 rounded-full border border-primary/10 shadow-inner flex items-center justify-center overflow-hidden cursor-pointer bg-slate-100 dark:bg-slate-800"
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-5.5 h-5.5 rounded-full border border-primary/10 shadow-inner flex items-center justify-center overflow-hidden cursor-pointer bg-slate-100 dark:bg-slate-800"
                 style={{ backgroundColor: effectiveVal && effectiveVal !== 'transparent' ? effectiveVal : 'transparent' }}
               >
                 {!effectiveVal || effectiveVal === 'transparent' ? (
-                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[8px] font-bold text-muted-foreground">None</div>
+                  <div className="w-full h-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-[7px] font-bold text-muted-foreground">None</div>
                 ) : null}
                 <input 
                   type="color" 
@@ -412,7 +419,7 @@ export default function PageEditor() {
                 <button 
                   type="button"
                   onClick={() => handleChange('')}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-sm font-bold"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs font-bold"
                   title="Clear color"
                 >
                   ✕
@@ -428,7 +435,7 @@ export default function PageEditor() {
           value={effectiveVal}
           onChange={handleChange}
           placeholder={field.placeholder}
-          className="h-14 rounded-2xl text-lg px-6 border-primary/10 bg-background shadow-sm"
+          className="h-10 rounded-xl text-sm px-4 border-primary/10 bg-background shadow-sm"
         />
       );
     }
@@ -439,7 +446,7 @@ export default function PageEditor() {
           value={effectiveVal}
           onChange={handleChange}
           placeholder={field.placeholder}
-          className="min-h-[120px] rounded-2xl text-lg px-6 py-5 border-primary/10 bg-background shadow-sm resize-y"
+          className="min-h-[90px] rounded-xl text-sm px-4 py-3 border-primary/10 bg-background shadow-sm resize-y"
         />
       );
     }
@@ -460,7 +467,7 @@ export default function PageEditor() {
           value={effectiveVal}
           onChange={handleChange}
           placeholder={field.placeholder || '{\n  // Valid JSON expected\n}'}
-          className="font-mono min-h-[200px] rounded-2xl px-6 py-5 border-primary/10 bg-background shadow-sm resize-y"
+          className="font-mono min-h-[160px] rounded-xl px-4 py-3 border-primary/10 bg-background shadow-sm resize-y text-xs"
         />
       );
     }
@@ -470,7 +477,7 @@ export default function PageEditor() {
       const isCustomValue = effectiveVal && !options.includes(effectiveVal);
       
       return (
-        <div className="flex gap-2 items-center w-full">
+        <div className="flex flex-col sm:flex-row gap-2 items-stretch sm:items-center w-full">
           <div className="relative flex-1">
             <Select
               value={isCustomValue ? 'custom' : (effectiveVal || undefined)}
@@ -482,10 +489,10 @@ export default function PageEditor() {
                 }
               }}
             >
-              <SelectTrigger className="w-full h-14 rounded-2xl text-lg px-6 border border-primary/10 bg-background shadow-sm">
+              <SelectTrigger className="w-full h-10 rounded-xl text-sm px-4 border border-primary/10 bg-background shadow-sm">
                 <SelectValue placeholder="Select a role..." />
               </SelectTrigger>
-              <SelectContent className="rounded-2xl border border-primary/10">
+              <SelectContent className="rounded-xl border border-primary/10">
                 {options.map((opt) => (
                   <SelectItem key={opt} value={opt}>
                     {opt.charAt(0).toUpperCase() + opt.slice(1)}
@@ -503,7 +510,7 @@ export default function PageEditor() {
               value={effectiveVal === 'custom' ? '' : effectiveVal}
               onChange={(e) => handleChange(e.target.value)}
               placeholder="Enter custom role"
-              className="h-14 rounded-2xl text-lg px-6 border-primary/10 bg-background shadow-sm w-64 animate-in fade-in slide-in-from-right-5 duration-300"
+              className="h-10 rounded-xl text-sm px-4 border-primary/10 bg-background shadow-sm flex-1 min-w-[150px] animate-in fade-in duration-300"
             />
           )}
           
@@ -519,7 +526,7 @@ export default function PageEditor() {
                   handleChange('custom');
                 }
               }}
-              className="h-14 w-14 rounded-2xl border-primary/10 bg-background text-lg flex items-center justify-center font-bold text-primary shadow-sm hover:bg-primary/10 transition-colors"
+              className="h-10 w-full sm:w-10 rounded-xl border-primary/10 bg-background text-sm flex items-center justify-center font-bold text-primary shadow-sm hover:bg-primary/10 transition-colors shrink-0"
               title={(isCustomValue || effectiveVal === 'custom') ? "Cancel Custom Role" : "Add Custom Role"}
             >
               {(isCustomValue || effectiveVal === 'custom') ? '✖' : '+'}
@@ -607,17 +614,28 @@ export default function PageEditor() {
               value={imgData.url}
               onChange={(e) => updateImgData('url', e.target.value)}
               placeholder="Image URL"
-              className="flex-1 h-12 rounded-xl text-sm"
+              className="flex-1 h-10 rounded-xl text-sm px-4"
             />
             <ImagePicker 
               onSelect={(url) => updateImgData('url', url)} 
               trigger={
-                <Button variant="outline" className="h-12 px-4 rounded-xl border-border bg-muted/20 hover:bg-muted/50">
-                  <Library className="h-5 w-5 mr-2 text-primary" />
+                <Button variant="outline" className="h-10 px-4 rounded-xl border-border bg-muted/20 hover:bg-muted/50 font-bold shrink-0">
+                  <Library className="h-4.5 w-4.5 mr-1.5 text-primary" />
                   Library
                 </Button>
               }
             />
+            {imgData.url && (
+              <Button 
+                variant="destructive" 
+                onClick={() => updateImgData('url', '')} 
+                className="h-10 px-4 rounded-xl font-bold shrink-0"
+                title="Clear selected image"
+              >
+                <Trash2 className="h-4.5 w-4.5 mr-1.5" />
+                Clear
+              </Button>
+            )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="space-y-1.5">
@@ -664,36 +682,58 @@ export default function PageEditor() {
           <div className="absolute top-32 -right-20 w-[300px] h-[300px] bg-primary/[0.03] rounded-full blur-[100px]" />
           <div className="absolute bottom-32 -left-20 w-[250px] h-[250px] bg-accent/[0.05] rounded-full blur-[100px]" />
         </div>
-        <header className="flex h-16 shrink-0 items-center gap-2 md:gap-4 border-b border-primary/10 bg-background/50 backdrop-blur-xl px-3 md:px-8 sticky top-0 z-50 transition-all duration-300">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-2xl hover:bg-primary/10">
-            <ArrowLeft className="h-5 w-5" />
-          </Button>
-          <div className="flex-1 flex items-center justify-between">
-            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-3">
-              <h1 className="font-headline font-bold text-lg md:text-2xl tracking-tight text-foreground">
+        <header className="flex min-h-16 h-auto py-3 md:py-0 md:h-16 shrink-0 items-center gap-2 border-b border-primary/10 bg-background/50 backdrop-blur-xl px-3 md:px-6 sticky top-0 z-50 transition-all duration-300">
+          <div className="flex items-center gap-1.5 shrink-0">
+            <SidebarTrigger className="-ml-1" />
+            <Button variant="ghost" size="icon" onClick={() => router.back()} className="h-9 w-9 rounded-xl hover:bg-primary/10 shrink-0">
+              <ArrowLeft className="h-4.5 w-4.5" />
+            </Button>
+          </div>
+          <div className="flex-1 flex flex-col md:flex-row md:items-center justify-between gap-3 min-w-0">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:gap-2.5 min-w-0">
+              <h1 className="font-headline font-bold text-sm md:text-lg tracking-tight text-foreground truncate">
                 Editing <span className="text-primary capitalize">{pageSlug}</span>
               </h1>
-              <div className="flex gap-2 items-center">
-                {dbStatus === 'checking' && <Badge variant="outline" className="text-muted-foreground"><Loader2 className="h-3 w-3 mr-1 animate-spin"/> Connecting...</Badge>}
-                {dbStatus === 'active' && <Badge className="bg-emerald-500/10 text-emerald-500 border-none shadow-sm rounded-xl px-3 font-semibold"><CheckCircle2 className="h-3 w-3 mr-1"/> MongoDB Active</Badge>}
-                {dbStatus === 'error' && <Badge className="bg-destructive/10 text-destructive border-none shadow-sm rounded-xl px-3 font-semibold"><AlertTriangle className="h-3 w-3 mr-1"/> DB Offline</Badge>}
+              <div className="flex gap-1.5 items-center flex-wrap">
+                {dbStatus === 'checking' && <Badge variant="outline" className="text-muted-foreground text-[9px] md:text-[10px] h-5"><Loader2 className="h-3 w-3 mr-1 animate-spin"/> Connecting</Badge>}
+                {dbStatus === 'active' && <Badge className="bg-emerald-500/10 text-emerald-500 border-none shadow-sm rounded-lg px-2 py-0.5 font-bold text-[9px] md:text-[10px] h-5"><CheckCircle2 className="h-3 w-3 mr-1"/> MongoDB Active</Badge>}
+                {dbStatus === 'error' && <Badge className="bg-destructive/10 text-destructive border-none shadow-sm rounded-lg px-2 py-0.5 font-bold text-[9px] md:text-[10px] h-5"><AlertTriangle className="h-3 w-3 mr-1"/> DB Offline</Badge>}
               </div>
             </div>
-            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-              <Button size="sm" onClick={saveContent} disabled={saving || dbStatus === 'error' || schemas.length === 0} className="rounded-xl md:rounded-2xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 font-bold px-3 md:px-6 h-9 md:h-12 transition-all text-xs md:text-sm">
-                {saving ? (
-                  <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Saving to DB...</>
-                ) : (
-                  <><Save className="mr-2 h-5 w-5" /> Publish Changes</>
-                )}
-              </Button>
-            </motion.div>
+            <div className="flex items-center gap-2 justify-end flex-wrap sm:flex-nowrap shrink-0">
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="shrink-0">
+                <Button size="sm" onClick={saveContent} disabled={saving || dbStatus === 'error' || schemas.length === 0} className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg shadow-primary/20 font-bold px-4 h-10 transition-all text-xs md:text-sm">
+                  {saving ? (
+                    <><Loader2 className="mr-1 h-3.5 w-3.5 animate-spin" /> Saving</>
+                  ) : (
+                    <><Save className="mr-1 h-3.5 w-3.5" /> Publish Changes</>
+                  )}
+                </Button>
+              </motion.div>
+            </div>
           </div>
         </header>
 
         <main className="p-3 md:p-8 max-w-7xl mx-auto space-y-6 md:space-y-10 relative z-10 w-full min-w-0 overflow-x-hidden">
-           <Tabs defaultValue={defaultTab} className="space-y-8">
-            <TabsList className="bg-muted/40 p-1 md:p-1.5 !h-auto rounded-xl md:rounded-2xl !flex !flex-wrap w-full items-center justify-start gap-1 md:gap-1.5 border border-primary/5 shadow-inner">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+            <div className="sm:hidden w-full">
+              <Select value={activeTab} onValueChange={setActiveTab}>
+                <SelectTrigger className="w-full h-11 rounded-xl border border-primary/10 bg-background shadow-sm font-bold">
+                  <SelectValue placeholder="Select section..." />
+                </SelectTrigger>
+                <SelectContent className="rounded-xl border border-primary/10">
+                  {schemas.map(section => (
+                    <SelectItem key={section.key} value={section.key} className="font-bold">
+                      {section.label}
+                    </SelectItem>
+                  ))}
+                  <SelectItem value="preview" className="font-bold">Live Preview</SelectItem>
+                  <SelectItem value="assets" className="font-bold">Global Assets</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <TabsList className="hidden sm:flex bg-muted/40 p-1 md:p-1.5 !h-auto rounded-xl md:rounded-2xl flex-nowrap w-full items-center justify-start gap-1 md:gap-1.5 border border-primary/5 shadow-inner overflow-x-auto scrollbar-none py-1.5">
               {schemas.map(section => (
                 <TabsTrigger key={section.key} value={section.key} className="font-sans flex-shrink-0 rounded-lg md:rounded-xl font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-md transition-all py-1.5 md:py-2 px-3 md:px-4 whitespace-nowrap h-8 md:h-10 flex items-center justify-center text-xs md:text-sm">
                   {section.label}
@@ -730,9 +770,9 @@ export default function PageEditor() {
                       </div>
                       {section.key === 'seo' && (
                         <Button 
-                          onClick={handleGenerateSeo} 
-                          disabled={generatingSeo} 
-                          className="bg-primary/95 text-primary-foreground font-bold shadow-md hover:bg-primary rounded-xl flex items-center gap-2 px-5 h-11 transition-all"
+                           onClick={handleGenerateSeo} 
+                           disabled={generatingSeo} 
+                           className="bg-primary/95 text-primary-foreground font-bold shadow-md hover:bg-primary rounded-xl flex items-center gap-2 px-5 h-11 transition-all"
                         >
                           {generatingSeo ? (
                             <><Loader2 className="h-4 w-4 animate-spin" /> Generating...</>
@@ -743,8 +783,8 @@ export default function PageEditor() {
                       )}
                     </CardHeader>
                     
-                    <CardContent className="p-4 md:p-10">
-                      <div className="grid gap-6 md:gap-10 lg:grid-cols-2 w-full min-w-0">
+                    <CardContent className="p-4 md:p-6">
+                      <div className="grid gap-4 md:gap-6 lg:grid-cols-2 w-full min-w-0">
                         {section.fields.map(field => {
                           const val = content[section.key]?.[field.key] || '';
                           
@@ -752,13 +792,13 @@ export default function PageEditor() {
                             const listData = parseList(val);
                             
                             return (
-                              <div key={field.key} className="space-y-6 col-span-full border border-primary/10 rounded-3xl p-8 bg-background shadow-sm">
-                                <div className="flex items-center justify-between border-b pb-4">
+                              <div key={field.key} className="space-y-6 col-span-full border border-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-8 bg-background shadow-sm">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4">
                                   <div>
-                                    <h3 className="font-headline text-xl font-bold">{field.label}</h3>
-                                    <p className="text-sm text-muted-foreground mt-1">Manage multiple items. Drag or reorder them.</p>
+                                    <h3 className="font-headline text-lg sm:text-xl font-bold">{field.label}</h3>
+                                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">Manage multiple items. Reorder them below.</p>
                                   </div>
-                                  <Button onClick={() => handleAddListItem(section.key, field.key, field.itemFields!)} variant="secondary" className="rounded-xl shadow-sm font-bold px-5">
+                                  <Button onClick={() => handleAddListItem(section.key, field.key, field.itemFields!)} variant="secondary" className="rounded-xl shadow-sm font-bold px-5 w-full sm:w-auto">
                                     <Plus className="h-4 w-4 mr-2" /> Add Item
                                   </Button>
                                 </div>
@@ -771,27 +811,28 @@ export default function PageEditor() {
                                 ) : (
                                   <div className="space-y-6">
                                     {listData.map((item: any, idx: number) => (
-                                      <div key={idx} className="relative group border border-border rounded-2xl p-6 bg-muted/10 transition-colors hover:border-primary/30">
-                                        <div className="absolute -left-3 top-6 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                          <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full shadow-sm" onClick={() => handleMoveListItem(section.key, field.key, idx, -1)} disabled={idx === 0}>
-                                            <ChevronUp className="h-4 w-4" />
-                                          </Button>
-                                          <Button size="icon" variant="secondary" className="h-8 w-8 rounded-full shadow-sm" onClick={() => handleMoveListItem(section.key, field.key, idx, 1)} disabled={idx === listData.length - 1}>
-                                            <ChevronDown className="h-4 w-4" />
-                                          </Button>
-                                        </div>
-                                        
-                                        <div className="flex justify-between items-center mb-6">
-                                          <Badge variant="outline" className="font-bold">Item {idx + 1}</Badge>
+                                      <div key={idx} className="relative group border border-border rounded-xl sm:rounded-2xl p-4 sm:p-6 bg-muted/10 transition-colors hover:border-primary/30">
+                                        <div className="flex justify-between items-center mb-6 flex-wrap gap-2">
+                                          <div className="flex items-center gap-2">
+                                            <Badge variant="outline" className="font-bold">Item {idx + 1}</Badge>
+                                            <div className="flex items-center gap-0.5 border border-primary/5 rounded-lg bg-background/50 p-0.5 shadow-sm">
+                                              <Button size="icon" variant="ghost" className="h-7 w-7 rounded" onClick={() => handleMoveListItem(section.key, field.key, idx, -1)} disabled={idx === 0} title="Move Up">
+                                                <ChevronUp className="h-4 w-4" />
+                                              </Button>
+                                              <Button size="icon" variant="ghost" className="h-7 w-7 rounded" onClick={() => handleMoveListItem(section.key, field.key, idx, 1)} disabled={idx === listData.length - 1} title="Move Down">
+                                                <ChevronDown className="h-4 w-4" />
+                                              </Button>
+                                            </div>
+                                          </div>
                                           <Button variant="ghost" size="icon" className="text-destructive hover:bg-destructive/10 rounded-xl h-8 w-8" onClick={() => handleRemoveListItem(section.key, field.key, idx)}>
                                             <Trash2 className="h-4 w-4" />
                                           </Button>
                                         </div>
                                         
-                                        <div className="grid gap-6 md:grid-cols-2">
+                                        <div className="grid gap-4 md:grid-cols-2">
                                           {field.itemFields!.map(subField => (
-                                            <div key={subField.key} className={`space-y-3 w-full min-w-0 ${subField.type === 'richtext' || subField.type === 'textarea' ? 'col-span-full' : ''}`}>
-                                              <Label className="text-xs font-bold uppercase tracking-wider text-muted-foreground ml-1">{subField.label}</Label>
+                                            <div key={subField.key} className={`space-y-2 w-full min-w-0 ${subField.type === 'richtext' || subField.type === 'textarea' ? 'col-span-full' : ''}`}>
+                                              <Label className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-muted-foreground ml-0.5">{subField.label}</Label>
                                               {renderField(subField, section.key, item[subField.key] || '', idx, subField.key, field.key)}
                                             </div>
                                           ))}
@@ -814,10 +855,10 @@ export default function PageEditor() {
                             const mobileVal = mobileField ? (content[section.key]?.[mobileField.key] || '') : '';
                             
                             return (
-                              <div key={field.key} className="space-y-4 w-full min-w-0 col-span-full border border-primary/10 rounded-3xl p-6 bg-background shadow-sm">
-                                <div className="flex items-center justify-between border-b pb-4 mb-2">
-                                  <Label className="text-base font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-1">Hero Section Assets</Label>
-                                  <div className="w-60">
+                              <div key={field.key} className="space-y-4 w-full min-w-0 col-span-full border border-primary/10 rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-background shadow-sm">
+                                <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 mb-2 gap-3">
+                                  <Label className="text-sm sm:text-base font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 ml-1">Hero Section Assets</Label>
+                                  <div className="w-full sm:w-60">
                                     <Select value={selectedAssetType} onValueChange={(v: 'desktop' | 'mobile') => setSelectedAssetType(v)}>
                                       <SelectTrigger className="w-full h-11 rounded-xl border border-primary/10 bg-background shadow-sm">
                                         <SelectValue />
