@@ -198,13 +198,13 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.7, delay: 0.15 }}
-      className="lg:col-span-5 relative w-full mt-10 lg:mt-0"
+      className="lg:col-span-5 absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:relative w-full max-w-[360px] lg:max-w-none h-[42vh] lg:h-auto aspect-[4/4.5] lg:aspect-[4/4.2] flex items-end justify-center pointer-events-none lg:pointer-events-auto z-0 lg:z-10 opacity-35 lg:opacity-100 lg:mt-0"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
       <div 
-        className="relative w-full aspect-[4/3.5] sm:aspect-[4/4.2] flex items-center justify-center p-4 select-none transition-transform duration-200 ease-out"
+        className="relative w-full h-full flex items-end justify-center select-none transition-transform duration-200 ease-out"
         style={{
           transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale3d(1.02, 1.02, 1.02)`,
         }}
@@ -242,7 +242,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
         </div>
 
         {/* Borderless Floating Character Container (Mobile/Tablet View) */}
-        <div className="flex lg:hidden relative w-[95%] h-[95%] overflow-visible items-center justify-center filter drop-shadow-[0_15px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.35)]">
+        <div className="flex lg:hidden relative w-full h-full overflow-visible items-end justify-center filter drop-shadow-[0_15px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.35)]">
           {(() => {
             const isWNumeric = heroMobileImageInfo.width && !isNaN(Number(heroMobileImageInfo.width));
             const isHNumeric = heroMobileImageInfo.height && !isNaN(Number(heroMobileImageInfo.height));
@@ -254,7 +254,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
                   width={Number(heroMobileImageInfo.width)}
                   height={Number(heroMobileImageInfo.height)}
                   priority
-                  className="object-contain w-full h-full select-none pointer-events-none"
+                  className="object-contain max-h-full select-none pointer-events-none"
                 />
               );
             }
@@ -264,7 +264,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
                 alt={heroMobileImageInfo.alt || "XmartyCreator"}
                 fill
                 priority
-                className="object-contain w-full h-full select-none pointer-events-none"
+                className="object-contain max-h-full select-none pointer-events-none"
               />
             );
           })()}
@@ -470,7 +470,7 @@ export default function HomePage() {
       <meta name="description" content={seoDescBlock.value} />
       <meta name="keywords" content={seoKeywordsBlock.value} />
         <section 
-          className="relative overflow-hidden border-b bg-gradient-to-b from-background via-primary/[0.03] to-background flex flex-col justify-center min-h-[100dvh] pt-28 pb-32 sm:pb-24 lg:py-0"
+          className="relative overflow-hidden border-b bg-gradient-to-b from-background via-primary/[0.03] to-background flex flex-col justify-center h-[100dvh] min-h-[100dvh] pt-20 pb-20 lg:py-0"
           style={{
             ['--title-dark-color' as any]: titleDarkColorBlock.value || '#ffffff',
             ['--subtitle-dark-color' as any]: subtitleDarkColorBlock.value || '#cbd5e1',
