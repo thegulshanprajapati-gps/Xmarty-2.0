@@ -709,7 +709,6 @@ function ProfileContent() {
                 )}
               </button>
             </div>
-            </div>
           </div>
 
           <AnimatePresence mode="wait">
