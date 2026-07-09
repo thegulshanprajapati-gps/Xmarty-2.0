@@ -194,26 +194,26 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.7, delay: 0.15 }}
-      className="lg:col-span-5 absolute bottom-0 left-1/2 -translate-x-1/2 lg:left-auto lg:translate-x-0 lg:relative w-full max-w-[360px] lg:max-w-none h-[42vh] lg:h-auto aspect-[4/4.5] lg:aspect-[4/4.2] flex items-end justify-center pointer-events-none lg:pointer-events-auto z-0 lg:z-10 opacity-20 lg:opacity-100 lg:mt-0"
+    <div 
+      className="absolute inset-0 z-0 opacity-20 pointer-events-none select-none overflow-hidden flex items-end justify-center lg:justify-end lg:pr-24"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      <div 
-        className="relative w-full h-full flex items-end justify-center select-none transition-transform duration-200 ease-out"
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.7, delay: 0.15 }}
+        className="relative w-full max-w-[360px] lg:max-w-[460px] h-[45dvh] lg:h-[75dvh] flex items-end justify-center"
         style={{
           transform: `perspective(1000px) rotateX(${rotate.x}deg) rotateY(${rotate.y}deg) scale3d(1.02, 1.02, 1.02)`,
         }}
       >
         {/* Dynamic Dual-Color Ambient Glow: Royal Blue & Crimson Red */}
-        <div className="absolute w-[85%] h-[85%] rounded-full bg-gradient-to-tr from-blue-600/20 via-red-500/10 to-amber-500/15 blur-[90px] animate-pulse pointer-events-none" />
+        <div className="absolute w-[80%] h-[80%] rounded-full bg-gradient-to-tr from-blue-600/10 via-red-500/5 to-amber-500/5 blur-[90px] animate-pulse pointer-events-none" />
         
         {/* Borderless Floating Character Container (Desktop View) */}
-        <div className="hidden lg:flex relative w-[95%] h-[95%] overflow-visible items-center justify-center filter drop-shadow-[0_25px_30px_rgba(0,0,0,0.18)] dark:drop-shadow-[0_30px_40px_rgba(0,0,0,0.45)]">
+        <div className="hidden lg:flex relative w-full h-full overflow-visible items-center justify-center filter drop-shadow-[0_25px_30px_rgba(0,0,0,0.18)] dark:drop-shadow-[0_30px_40px_rgba(0,0,0,0.45)]">
           {(() => {
             const isWNumeric = heroImageInfo.width && !isNaN(Number(heroImageInfo.width));
             const isHNumeric = heroImageInfo.height && !isNaN(Number(heroImageInfo.height));
@@ -225,7 +225,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
                   width={Number(heroImageInfo.width)}
                   height={Number(heroImageInfo.height)}
                   priority
-                  className="object-contain w-full h-full select-none pointer-events-none"
+                  className="object-contain object-bottom w-full h-full select-none pointer-events-none"
                 />
               );
             }
@@ -235,7 +235,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
                 alt={heroImageInfo.alt || "XmartyCreator"}
                 fill
                 priority
-                className="object-contain w-full h-full select-none pointer-events-none"
+                className="object-contain object-bottom select-none pointer-events-none"
               />
             );
           })()}
@@ -254,7 +254,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
                   width={Number(heroMobileImageInfo.width)}
                   height={Number(heroMobileImageInfo.height)}
                   priority
-                  className="object-contain max-h-full select-none pointer-events-none"
+                  className="object-contain object-bottom max-h-full select-none pointer-events-none"
                 />
               );
             }
@@ -264,13 +264,13 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
                 alt={heroMobileImageInfo.alt || "XmartyCreator"}
                 fill
                 priority
-                className="object-contain max-h-full select-none pointer-events-none"
+                className="object-contain object-bottom max-h-full select-none pointer-events-none"
               />
             );
           })()}
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }
 
@@ -481,6 +481,9 @@ export default function HomePage() {
           <div className="absolute top-[20%] left-[-10%] w-[350px] h-[350px] bg-primary/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
           <div className="absolute bottom-[20%] right-[-10%] w-[350px] h-[350px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
 
+          {/* Background Hero Image with Transparency */}
+          <InteractiveHeroVisual heroImageInfo={heroImageInfo} heroMobileImageInfo={heroMobileImageInfo} />
+
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -586,9 +589,6 @@ export default function HomePage() {
                   ))}
                 </div>
               </motion.div>
-
-              {/* Right Column: Multi-layered Interactive Visual Mockup with 3D Tilt */}
-              <InteractiveHeroVisual heroImageInfo={heroImageInfo} heroMobileImageInfo={heroMobileImageInfo} />
             </div>
           </div>
         </section>
