@@ -195,7 +195,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
 
   return (
     <div 
-      className="absolute inset-0 z-0 opacity-20 pointer-events-none select-none overflow-hidden flex items-end justify-center lg:justify-end lg:pr-24"
+      className="absolute inset-0 z-0 opacity-20 lg:opacity-100 pointer-events-none select-none overflow-hidden flex items-end justify-center lg:justify-end lg:pr-24"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
