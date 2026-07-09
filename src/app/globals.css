@@ -250,6 +250,23 @@ h1 mark, h2 mark, h3 mark, h4 mark, h5 mark, h6 mark {
   -webkit-background-clip: unset !important;
 }
 
+/* Support custom text color inside headings with gradient clipping conflict fix */
+h1 span[style*="color"],
+h2 span[style*="color"],
+h3 span[style*="color"],
+h4 span[style*="color"],
+h5 span[style*="color"],
+h6 span[style*="color"],
+h1 p[style*="color"],
+h2 p[style*="color"],
+h3 p[style*="color"] {
+  -webkit-text-fill-color: initial !important;
+  background-image: none !important;
+  background: none !important;
+  background-clip: unset !important;
+  -webkit-background-clip: unset !important;
+}
+
 /* Force transparency of backgrounds inside the hero title container to prevent boxed background errors */
 .hero-title-container,
 .hero-title-container *,

@@ -300,16 +300,40 @@ export default function TiptapEditor({ value, onChange, placeholder, className }
               <Palette className="h-4 w-4" />
             </Button>
             {showColorPicker && (
-              <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-xl shadow-xl z-50 grid grid-cols-5 gap-1 min-w-[120px]">
-                {PRESET_COLORS.map(color => (
-                  <button
-                    key={color}
-                    type="button"
-                    className="w-5 h-5 rounded-full border border-border transition-transform hover:scale-110"
-                    style={{ backgroundColor: color }}
-                    onClick={() => setTextColor(color)}
+              <div className="absolute top-full left-0 mt-1 p-2 bg-popover border border-border rounded-xl shadow-xl z-50 flex flex-col gap-2 min-w-[140px]">
+                <div className="grid grid-cols-5 gap-1">
+                  {PRESET_COLORS.map(color => (
+                    <button
+                      key={color}
+                      type="button"
+                      className="w-5 h-5 rounded-full border border-border transition-transform hover:scale-110 cursor-pointer"
+                      style={{ backgroundColor: color }}
+                      onClick={() => setTextColor(color)}
+                    />
+                  ))}
+                </div>
+                <div className="flex items-center gap-1 border-t border-border pt-1.5 mt-0.5">
+                  <input
+                    type="color"
+                    className="w-5.5 h-5.5 rounded cursor-pointer border border-border p-0 bg-transparent shrink-0"
+                    onChange={(e) => editor.chain().focus().setColor(e.target.value).run()}
+                    title="Custom Color Picker"
                   />
-                ))}
+                  <input
+                    type="text"
+                    placeholder="#hex"
+                    className="w-full text-[9px] h-5.5 px-1 border border-border rounded bg-transparent text-foreground placeholder:text-muted-foreground outline-none font-mono"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        const val = (e.target as HTMLInputElement).value;
+                        if (/^#[0-9A-F]{6}$/i.test(val) || /^#[0-9A-F]{3}$/i.test(val)) {
+                          editor.chain().focus().setColor(val).run();
+                          setShowColorPicker(false);
+                        }
+                      }
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
