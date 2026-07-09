@@ -87,7 +87,7 @@ export async function setSession(accessToken: string, refreshToken: string, csrf
 
 export async function getSession(): Promise<SessionUser | null> {
   const cookieStore = await cookies();
-  const token = cookieStore.get('access_token')?.value;
+  const token = cookieStore.get('access_token')?.value || cookieStore.get('xmarty_access_token')?.value;
   if (!token) return null;
   const payload = await verifyAccessToken(token);
   if (!payload) return null;
@@ -132,7 +132,7 @@ export async function clearSession() {
 
 export async function getCsrfFromCookies() {
   const cookieStore = await cookies();
-  return cookieStore.get('csrf_token')?.value || null;
+  return cookieStore.get('csrf_token')?.value || cookieStore.get('xmarty_csrf')?.value || null;
 }
 
 export async function verifyCsrf(request: Request) {
