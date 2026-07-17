@@ -77,23 +77,29 @@ export default async function ProtectedCoursePage({ params }: Props) {
   const payload = await verifySecureAccessToken(token, fingerprint, { ip, userAgent, email: sessionEmail });
   if (!payload) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
-        <Card className="max-w-md border-rose-500/30 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
-          <div className="h-16 w-16 mx-auto rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 border border-rose-500/20">
+      <div className="min-h-screen bg-[#FAFCFF] dark:bg-[#030712] flex items-center justify-center p-4 relative overflow-hidden text-slate-900 dark:text-slate-100 transition-colors duration-300">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-rose-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
+        
+        <Card className="max-w-md w-full border border-slate-200/80 dark:border-white/5 bg-white dark:bg-slate-950/40 rounded-[32px] p-8 text-center space-y-6 shadow-2xl relative z-10">
+          <div className="h-16 w-16 mx-auto rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 border border-rose-500/20">
             <AlertTriangle className="h-8 w-8" />
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-xl font-headline font-bold text-rose-500 dark:text-rose-400">Access Denied</CardTitle>
-            <CardDescription className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
+            <Badge className="bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[9px] font-black uppercase px-2.5 py-0.5 rounded-md">
+              Access Denied
+            </Badge>
+            <CardTitle className="text-2xl font-black font-headline tracking-tight text-slate-900 dark:text-white">Verification Failed</CardTitle>
+            <CardDescription className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed font-semibold">
               The access link is invalid, expired, or bound to a different browser session fingerprint.
             </CardDescription>
           </div>
-          <div className="bg-slate-100 dark:bg-slate-950 p-4 rounded-xl border border-slate-205 dark:border-white/5 font-mono text-[10px] text-slate-550 dark:text-slate-500 text-left space-y-1">
-            <p>IP Address: {ip}</p>
-            <p>Timestamp: {new Date().toISOString()}</p>
-            <p>Verification Status: FAILED</p>
+          <div className="bg-slate-50 dark:bg-slate-900/60 p-4.5 rounded-2xl border border-slate-150 dark:border-white/5 font-mono text-[9px] text-slate-500 dark:text-slate-400 text-left space-y-1">
+            <p><span className="font-bold uppercase tracking-wider text-slate-400">IP Address:</span> {ip}</p>
+            <p><span className="font-bold uppercase tracking-wider text-slate-400">Timestamp:</span> {new Date().toISOString()}</p>
+            <p><span className="font-bold uppercase tracking-wider text-slate-400">Verification Status:</span> FAILED</p>
           </div>
-          <Button asChild className="w-full bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold">
+          <Button asChild className="w-full h-11 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-lg shadow-rose-600/10">
             <Link href="/courses">Return to Catalog</Link>
           </Button>
         </Card>
@@ -104,18 +110,24 @@ export default async function ProtectedCoursePage({ params }: Props) {
   // Verify that the token email matches the active session email
   if (payload.email.toLowerCase() !== sessionEmailLower) {
     return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center p-4">
-        <Card className="max-w-md border-rose-500/30 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 rounded-3xl p-8 text-center space-y-6 shadow-2xl">
-          <div className="h-16 w-16 mx-auto rounded-full bg-rose-500/10 flex items-center justify-center text-rose-500 border border-rose-500/20">
+      <div className="min-h-screen bg-[#FAFCFF] dark:bg-[#030712] flex items-center justify-center p-4 relative overflow-hidden text-slate-900 dark:text-slate-100 transition-colors duration-300">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-rose-500/10 rounded-full blur-[100px] pointer-events-none" />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
+        
+        <Card className="max-w-md w-full border border-slate-200/80 dark:border-white/5 bg-white dark:bg-slate-950/40 rounded-[32px] p-8 text-center space-y-6 shadow-2xl relative z-10">
+          <div className="h-16 w-16 mx-auto rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 border border-rose-500/20">
             <AlertTriangle className="h-8 w-8" />
           </div>
           <div className="space-y-2">
-            <CardTitle className="text-xl font-headline font-bold text-rose-500 dark:text-rose-400">Session Mismatch</CardTitle>
-            <CardDescription className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed">
-              This link was issued to {payload.email}, but you are currently logged in as {sessionEmail}.
+            <Badge className="bg-rose-500/10 text-rose-500 border border-rose-500/20 text-[9px] font-black uppercase px-2.5 py-0.5 rounded-md">
+              Session Mismatch
+            </Badge>
+            <CardTitle className="text-2xl font-black font-headline tracking-tight text-slate-900 dark:text-white">Active Session Conflict</CardTitle>
+            <CardDescription className="text-slate-500 dark:text-slate-400 text-xs leading-relaxed font-semibold">
+              This link was issued to <span className="text-primary font-bold">{payload.email}</span>, but you are currently logged in as <span className="text-slate-900 dark:text-white font-bold">{sessionEmail}</span>.
             </CardDescription>
           </div>
-          <Button asChild className="w-full bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold">
+          <Button asChild className="w-full h-11 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold text-xs shadow-lg shadow-rose-600/10">
             <Link href="/courses">Return to Catalog</Link>
           </Button>
         </Card>

@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck, Receipt, Tag, AlertCircle, Loader2, Sparkles, HelpCircle, Lock } from "lucide-react";
+import { ShieldCheck, Receipt, Tag, AlertCircle, Loader2, Sparkles, HelpCircle, Lock, Clock } from "lucide-react";
 import { createOrderAction, applyCouponAction, verifyPaymentAction } from "@/app/actions/subscription";
 
 function CheckoutContent() {
@@ -31,6 +31,33 @@ function CheckoutContent() {
   // Gateway Selection
   const [gateway, setGateway] = useState<'Razorpay' | 'Stripe' | 'Cashfree'>('Razorpay');
   const [processing, setProcessing] = useState(false);
+
+  // Countdown Timer States
+  const [timeLeft, setTimeLeft] = useState(600); // 10 minutes session
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+  useEffect(() => {
+    if (loading || sessionExpired) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          setSessionExpired(true);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [loading, sessionExpired]);
+
+  const formatTime = (seconds: number) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     if (!type || !targetId) {
@@ -170,11 +197,14 @@ function CheckoutContent() {
             <Badge className="bg-primary/10 text-primary border border-primary/20 px-2.5 py-0.5 rounded font-black text-[9px] uppercase tracking-wider">
               Secure Gateway
             </Badge>
+            <Badge className="bg-amber-500/10 text-amber-500 border border-amber-500/20 px-2.5 py-0.5 rounded font-black text-[9px] uppercase tracking-wider flex items-center gap-1 animate-pulse">
+              <Clock className="h-3 w-3" /> Session Expires In: {formatTime(timeLeft)}
+            </Badge>
           </div>
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-headline">
             Checkout Workspace
           </h1>
-          <p className="text-xs text-slate-450 font-semibold uppercase tracking-wider">Review items, apply promo codes, and complete transaction</p>
+          <p className="text-xs text-slate-455 font-semibold uppercase tracking-wider">Review items, apply promo codes, and complete transaction</p>
         </div>
 
         {/* Layout Grid */}
@@ -388,6 +418,29 @@ function CheckoutContent() {
         </div>
 
       </div>
+
+      {/* Session Expired Fullscreen Glassmorphic Overlay */}
+      {sessionExpired && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-md flex items-center justify-center p-4 z-[99999] animate-in fade-in duration-300">
+          <div className="max-w-md w-full p-8 rounded-[32px] bg-white dark:bg-slate-950/40 border border-slate-200/80 dark:border-white/5 shadow-2xl text-center space-y-6">
+            <div className="h-16 w-16 mx-auto rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 border border-amber-500/20">
+              <AlertCircle className="h-8 w-8 animate-pulse" />
+            </div>
+            <div className="space-y-2">
+              <Badge className="bg-amber-500/10 text-amber-500 border border-amber-500/20 text-[9px] font-black uppercase px-2.5 py-0.5 rounded-md">
+                Session Expired
+              </Badge>
+              <h2 className="text-2xl font-black font-headline tracking-tight">Checkout Time Limit Reached</h2>
+              <p className="text-xs text-slate-500 dark:text-slate-450 font-semibold leading-relaxed">
+                For security reasons, payment checkout sessions expire after 10 minutes. Please restart the session to continue.
+              </p>
+            </div>
+            <Button onClick={() => window.location.reload()} className="w-full h-11 bg-primary text-primary-foreground text-xs font-black rounded-xl hover:scale-[1.02] active:scale-95 transition-all shadow-lg shadow-primary/20">
+              Restart Session
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

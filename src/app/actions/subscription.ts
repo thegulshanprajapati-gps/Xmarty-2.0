@@ -69,9 +69,11 @@ export async function createOrderAction(
     let billingCycle: 'monthly' | 'yearly' | undefined;
 
     if (type === 'Course') {
-      const course = await db.collection('courses').findOne({ _id: new ObjectId(targetId) });
+      const isMongoId = ObjectId.isValid(targetId);
+      const query = isMongoId ? { _id: new ObjectId(targetId) } : { slug: targetId };
+      const course = await db.collection('course_folders').findOne(query);
       if (!course) return { success: false, error: 'Course not found' };
-      price = course.price || 0;
+      price = course.price || 499;
       description = `Purchase Course: ${course.title}`;
     } else if (type === 'Bundle') {
       const bundle = await db.collection('bundles').findOne({ _id: new ObjectId(targetId) });
