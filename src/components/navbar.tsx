@@ -168,16 +168,20 @@ export function Navbar() {
   }, [pathname]);
 
   useEffect(() => {
-    const handleOutsideClick = (e: MouseEvent) => {
+    const handleOutsideClick = (e: Event) => {
       const target = e.target as HTMLElement;
       if (!target.closest('.bell-container') && !target.closest('.bell-container-mobile')) {
         setBellDropdownOpen(false);
       }
     };
     if (bellDropdownOpen) {
-      document.addEventListener('click', handleOutsideClick);
+      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener('touchstart', handleOutsideClick);
     }
-    return () => document.removeEventListener('click', handleOutsideClick);
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
   }, [bellDropdownOpen]);
 
   return (

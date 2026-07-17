@@ -764,7 +764,9 @@ function ProfileContent() {
 
                   {joinedChannels.length === 0 ? (
                     <div className="p-8 text-center border border-dashed rounded-3xl border-slate-200 dark:border-white/5 bg-white dark:bg-slate-950/20">
-                      <p className="text-xs text-slate-450 font-medium">You haven't joined any community groups yet. Explore and join them below!</p>
+                      <p className="text-xs text-slate-450 font-medium">
+                        You haven't joined any community groups yet. <Link href="/community/hub" className="text-primary hover:underline font-bold">Explore and join them in the Hub!</Link>
+                      </p>
                     </div>
                   ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">

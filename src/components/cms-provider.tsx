@@ -79,8 +79,8 @@ const defaultSettings = {
   primaryColor: '#FF0000',
   secondaryColor: '#FF0000',
   siteName: 'XmartyCreator',
-  headingsFont: 'Times New Roman',
-  bodyFont: 'Times New Roman',
+  headingsFont: 'Space Grotesk',
+  bodyFont: 'Inter',
 };
 
 export const CMSProvider = ({ 
@@ -121,8 +121,8 @@ export const CMSProvider = ({
         primaryColor: row?.primary_color || defaultSettings.primaryColor,
         secondaryColor: row?.secondary_color || row?.primary_color || defaultSettings.secondaryColor,
         themeMode: row?.theme_settings?.themeMode || defaultSettings.themeMode,
-        headingsFont: row?.headings_font || 'Times New Roman',
-        bodyFont: row?.body_font || 'Times New Roman',
+        headingsFont: row?.headings_font || 'Space Grotesk',
+        bodyFont: row?.body_font || 'Inter',
         sectionHeadingsFont: row?.section_headings_font || 'Space Grotesk',
         subtitlesFont: row?.subtitles_font || 'Inter',
         buttonsFont: row?.buttons_font || 'Inter',
@@ -183,8 +183,8 @@ export const CMSProvider = ({
     const primaryForeground = getReadableForeground(primary);
     const accentForeground = getReadableForeground(accent);
 
-    const activeHeadingsFont = settings?.headingsFont || settings?.headings_font || 'Times New Roman';
-    const activeBodyFont = settings?.bodyFont || settings?.body_font || 'Times New Roman';
+    const activeHeadingsFont = settings?.headingsFont || settings?.headings_font || 'Space Grotesk';
+    const activeBodyFont = settings?.bodyFont || settings?.body_font || 'Inter';
     const activeSectionHeadingsFont = settings?.sectionHeadingsFont || settings?.section_headings_font || 'Space Grotesk';
     const activeSubtitlesFont = settings?.subtitlesFont || settings?.subtitles_font || 'Inter';
     const activeButtonsFont = settings?.buttonsFont || settings?.buttons_font || 'Inter';

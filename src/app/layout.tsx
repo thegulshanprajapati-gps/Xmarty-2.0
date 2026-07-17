@@ -80,8 +80,8 @@ function buildThemeStyles(settings: any) {
   const primaryForeground = getReadableForeground(primary);
   const accentForeground = getReadableForeground(accent);
   // SSR-safe font defaults
-  const headingsFont = settings?.headingsFont || settings?.headings_font || 'Times New Roman';
-  const bodyFont = settings?.bodyFont || settings?.body_font || 'Times New Roman';
+  const headingsFont = settings?.headingsFont || settings?.headings_font || 'Space Grotesk';
+  const bodyFont = settings?.bodyFont || settings?.body_font || 'Inter';
   const sectionHeadingsFont = settings?.sectionHeadingsFont || settings?.section_headings_font || 'Space Grotesk';
   const subtitlesFont = settings?.subtitlesFont || settings?.subtitles_font || 'Inter';
   const buttonsFont = settings?.buttonsFont || settings?.buttons_font || 'Inter';
@@ -104,8 +104,8 @@ async function getInitialSettings() {
       primaryColor: row?.primary_color || defaultSettings.primaryColor,
       secondaryColor: row?.secondary_color || row?.primary_color || defaultSettings.secondaryColor,
       siteName: row?.site_name || defaultSettings.siteName,
-      headingsFont: row?.headings_font || 'Times New Roman',
-      bodyFont: row?.body_font || 'Times New Roman',
+      headingsFont: row?.headings_font || 'Space Grotesk',
+      bodyFont: row?.body_font || 'Inter',
       sectionHeadingsFont: row?.section_headings_font || 'Space Grotesk',
       subtitlesFont: row?.subtitles_font || 'Inter',
       buttonsFont: row?.buttons_font || 'Inter',
