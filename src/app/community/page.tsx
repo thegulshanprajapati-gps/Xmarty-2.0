@@ -273,9 +273,9 @@ export default function CommunityPage() {
               {String(hubDesc.value)}
             </p>
             <Button asChild className="bg-white text-slate-900 hover:bg-slate-100 font-bold px-6 h-11 rounded-xl shadow-lg transition-all duration-300 hover:scale-[1.03]">
-              <a href={String(hubButtonLink.value)} target="_blank" rel="noopener noreferrer">
+              <Link href="/community/hub">
                 {String(hubButtonText.value)}
-              </a>
+              </Link>
             </Button>
           </div>
         </section>

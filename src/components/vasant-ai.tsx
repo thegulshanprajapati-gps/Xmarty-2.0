@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,12 @@ export function VasantAI() {
   const [messages, setMessages] = useState<{ role: 'user' | 'bot', content: string }[]>([
     { role: 'bot', content: "Namaste! I am Vasant, your learning assistant. How can I help you today?" }
   ]);
+
+  useEffect(() => {
+    const handleOpenEvent = () => setIsOpen(true);
+    window.addEventListener('open-vasant-ai', handleOpenEvent);
+    return () => window.removeEventListener('open-vasant-ai', handleOpenEvent);
+  }, []);
 
   const handleChat = async (e: React.FormEvent) => {
     e.preventDefault();

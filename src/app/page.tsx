@@ -170,6 +170,36 @@ const defaultCommunityFeatures = [
   { icon: GraduationCap, label: "Career updates" },
 ];
 
+const defaultCarouselSlides = [
+  {
+    badge: "BUILD & SHIP",
+    title: "Learn skills that actually ship.",
+    subtitle: "XmartyCreator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support.",
+    ctaText: "Explore Courses",
+    ctaLink: "/courses",
+    colorStyle: "primary",
+    image: "/uploads/hero_mockup.png"
+  },
+  {
+    badge: "AI MENTORSHIP",
+    title: "24/7 AI-Guided Mentorship",
+    subtitle: "Use Vasant AI for concept explanations, code debugging, and personalized learning paths at any hour.",
+    ctaText: "Ask Vasant AI",
+    ctaLink: "#",
+    colorStyle: "indigo",
+    image: "/uploads/hero_mockup.png"
+  },
+  {
+    badge: "STUDY CIRCLES",
+    title: "Grow with the Community",
+    subtitle: "Join peer discussion channels, live review sessions, and creator circles to speed up your learning track.",
+    ctaText: "Join Community",
+    ctaLink: "/community",
+    colorStyle: "emerald",
+    image: "https://picsum.photos/seed/xmarty-community-home/900/600"
+  }
+];
+
 function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroImageInfo: any; heroMobileImageInfo: any }) {
   const [rotate, setRotate] = useState({ x: 0, y: 0 });
   const containerRef = useRef<HTMLDivElement>(null);
@@ -195,7 +225,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
 
   return (
     <div 
-      className="absolute inset-0 z-0 opacity-20 lg:opacity-100 pointer-events-none select-none overflow-hidden flex items-end justify-center lg:justify-end lg:pr-24"
+      className="hidden lg:flex absolute inset-0 z-0 opacity-100 pointer-events-none select-none overflow-hidden items-end justify-end lg:pr-24"
       ref={containerRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
@@ -374,6 +404,18 @@ export default function HomePage() {
     ? communityFeaturesBlock.value
     : defaultCommunityFeatures;
 
+  const carouselSlidesBlock = useContentBlock(
+    "home",
+    "hero",
+    "carouselSlides",
+    defaultCarouselSlides,
+    "json"
+  );
+
+  const carouselSlides = Array.isArray(carouselSlidesBlock.value) && carouselSlidesBlock.value.length > 0
+    ? carouselSlidesBlock.value
+    : defaultCarouselSlides;
+
   const communityImageBlock = useContentBlock(
     "home",
     "community",
@@ -397,6 +439,22 @@ export default function HomePage() {
     : defaultTestimonials;
 
   const [emblaRef] = useEmblaCarousel({ loop: true, dragFree: true });
+  const [heroEmblaRef, heroEmblaApi] = useEmblaCarousel({ loop: true });
+  const [currentHeroSlide, setCurrentHeroSlide] = useState(0);
+
+  const onHeroSelect = useCallback(() => {
+    if (!heroEmblaApi) return;
+    setCurrentHeroSlide(heroEmblaApi.selectedScrollSnap());
+  }, [heroEmblaApi]);
+
+  useEffect(() => {
+    if (!heroEmblaApi) return;
+    onHeroSelect();
+    heroEmblaApi.on('select', onHeroSelect);
+    return () => {
+      heroEmblaApi.off('select', onHeroSelect);
+    };
+  }, [heroEmblaApi, onHeroSelect]);
 
   // Testimonial submission modal state
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -470,16 +528,16 @@ export default function HomePage() {
       <meta name="description" content={seoDescBlock.value} />
       <meta name="keywords" content={seoKeywordsBlock.value} />
         <section 
-          className="relative overflow-hidden border-b bg-gradient-to-b from-background via-primary/[0.03] to-background flex flex-col justify-center h-[100dvh] min-h-[100dvh] pt-20 pb-20 lg:py-0"
+          className="relative overflow-hidden border-b bg-[#FAF9F6] dark:bg-[#0c0a0f] flex flex-col justify-center h-auto min-h-0 lg:h-[100dvh] lg:min-h-[100dvh] pt-20 pb-12 lg:py-0 transition-colors duration-500"
           style={{
             ['--title-dark-color' as any]: titleDarkColorBlock.value || '#ffffff',
             ['--subtitle-dark-color' as any]: subtitleDarkColorBlock.value || '#cbd5e1',
           }}
         >
           {/* Animated decorative grid and ambient glows */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:40px_40px] opacity-[0.03] dark:opacity-[0.05] pointer-events-none" />
-          <div className="absolute top-[20%] left-[-10%] w-[350px] h-[350px] bg-primary/10 rounded-full blur-[120px] pointer-events-none animate-pulse" />
-          <div className="absolute bottom-[20%] right-[-10%] w-[350px] h-[350px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none animate-pulse" style={{ animationDelay: '2s' }} />
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,#808080_0.5px,transparent_0.5px),linear-gradient(to_bottom,#808080_0.5px,transparent_0.5px)] bg-[size:30px_30px] opacity-[0.015] dark:opacity-[0.03] pointer-events-none" />
+          <div className="absolute top-[10%] left-[-15%] w-[480px] h-[480px] bg-primary/8 rounded-full blur-[140px] pointer-events-none animate-pulse duration-4000" />
+          <div className="absolute bottom-[10%] right-[-15%] w-[480px] h-[480px] bg-indigo-500/8 rounded-full blur-[140px] pointer-events-none animate-pulse duration-4000" style={{ animationDelay: '2s' }} />
 
           {/* Background Hero Image with Transparency */}
           <InteractiveHeroVisual heroImageInfo={heroImageInfo} heroMobileImageInfo={heroMobileImageInfo} />
@@ -487,12 +545,12 @@ export default function HomePage() {
 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full relative z-10">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-              {/* Left Column: Text & CTAs */}
+              {/* Left Column: Text & CTAs (Desktop View Only) */}
               <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
-                className="lg:col-span-7 space-y-6 md:space-y-8 flex flex-col items-center lg:items-start text-center lg:text-left relative"
+                className="hidden lg:flex lg:col-span-7 space-y-6 md:space-y-8 flex-col items-start text-left relative"
               >
                 <div className="badge-doodle-container inline-flex items-center justify-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary tracking-wide uppercase font-sans animate-fade-in shadow-sm shadow-primary/5 relative">
                   <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse max-md:hidden" />
@@ -509,8 +567,8 @@ export default function HomePage() {
                   </svg>
                 </div>
                 
-                <div className="space-y-5 relative w-full flex flex-col items-center lg:items-start">
-                  <h1 className="hero-title-container font-sans text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] relative w-full text-center lg:text-left pb-4">
+                <div className="space-y-5 relative w-full flex flex-col items-start">
+                  <h1 className="hero-title-container font-sans text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] relative w-full text-left pb-4">
                     <EditableText
                       pageSlug="home"
                       sectionKey="hero"
@@ -521,7 +579,7 @@ export default function HomePage() {
                     />
                   </h1>
                   
-                  <div className="hero-subtitle-container w-full max-w-2xl text-sm sm:text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-sans font-medium pt-2 text-center lg:text-left">
+                  <div className="hero-subtitle-container w-full max-w-2xl text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-sans font-medium pt-2 text-left">
                     <EditableText
                       pageSlug="home"
                       sectionKey="hero"
@@ -533,9 +591,9 @@ export default function HomePage() {
                   </div>
                 </div>
 
-                 <div className="flex flex-row flex-wrap gap-2 md:gap-4 justify-center lg:justify-start items-center relative z-10 w-full pt-2">
+                 <div className="flex flex-row flex-wrap gap-4 justify-start items-center relative z-10 w-full pt-2">
                   {showPrimaryCta && (
-                    <Button asChild size="lg" className="h-10 md:h-14 rounded-xl md:rounded-2xl px-3 md:px-8 text-xs md:text-base font-bold bg-primary text-primary-foreground hover:bg-primary/95 shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10 w-auto shrink-0">
+                    <Button asChild size="lg" className="h-14 rounded-2xl px-8 text-base font-bold bg-primary text-primary-foreground hover:bg-primary/95 shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10 w-auto shrink-0">
                       <Link href="/courses" className="inline-flex items-center">
                         <EditableText
                           pageSlug="home"
@@ -545,14 +603,14 @@ export default function HomePage() {
                           as="span"
                           className="inline-flex items-center"
                         />
-                        <ArrowRight className="ml-1 md:ml-2 h-3.5 w-3.5 md:h-5 md:w-5 transition-transform group-hover:translate-x-1" />
+                        <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                       </Link>
                     </Button>
                   )}
                   {showSecondaryCta && (
-                    <Button asChild variant="outline" size="lg" className="h-10 md:h-14 rounded-xl md:rounded-2xl border-2 border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-background/50 hover:bg-background/80 px-3 md:px-8 text-xs md:text-base font-bold transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10 w-auto shrink-0">
+                    <Button asChild variant="outline" size="lg" className="h-14 rounded-2xl border-2 border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-background/50 hover:bg-background/80 px-8 text-base font-bold transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10 w-auto shrink-0">
                       <Link href="/community" className="inline-flex items-center">
-                        <Play className="mr-1 md:mr-2 h-3 w-3 md:h-4 md:w-4 fill-current" />
+                        <Play className="mr-2 h-4 w-4 fill-current" />
                         <EditableText
                           pageSlug="home"
                           sectionKey="hero"
@@ -564,7 +622,7 @@ export default function HomePage() {
                     </Button>
                   )}
                   {showLoginCta && (
-                    <Button asChild variant="secondary" size="lg" className="h-10 md:h-14 rounded-xl md:rounded-2xl px-3 md:px-8 text-xs md:text-base font-bold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all hover:-translate-y-0.5 font-sans z-10 w-auto shrink-0">
+                    <Button asChild variant="secondary" size="lg" className="h-14 rounded-2xl px-8 text-base font-bold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all hover:-translate-y-0.5 font-sans z-10 w-auto shrink-0">
                       <Link href="/login">
                         <EditableText
                           pageSlug="home"
@@ -578,17 +636,191 @@ export default function HomePage() {
                   )}
                 </div>
 
-                <div className="grid grid-cols-3 gap-4 pt-6 max-w-xl mx-auto lg:mx-0">
+                <div className="grid grid-cols-3 gap-4 pt-6 max-w-xl w-full">
                   {statisticItems.map((item: any) => (
-                    <div key={item.label} className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-background/80 p-4 shadow-sm backdrop-blur-md hover:border-primary/30 dark:hover:border-primary/40 transition-all duration-300 group">
-                      <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white group-hover:text-primary transition-colors font-sans">
+                    <div key={item.label} className="rounded-2xl border border-slate-200/60 dark:border-slate-800/60 bg-background/85 p-4 shadow-sm backdrop-blur-md hover:border-primary/30 dark:hover:border-primary/40 transition-all duration-300 group flex flex-col justify-center items-center text-center">
+                      <p className="text-3xl font-extrabold text-slate-900 dark:text-white group-hover:text-primary transition-colors font-sans leading-none">
                         <CountUp value={item.value} />
                       </p>
-                      <p className="mt-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400 font-sans uppercase tracking-wider">{item.label}</p>
+                      <p className="mt-1 text-xs font-bold text-slate-500 dark:text-slate-400 font-sans uppercase tracking-wider leading-tight">{item.label}</p>
                     </div>
                   ))}
                 </div>
               </motion.div>
+
+              {/* Mobile/Tablet Carousel Hero Section */}
+              <div className="block lg:hidden w-full relative z-10 px-1">
+                <div className="embla overflow-hidden" ref={heroEmblaRef}>
+                  <div className="embla__container flex">
+                    {carouselSlides.map((slide: any, idx: number) => {
+                      const isIndigo = slide.colorStyle === 'indigo';
+                      const isEmerald = slide.colorStyle === 'emerald';
+                      
+                      let containerClass = "rounded-[2rem] border border-white/30 dark:border-slate-800/20 bg-white/35 dark:bg-[#120f18]/30 backdrop-blur-xl p-6 sm:p-8 shadow-[0_24px_60px_-15px_rgba(139,92,246,0.1)] shadow-primary/5 flex flex-col items-center text-center space-y-6 relative overflow-hidden min-h-[520px] justify-between select-none";
+                      let glowClass = "absolute -top-12 -right-12 w-44 h-44 bg-primary/15 rounded-full blur-3xl pointer-events-none animate-pulse";
+                      let badgeClass = "badge-doodle-container inline-flex items-center justify-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary tracking-wider uppercase font-sans shadow-sm select-none";
+                      let buttonClass = "w-full h-14 rounded-2xl px-6 text-sm font-bold bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/95 hover:to-indigo-600/95 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/35 transition-all duration-300 active:scale-[0.98] font-sans shrink-0 mt-auto flex items-center justify-center gap-2 select-none";
+                      
+                      let Icon = Sparkles;
+                      
+                      if (isIndigo) {
+                        containerClass = "rounded-[2rem] border border-indigo-500/10 bg-white/35 dark:bg-[#120f18]/30 backdrop-blur-xl p-6 sm:p-8 shadow-[0_24px_60px_-15px_rgba(99,102,241,0.1)] shadow-indigo-500/5 flex flex-col items-center text-center space-y-6 relative overflow-hidden min-h-[520px] justify-between select-none";
+                        glowClass = "absolute -top-12 -right-12 w-44 h-44 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none animate-pulse";
+                        badgeClass = "inline-flex items-center justify-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase font-sans shadow-sm select-none";
+                        buttonClass = "w-full h-14 rounded-2xl px-6 text-sm font-bold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-600/95 hover:to-violet-600/95 text-white shadow-lg shadow-indigo-600/25 hover:shadow-xl hover:shadow-indigo-600/35 transition-all duration-300 active:scale-[0.98] font-sans shrink-0 mt-auto flex items-center justify-center gap-2 select-none";
+                        Icon = BrainCircuit;
+                      } else if (isEmerald) {
+                        containerClass = "rounded-[2rem] border border-emerald-500/10 bg-white/35 dark:bg-[#120f18]/30 backdrop-blur-xl p-6 sm:p-8 shadow-[0_24px_60px_-15px_rgba(16,185,129,0.1)] shadow-emerald-500/5 flex flex-col items-center text-center space-y-6 relative overflow-hidden min-h-[520px] justify-between select-none";
+                        glowClass = "absolute -top-12 -right-12 w-44 h-44 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none animate-pulse";
+                        badgeClass = "inline-flex items-center justify-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider uppercase font-sans shadow-sm select-none";
+                        buttonClass = "w-full h-14 rounded-2xl px-6 text-sm font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-600/95 hover:to-teal-600/95 text-white shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/35 transition-all duration-300 active:scale-[0.98] font-sans shrink-0 mt-auto flex items-center justify-center gap-2 select-none";
+                        Icon = Users;
+                      }
+ 
+                      const isAiCta = slide.ctaLink === '#' || String(slide.ctaText).toLowerCase().includes('vasant') || String(slide.ctaLink).toLowerCase().includes('vasant');
+ 
+                      return (
+                        <div className="embla__slide flex-[0_0_100%] min-w-0 px-2 select-none" key={idx}>
+                          <div className={containerClass}>
+                            <div className={glowClass} />
+                            
+                            <div className="flex flex-col items-center text-center space-y-5 w-full select-none">
+                              <div className={badgeClass}>
+                                <Icon className="h-3 w-3 animate-pulse" />
+                                <span>{slide.badge}</span>
+                              </div>
+ 
+                              <div className="space-y-1 select-none">
+                                <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
+                                  {slide.title}
+                                </h2>
+                                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-sans font-medium">
+                                  {slide.subtitle}
+                                </p>
+                              </div>
+ 
+                              {/* Dynamic Image Graphic Area */}
+                              {(() => {
+                                const slideImgInfo = parseCmsImage(
+                                  slide.image,
+                                  isEmerald
+                                    ? "https://picsum.photos/seed/xmarty-community-home/900/600"
+                                    : "/uploads/hero_mockup.png"
+                                );
+                                return (
+                                  <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-slate-200/30 dark:border-slate-800/30 bg-slate-50/20 dark:bg-slate-950/15 flex items-center justify-center group shadow-sm mt-1 shrink-0 select-none">
+                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-indigo-500/5 opacity-50" />
+                                    {slideImgInfo.url.includes('hero_mockup') ? (
+                                      <div className="relative w-full h-full flex items-end justify-center pt-2 select-none">
+                                        <Image
+                                          src={slideImgInfo.url}
+                                          alt="Visual mockup"
+                                          width={200}
+                                          height={170}
+                                          className="object-contain object-bottom transition-transform duration-500 group-hover:scale-105 max-h-full select-none pointer-events-none"
+                                        />
+                                      </div>
+                                    ) : (
+                                      <Image
+                                        src={slideImgInfo.url}
+                                        alt="Visual illustration"
+                                        fill
+                                        className="object-cover object-center transition-transform duration-500 group-hover:scale-105 select-none pointer-events-none"
+                                      />
+                                    )}
+                                  </div>
+                                );
+                              })()}
+ 
+                              {/* Custom badges or statistics overlay */}
+                              {isIndigo ? (
+                                <div className="w-full bg-slate-50/40 dark:bg-slate-900/30 rounded-xl p-2.5 border border-slate-100/50 dark:border-slate-800/30 text-left space-y-1 select-none">
+                                  <div className="flex items-start gap-2 select-none">
+                                    <div className="bg-primary text-primary-foreground text-[8px] font-bold px-1 py-0.5 rounded shrink-0">BOT</div>
+                                    <div className="text-[10px] text-slate-600 dark:text-slate-300 bg-slate-100/50 dark:bg-slate-800/50 p-2 rounded-lg rounded-tl-none leading-normal">
+                                      Namaste! I am Vasant, your learning assistant...
+                                    </div>
+                                  </div>
+                                </div>
+                              ) : isEmerald ? (
+                                <div className="flex flex-wrap gap-1.5 justify-center w-full">
+                                  <div className="flex items-center gap-1 rounded-full border px-2.5 py-1 bg-background text-[9px] font-bold shrink-0 shadow-sm">
+                                    <MessageSquare className="h-3 w-3 text-emerald-500" />
+                                    <span>Daily discussions</span>
+                                  </div>
+                                  <div className="flex items-center gap-1 rounded-full border px-2.5 py-1 bg-background text-[9px] font-bold shrink-0 shadow-sm">
+                                    <BadgeCheck className="h-3 w-3 text-emerald-500" />
+                                    <span>Project reviews</span>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="grid grid-cols-3 gap-2 w-full pt-1">
+                                  {statisticItems.slice(0, 3).map((item: any) => (
+                                    <div key={item.label} className="rounded-xl border border-slate-200/50 dark:border-slate-800/50 bg-background/60 p-2 shadow-sm flex flex-col justify-center items-center text-center">
+                                      <p className="text-base font-black text-slate-900 dark:text-white font-sans leading-none">
+                                        <CountUp value={item.value} />
+                                      </p>
+                                      <p className="mt-1 text-[8px] font-bold text-slate-500 dark:text-slate-400 font-sans uppercase tracking-wider leading-tight">{item.label}</p>
+                                    </div>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+
+                            <div className="w-full pt-3">
+                              {isAiCta ? (
+                                <Button 
+                                  onClick={() => window.dispatchEvent(new CustomEvent('open-vasant-ai'))}
+                                  size="lg" 
+                                  className={buttonClass}
+                                >
+                                  <span className="inline-flex items-center justify-center">
+                                    <span>{slide.ctaText}</span>
+                                    <BrainCircuit className="ml-2 h-4 w-4" />
+                                  </span>
+                                </Button>
+                              ) : (
+                                <Button asChild size="lg" className={buttonClass}>
+                                  <Link href={slide.ctaLink || "/courses"} className="inline-flex items-center justify-center">
+                                    <span>{slide.ctaText}</span>
+                                    <ArrowRight className="ml-2 h-4 w-4" />
+                                  </Link>
+                                </Button>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Dots indicators */}
+                <div className="flex justify-center gap-2 mt-4">
+                  {carouselSlides.map((_: any, idx: number) => (
+                    <button
+                      key={idx}
+                      onClick={() => heroEmblaApi && heroEmblaApi.scrollTo(idx)}
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        currentHeroSlide === idx ? 'w-6 bg-primary' : 'w-2 bg-slate-300 dark:bg-slate-700'
+                      }`}
+                      aria-label={`Go to slide ${idx + 1}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Premium Scroll Indicator for Mobile */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 md:hidden pointer-events-none z-10 opacity-70">
+            <span className="text-[9px] font-bold tracking-widest text-slate-400 uppercase font-sans">Scroll</span>
+            <div className="w-5 h-8 rounded-full border border-slate-400/50 flex justify-center p-1">
+              <motion.div 
+                animate={{ y: [0, 10, 0] }}
+                transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+                className="w-1 h-1.5 rounded-full bg-primary"
+              />
             </div>
           </div>
         </section>
