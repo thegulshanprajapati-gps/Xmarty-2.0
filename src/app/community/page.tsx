@@ -353,93 +353,109 @@ export default function CommunityPage() {
           {/* 4 Gradient Channel Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* WhatsApp */}
-            <div className="relative group overflow-hidden rounded-3xl bg-gradient-to-b from-[#10B981] to-[#059669] dark:from-[#10B981]/90 dark:to-[#059669]/90 p-6 flex flex-col justify-between aspect-[3/4] text-white shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
-              <div className="absolute top-0 right-0 p-4 opacity-15 text-white/50 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-emerald-500/30 hover:shadow-2xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-emerald-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <i className="fa-brands fa-whatsapp text-8xl"></i>
               </div>
-              <div className="space-y-4 relative z-10">
-                <div className="h-12 w-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
+              
+              {/* Subtle top edge glow */}
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="space-y-5 relative z-10">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-white">
                   <i className="fa-brands fa-whatsapp text-2xl"></i>
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-2xl font-bold">WhatsApp</h3>
-                  <p className="text-xs text-emerald-100 leading-relaxed">
+                <div className="space-y-1.5">
+                  <h3 className="text-xl font-bold font-headline tracking-tight">WhatsApp</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                     Get instant updates, notes, and quick support from the main group.
                   </p>
                 </div>
               </div>
-              <Button asChild className="w-full bg-white/20 hover:bg-white/40 backdrop-blur-sm border border-white/20 font-semibold text-xs h-10 rounded-xl relative z-10 text-white transition-colors duration-300">
-                <a href={String(channelsWhatsappLink.value)} target="_blank" rel="noopener noreferrer">
-                  Join <span className="ml-1">→</span>
+              <Button asChild className="w-full bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 text-white dark:text-emerald-400 border border-transparent dark:border-emerald-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
+                <a href={String(channelsWhatsappLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
+                  Join Group <span className="transition-transform group-hover:translate-x-1">→</span>
                 </a>
               </Button>
             </div>
 
             {/* App */}
-            <div className="relative group overflow-hidden rounded-3xl bg-gradient-to-b from-[#3B82F6] to-[#1D4ED8] dark:from-[#2563EB]/95 dark:to-[#1E3A8A]/95 p-6 flex flex-col justify-between aspect-[3/4] text-white shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
-              <div className="absolute top-0 right-0 p-4 opacity-15 text-white/50 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-blue-500/30 hover:shadow-2xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-blue-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <Download className="h-24 w-24" />
               </div>
-              <div className="space-y-4 relative z-10">
-                <div className="h-12 w-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
-                  <Download className="h-6 w-6" />
+              
+              {/* Subtle top edge glow */}
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-blue-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="space-y-5 relative z-10">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white">
+                  <Download className="h-5 w-5" />
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-2xl font-bold">App</h3>
-                  <p className="text-xs text-blue-100 leading-relaxed">
+                <div className="space-y-1.5">
+                  <h3 className="text-xl font-bold font-headline tracking-tight">Mobile App</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                     Access classes, announcements, and community resources in one place.
                   </p>
                 </div>
               </div>
-              <Button asChild className="w-full bg-white/20 hover:bg-white/40 backdrop-blur-sm border border-white/20 font-semibold text-xs h-10 rounded-xl relative z-10 text-white transition-colors duration-300">
-                <a href={String(channelsAppLink.value)} target="_blank" rel="noopener noreferrer">
-                  Download <span className="ml-1">→</span>
+              <Button asChild className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-500/10 dark:hover:bg-blue-500/20 text-white dark:text-blue-400 border border-transparent dark:border-blue-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
+                <a href={String(channelsAppLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
+                  Download <span className="transition-transform group-hover:translate-x-1">→</span>
                 </a>
               </Button>
             </div>
 
             {/* Telegram */}
-            <div className="relative group overflow-hidden rounded-3xl bg-gradient-to-b from-[#06B6D4] to-[#0369A1] dark:from-[#0891B2]/95 dark:to-[#075985]/95 p-6 flex flex-col justify-between aspect-[3/4] text-white shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
-              <div className="absolute top-0 right-0 p-4 opacity-15 text-white/50 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-cyan-500/30 hover:shadow-2xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-cyan-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <i className="fa-brands fa-telegram text-8xl"></i>
               </div>
-              <div className="space-y-4 relative z-10">
-                <div className="h-12 w-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
+              
+              {/* Subtle top edge glow */}
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-cyan-400 to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="space-y-5 relative z-10">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-sky-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white">
                   <i className="fa-brands fa-telegram text-2xl"></i>
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-2xl font-bold">Telegram</h3>
-                  <p className="text-xs text-cyan-100 leading-relaxed">
+                <div className="space-y-1.5">
+                  <h3 className="text-xl font-bold font-headline tracking-tight">Telegram</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                     Join focused discussion channels and fast-moving updates.
                   </p>
                 </div>
               </div>
-              <Button asChild className="w-full bg-white/20 hover:bg-white/40 backdrop-blur-sm border border-white/20 font-semibold text-xs h-10 rounded-xl relative z-10 text-white transition-colors duration-300">
-                <a href={String(channelsTelegramLink.value)} target="_blank" rel="noopener noreferrer">
-                  Join <span className="ml-1">→</span>
+              <Button asChild className="w-full bg-cyan-500 hover:bg-cyan-600 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/20 text-white dark:text-cyan-400 border border-transparent dark:border-cyan-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
+                <a href={String(channelsTelegramLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
+                  Join Channel <span className="transition-transform group-hover:translate-x-1">→</span>
                 </a>
               </Button>
             </div>
 
             {/* YouTube */}
-            <div className="relative group overflow-hidden rounded-3xl bg-gradient-to-b from-[#EF4444] to-[#B91C1C] dark:from-[#DC2626]/95 dark:to-[#991B1B]/95 p-6 flex flex-col justify-between aspect-[3/4] text-white shadow-xl hover:-translate-y-2 hover:shadow-2xl transition-all duration-300">
-              <div className="absolute top-0 right-0 p-4 opacity-15 text-white/50 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-red-500/30 hover:shadow-2xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-red-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <i className="fa-brands fa-youtube text-8xl"></i>
               </div>
-              <div className="space-y-4 relative z-10">
-                <div className="h-12 w-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/20">
+              
+              {/* Subtle top edge glow */}
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-red-400 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="space-y-5 relative z-10">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-red-400 to-rose-600 flex items-center justify-center shadow-lg shadow-red-500/20 text-white">
                   <i className="fa-brands fa-youtube text-2xl"></i>
                 </div>
-                <div className="space-y-1">
-                  <h3 className="text-2xl font-bold">YouTube</h3>
-                  <p className="text-xs text-red-100 leading-relaxed">
+                <div className="space-y-1.5">
+                  <h3 className="text-xl font-bold font-headline tracking-tight">YouTube</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
                     Watch latest videos, tutorials, and live sessions from Xmarty Creator.
                   </p>
                 </div>
               </div>
-              <Button asChild className="w-full bg-white/20 hover:bg-white/45 backdrop-blur-sm border border-white/20 font-semibold text-xs h-10 rounded-xl relative z-10 text-white transition-colors duration-300">
-                <a href={String(channelsYoutubeLink.value)} target="_blank" rel="noopener noreferrer">
-                  Subscribe <span className="ml-1">→</span>
+              <Button asChild className="w-full bg-red-500 hover:bg-red-600 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-white dark:text-red-400 border border-transparent dark:border-red-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
+                <a href={String(channelsYoutubeLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
+                  Subscribe <span className="transition-transform group-hover:translate-x-1">→</span>
                 </a>
               </Button>
             </div>

@@ -80,11 +80,31 @@ function ProfileContent() {
       });
       setNotifications(prev => prev.map(n => (n._id === id || n.id === id) ? { ...n, read: true } : n));
       setNotifDropdownOpen(false);
-      if (link) {
-        if (link.startsWith('http') || link.startsWith('www')) {
-          window.open(link, '_blank');
+
+      let targetLink = link;
+      if (!targetLink) {
+        const notif = notifications.find(n => n._id === id || n.id === id);
+        if (notif && (notif.title?.toLowerCase().includes('certificate') || notif.message?.toLowerCase().includes('certificate'))) {
+          targetLink = "/profile?tab=certificate";
+        }
+      }
+
+      if (targetLink) {
+        if (targetLink.startsWith('http') || targetLink.startsWith('www')) {
+          window.open(targetLink, '_blank');
         } else {
-          router.push(link);
+          if (targetLink.includes('tab=certificate')) {
+            setActiveTab('certificate');
+          } else if (targetLink.includes('tab=setting')) {
+            setActiveTab('setting');
+          } else if (targetLink.includes('tab=courses')) {
+            setActiveTab('courses');
+          } else if (targetLink.includes('tab=community')) {
+            setActiveTab('community');
+          } else if (targetLink.includes('tab=test')) {
+            setActiveTab('test');
+          }
+          router.push(targetLink);
         }
       }
     } catch (e) {
@@ -112,6 +132,24 @@ function ProfileContent() {
       return () => clearInterval(interval);
     }
   }, [user]);
+
+  // Click outside to close notification dropdown
+  useEffect(() => {
+    const handleOutsideClick = (e: Event) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.student-bell-container') && !target.closest('.student-bell-container-mobile')) {
+        setNotifDropdownOpen(false);
+      }
+    };
+    if (notifDropdownOpen) {
+      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener('touchstart', handleOutsideClick);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('touchstart', handleOutsideClick);
+    };
+  }, [notifDropdownOpen]);
 
   // Joined Communities state
   const [joinedChannels, setJoinedChannels] = useState<string[]>([]);
@@ -434,7 +472,7 @@ function ProfileContent() {
                 <span className="font-headline font-black text-xs text-slate-800 dark:text-indigo-400">Student Panel</span>
               </div>
               
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 student-bell-container-mobile">
                 {/* Notification Dropdown Trigger (Mobile View) */}
                 <button
                   onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
@@ -696,7 +734,7 @@ function ProfileContent() {
             </div>
 
             {/* Notification Dropdown Trigger */}
-            <div className="hidden lg:block lg:fixed lg:top-8 lg:right-12 z-50">
+            <div className="hidden lg:block lg:fixed lg:top-8 lg:right-12 z-50 student-bell-container">
               <button
                 onClick={() => setNotifDropdownOpen(!notifDropdownOpen)}
                 className="h-11 w-11 rounded-full bg-white/90 dark:bg-slate-950/90 border border-slate-200/80 dark:border-white/10 flex items-center justify-center relative hover:scale-110 active:scale-95 transition-all text-slate-750 dark:text-slate-200 shadow-lg hover:shadow-xl backdrop-blur-md"

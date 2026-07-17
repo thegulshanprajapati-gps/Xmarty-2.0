@@ -73,6 +73,7 @@ export async function POST(request: Request) {
       userId: session.id,
       title: "Certificate Generated!",
       message: `Your certificate for ${examTitle} is ready for download.`,
+      link: "/profile?tab=certificate",
       type: "success",
       read: false,
       createdAt: new Date()
