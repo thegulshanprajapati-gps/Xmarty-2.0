@@ -257,9 +257,11 @@ export default async function CourseFolderPage({ params }: Props) {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4 pb-6">
-                  <Button className="w-full h-12 rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-md">
-                    Enroll in Course
-                  </Button>
+                  <Link href={`/public/checkout?type=Course&targetId=${realFolderId}`} className="w-full block">
+                    <Button className="w-full h-12 rounded-xl font-bold bg-primary text-primary-foreground hover:bg-primary/90 shadow-md">
+                      Enroll in Course
+                    </Button>
+                  </Link>
                   <p className="text-[10px] text-center text-muted-foreground font-medium">30-day money-back guarantee & certificate included.</p>
                 </CardContent>
               </Card>
