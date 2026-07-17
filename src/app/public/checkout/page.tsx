@@ -153,7 +153,11 @@ function CheckoutContent() {
           }
         }, 1800);
       } else {
-        alert(orderRes.error || "Order initialization failed");
+        if (orderRes.error === 'Unauthenticated') {
+          router.push(`/login?redirect=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+        } else {
+          alert(orderRes.error || "Order initialization failed");
+        }
         setProcessing(false);
       }
     } catch (e) {
