@@ -13,7 +13,7 @@ import {
   MessageSquare, Calendar, Clock, ClipboardList, LogOut, 
   Copy, Check, BookOpen, Users, Sparkles, Send, Play, 
   Download, ExternalLink, Settings, ShieldAlert, Award as CertificateIcon,
-  Home, Sun, Moon
+  Home, Sun, Moon, Receipt
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
