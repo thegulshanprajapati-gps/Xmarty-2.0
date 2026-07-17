@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import StudentBillingTab from "@/components/profile/billing-tab";
 
 function ProfileContent() {
   const { theme, setTheme } = useTheme();
@@ -30,7 +31,7 @@ function ProfileContent() {
   // Load active tab from URL query param if present
   useEffect(() => {
     const tab = searchParams.get('tab');
-    if (tab && ['community', 'profile', 'setting', 'test', 'certificate', 'courses'].includes(tab)) {
+    if (tab && ['community', 'profile', 'setting', 'test', 'certificate', 'courses', 'billing'].includes(tab)) {
       setActiveTab(tab);
     }
   }, [searchParams]);
@@ -534,6 +535,7 @@ function ProfileContent() {
                 { id: 'setting', label: 'Settings', icon: <Settings className="h-3.5 w-3.5" /> },
                 { id: 'test', label: 'Assessments', icon: <ClipboardList className="h-3.5 w-3.5" /> },
                 { id: 'certificate', label: 'Certificates', icon: <Award className="h-3.5 w-3.5" /> },
+                { id: 'billing', label: 'Billing & Plans', icon: <Receipt className="h-3.5 w-3.5" /> },
               ].map((tab) => (
                 <button
                   key={tab.id}
@@ -672,6 +674,20 @@ function ProfileContent() {
                 <Award className="h-4 w-4" />
                 <span>Certificates</span>
                 {activeTab === 'certificate' && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('billing')}
+                className={cn(
+                  "w-full h-9 px-3 rounded-lg font-bold text-xs flex items-center gap-2.5 transition-all border",
+                  activeTab === 'billing'
+                    ? "bg-gradient-to-r from-primary/10 to-rose-500/10 text-primary border-primary/20 shadow-sm font-black translate-x-0.5"
+                    : "text-slate-550 dark:text-slate-400 border-transparent hover:bg-slate-100/80 dark:hover:bg-white/[0.02] hover:text-slate-950 dark:hover:text-white hover:translate-x-0.5"
+                )}
+              >
+                <Receipt className="h-4 w-4" />
+                <span>Billing & Plans</span>
+                {activeTab === 'billing' && <span className="ml-auto w-1 h-1 rounded-full bg-primary" />}
               </button>
             </nav>
           </div>
@@ -1432,6 +1448,24 @@ function ProfileContent() {
                     })}
                   </div>
                 )}
+              </motion.div>
+            )}
+
+            {/* TAB 7: BILLING & PLANS */}
+            {activeTab === 'billing' && (
+              <motion.div
+                key="billing"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.25 }}
+                className="space-y-6"
+              >
+                <div className="border-b border-slate-200 dark:border-white/5 pb-4 mb-4">
+                  <h1 className="text-2xl font-headline font-bold">Billing & Subscriptions</h1>
+                  <p className="text-xs text-slate-455 leading-relaxed font-semibold">Manage your subscription, review transaction invoices, and check refund requests.</p>
+                </div>
+                <StudentBillingTab />
               </motion.div>
             )}
 
