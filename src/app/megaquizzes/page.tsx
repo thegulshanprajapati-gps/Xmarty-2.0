@@ -131,7 +131,7 @@ export default function MegaQuizzesLanding() {
               <Award className="h-4 w-4 text-primary" />
               <span>Mega Live Assessments</span>
             </div>
-            <h1 className="text-4xl sm:text-5xl font-headline font-black tracking-tight text-slate-900 dark:text-white uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-primary via-indigo-500 to-rose-500">
+            <h1 className="text-4xl sm:text-5xl font-headline font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
               {config.title}
             </h1>
           </div>

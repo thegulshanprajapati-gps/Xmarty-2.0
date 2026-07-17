@@ -380,7 +380,7 @@ function ProfileContent() {
             <div className="absolute top-0 left-1/2 -ml-1 w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_#ff0000] animate-ping" />
           </div>
           <div className="space-y-3">
-            <h3 className="font-headline font-black text-2xl tracking-tight text-slate-800 dark:text-white uppercase italic bg-clip-text text-transparent bg-gradient-to-r from-primary via-rose-500 to-indigo-500">
+            <h3 className="font-headline font-black text-2xl tracking-tight text-slate-800 dark:text-white uppercase italic">
               SYNCHRONIZING PROFILE
             </h3>
             <div className="w-24 h-1 bg-muted mx-auto rounded-full overflow-hidden relative">
