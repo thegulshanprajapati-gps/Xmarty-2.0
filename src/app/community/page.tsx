@@ -353,7 +353,7 @@ export default function CommunityPage() {
           {/* 4 Gradient Channel Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* WhatsApp */}
-            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-emerald-500/30 hover:shadow-2xl transition-all duration-300">
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between h-auto min-h-[265px] sm:min-h-0 sm:aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-emerald-500/30 hover:shadow-2xl transition-all duration-300">
               <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-emerald-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <i className="fa-brands fa-whatsapp text-8xl"></i>
               </div>
@@ -380,7 +380,7 @@ export default function CommunityPage() {
             </div>
 
             {/* App */}
-            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-blue-500/30 hover:shadow-2xl transition-all duration-300">
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between h-auto min-h-[265px] sm:min-h-0 sm:aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-blue-500/30 hover:shadow-2xl transition-all duration-300">
               <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-blue-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <Download className="h-24 w-24" />
               </div>
@@ -407,7 +407,7 @@ export default function CommunityPage() {
             </div>
 
             {/* Telegram */}
-            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-cyan-500/30 hover:shadow-2xl transition-all duration-300">
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between h-auto min-h-[265px] sm:min-h-0 sm:aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-cyan-500/30 hover:shadow-2xl transition-all duration-300">
               <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-cyan-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <i className="fa-brands fa-telegram text-8xl"></i>
               </div>
@@ -434,7 +434,7 @@ export default function CommunityPage() {
             </div>
 
             {/* YouTube */}
-            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-red-500/30 hover:shadow-2xl transition-all duration-300">
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between h-auto min-h-[265px] sm:min-h-0 sm:aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-red-500/30 hover:shadow-2xl transition-all duration-300">
               <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-red-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <i className="fa-brands fa-youtube text-8xl"></i>
               </div>
