@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ShieldCheck, Receipt, Tag, AlertCircle, Loader2 } from "lucide-react";
+import { ShieldCheck, Receipt, Tag, AlertCircle, Loader2, Sparkles, HelpCircle, Lock } from "lucide-react";
 import { createOrderAction, applyCouponAction, verifyPaymentAction } from "@/app/actions/subscription";
 
 function CheckoutContent() {
@@ -38,28 +38,36 @@ function CheckoutContent() {
       return;
     }
 
-    const fetchItemDetails = async () => {
+    const fetchDetails = async () => {
       try {
-        if (type === 'Subscription') {
-          const [planId, cycle] = targetId.split(':');
-          const res = await fetch('/api/plans');
-          const data = await res.json();
-          if (data.success) {
-            const plan = data.plans.find((p: any) => p.id === planId);
-            if (plan) {
-              setItemDetails({
-                title: `${plan.name} (${cycle === 'yearly' ? 'Yearly' : 'Monthly'})`,
-                price: cycle === 'yearly' ? plan.yearlyPrice : plan.monthlyPrice,
-                description: plan.description
-              });
-            }
+        const res = await fetch(`/api/checkout/item-details?type=${type}&targetId=${targetId}`);
+        const data = await res.json();
+        if (data.success && data.details) {
+          const det = data.details;
+          let calculatedPrice = det.price;
+          let title = det.title;
+
+          if (type === 'Subscription') {
+            const [, cycle] = targetId.split(':');
+            calculatedPrice = cycle === 'yearly' ? det.yearlyPrice : det.monthlyPrice;
+            title = `${det.title} (${cycle === 'yearly' ? 'Yearly' : 'Monthly'})`;
           }
+
+          setItemDetails({
+            title,
+            description: det.description,
+            price: calculatedPrice || 499,
+            thumbnail: det.thumbnail,
+            category: det.category
+          });
         } else {
-          // Fallback or course/bundle lookup placeholder
+          // Fallback if not found
           setItemDetails({
             title: `${type} Enrollment`,
             price: type === 'Course' ? 499 : 999,
-            description: `Unlock immediate access to your allotted ${type.toLowerCase()}.`
+            description: 'Gain immediate entry with verified certification pathways.',
+            thumbnail: `https://picsum.photos/seed/${targetId}/800/600`,
+            category: type
           });
         }
       } catch (e) {
@@ -69,7 +77,7 @@ function CheckoutContent() {
       }
     };
 
-    fetchItemDetails();
+    fetchDetails();
   }, [type, targetId, router]);
 
   const handleApplyCoupon = async () => {
@@ -104,7 +112,6 @@ function CheckoutContent() {
       );
 
       if (orderRes.success && orderRes.orderId) {
-        // Simulate Gateway Checkout Response (Sandbox/Production verification triggers)
         setTimeout(async () => {
           const verifyRes = await verifyPaymentAction(
             orderRes.orderId,
@@ -117,7 +124,7 @@ function CheckoutContent() {
           } else {
             router.push('/public/payment/failed');
           }
-        }, 1500);
+        }, 1800);
       } else {
         alert(orderRes.error || "Order initialization failed");
         setProcessing(false);
@@ -131,9 +138,10 @@ function CheckoutContent() {
 
   if (loading) {
     return (
-      <div className="w-full min-h-[80vh] flex flex-col items-center justify-center bg-[#FAFCFF] dark:bg-[#030712]">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-        <p className="text-xs text-slate-500 dark:text-slate-400 font-bold mt-4 animate-pulse">LOADING CHECKOUT DETAILS...</p>
+      <div className="w-full min-h-[85vh] flex flex-col items-center justify-center bg-[#FAFCFF] dark:bg-[#030712] relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-primary/10 rounded-full blur-[80px] pointer-events-none animate-pulse" />
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <p className="text-xs text-slate-500 dark:text-slate-400 font-bold mt-4 animate-pulse uppercase tracking-widest">Constructing Checkout Workspace...</p>
       </div>
     );
   }
@@ -147,104 +155,115 @@ function CheckoutContent() {
   return (
     <div className="w-full min-h-screen bg-[#FAFCFF] dark:bg-[#030712] py-20 px-4 relative overflow-hidden text-slate-900 dark:text-slate-100 transition-colors duration-300">
       
-      {/* Background radial glows */}
-      <div className="absolute top-[20%] left-[10%] w-[400px] h-[400px] bg-primary/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-[20%] right-[20%] w-[400px] h-[400px] bg-indigo-500/5 rounded-full blur-[140px] pointer-events-none" />
+      {/* Decorative background vectors/gradients */}
+      <div className="absolute top-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/5 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] bg-indigo-500/5 rounded-full blur-[130px] pointer-events-none" />
+      
+      {/* Grid Pattern overlay */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px] pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto space-y-8 relative z-10">
+      <div className="max-w-5xl mx-auto space-y-10 relative z-10">
         
-        {/* Header */}
-        <div className="border-b border-slate-200 dark:border-white/5 pb-6">
-          <h1 className="text-3xl font-black tracking-tight font-headline flex items-center gap-2">
-            Secure Checkout
+        {/* Header Block */}
+        <div className="space-y-2 border-b border-slate-200/60 dark:border-white/5 pb-6">
+          <div className="flex items-center gap-2">
+            <Badge className="bg-primary/10 text-primary border border-primary/20 px-2.5 py-0.5 rounded font-black text-[9px] uppercase tracking-wider">
+              Secure Gateway
+            </Badge>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tight font-headline">
+            Checkout Workspace
           </h1>
-          <p className="text-xs text-slate-400 font-semibold uppercase tracking-wider mt-1">Review items and choose payment details</p>
+          <p className="text-xs text-slate-450 font-semibold uppercase tracking-wider">Review items, apply promo codes, and complete transaction</p>
         </div>
 
         {/* Layout Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
           
-          {/* LEFT: Order Summary & Billing */}
-          <div className="space-y-6">
-            <div className="p-6 rounded-[24px] bg-white dark:bg-slate-950/40 border border-slate-200/80 dark:border-white/5 shadow-sm space-y-4">
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-450 flex items-center gap-2">
-                <Receipt className="h-4 w-4 text-primary" /> Order Summary
-              </h3>
-              <div className="space-y-2 py-2">
-                <div className="flex justify-between items-start gap-4">
-                  <div>
-                    <h4 className="font-bold text-sm text-slate-900 dark:text-white">{itemDetails?.title}</h4>
-                    <p className="text-[10px] text-slate-450 leading-relaxed font-semibold mt-0.5">{itemDetails?.description}</p>
-                  </div>
-                  <span className="text-xs font-bold shrink-0">{basePrice} INR</span>
-                </div>
-              </div>
-
-              {/* Coupon Box */}
-              <div className="space-y-3 pt-3 border-t border-slate-100 dark:border-white/5">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Apply Coupon</span>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    placeholder="ENTER COUPON CODE"
-                    value={couponCode}
-                    onChange={(e) => setCouponCode(e.target.value)}
-                    className="flex-1 h-9 px-3 rounded-lg border border-slate-200 dark:border-white/5 bg-transparent text-xs font-bold uppercase tracking-wider"
+          {/* LEFT/MID PANELS: Item Preview, Coupons, Billing details */}
+          <div className="lg:col-span-2 space-y-6">
+            
+            {/* 1. Interactive Item Preview Card */}
+            <div className="rounded-[24px] bg-white dark:bg-slate-950/40 border border-slate-200/80 dark:border-white/5 p-6 shadow-sm space-y-5">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Purchasing Item</span>
+              
+              <div className="flex flex-col sm:flex-row gap-5 items-start sm:items-center">
+                <div className="relative w-full sm:w-40 aspect-video rounded-2xl overflow-hidden border border-slate-150 dark:border-white/5 shadow-inner shrink-0 bg-slate-100 dark:bg-slate-900">
+                  <img 
+                    src={itemDetails?.thumbnail}
+                    alt={itemDetails?.title}
+                    className="w-full h-full object-cover"
                   />
-                  <Button onClick={handleApplyCoupon} className="h-9 px-4 text-xs font-bold bg-slate-200 dark:bg-white/10 hover:bg-slate-350 dark:hover:bg-white/15 text-slate-800 dark:text-white border border-transparent dark:border-white/5">
-                    Apply
-                  </Button>
-                </div>
-                {appliedCoupon && (
-                  <span className="text-[10px] text-emerald-500 font-bold flex items-center gap-1.5">
-                    <Tag className="h-3 w-3" /> Coupon applied: Saved {appliedCoupon.discount} INR!
-                  </span>
-                )}
-                {couponError && (
-                  <span className="text-[10px] text-red-500 font-bold flex items-center gap-1.5">
-                    <AlertCircle className="h-3 w-3" /> {couponError}
-                  </span>
-                )}
-              </div>
-
-              {/* Pricing Breakdown */}
-              <div className="space-y-2.5 pt-4 border-t border-slate-100 dark:border-white/5 text-xs font-medium">
-                <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                  <span>Subtotal</span>
-                  <span>{basePrice} INR</span>
-                </div>
-                {discount > 0 && (
-                  <div className="flex justify-between text-emerald-500">
-                    <span>Discount</span>
-                    <span>-{discount} INR</span>
+                  <div className="absolute top-2.5 left-2.5">
+                    <Badge className="bg-primary text-primary-foreground border-none text-[8px] font-black uppercase tracking-wider px-2 py-0.5 rounded shadow">
+                      {itemDetails?.category}
+                    </Badge>
                   </div>
-                )}
-                <div className="flex justify-between text-slate-500 dark:text-slate-400">
-                  <span>GST (18%)</span>
-                  <span>{tax} INR</span>
                 </div>
-                <div className="flex justify-between text-sm font-black pt-2 border-t border-slate-100 dark:border-white/5 text-slate-900 dark:text-white">
-                  <span>Grand Total</span>
-                  <span>{grandTotal} INR</span>
+
+                <div className="space-y-1.5 flex-1 text-left">
+                  <h3 className="text-lg font-black text-slate-900 dark:text-white leading-snug">{itemDetails?.title}</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium line-clamp-2">
+                    {itemDetails?.description}
+                  </p>
+                  <div className="flex items-center gap-1.5 pt-1 text-[10px] font-bold text-slate-400 uppercase tracking-wide">
+                    <ShieldCheck className="h-4 w-4 text-emerald-500" /> Lifetime access & verification certificate included
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Billing Details */}
-            <div className="p-6 rounded-[24px] bg-white dark:bg-slate-950/40 border border-slate-200/80 dark:border-white/5 shadow-sm space-y-4">
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-450">Billing Address & GST</h3>
+            {/* 2. Coupon Campaign Box */}
+            <div className="rounded-[24px] bg-white dark:bg-slate-950/40 border border-slate-200/80 dark:border-white/5 p-6 shadow-sm space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Promotional Coupons</span>
+                <span className="text-[9px] text-primary font-bold uppercase tracking-wider">Try: WELCOME10</span>
+              </div>
+              
+              <div className="flex gap-2">
+                <div className="relative flex-1">
+                  <Tag className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="text"
+                    placeholder="ENTER DISCOUNT PROMO CODE"
+                    value={couponCode}
+                    onChange={(e) => setCouponCode(e.target.value)}
+                    className="w-full h-10 pl-9 pr-3 rounded-xl border border-slate-200 dark:border-white/5 bg-transparent text-xs font-bold uppercase tracking-wider outline-none focus:border-primary/45 transition-colors"
+                  />
+                </div>
+                <Button onClick={handleApplyCoupon} className="h-10 px-5 text-xs font-black bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/15 text-slate-800 dark:text-white border border-transparent dark:border-white/5 rounded-xl">
+                  Apply
+                </Button>
+              </div>
+
+              {appliedCoupon && (
+                <span className="text-[10px] text-emerald-500 font-bold flex items-center gap-1.5 bg-emerald-500/[0.04] p-2.5 rounded-lg border border-emerald-500/20">
+                  <Sparkles className="h-3.5 w-3.5" /> Coupon Campaign Active: Saved {appliedCoupon.discount} INR off!
+                </span>
+              )}
+              {couponError && (
+                <span className="text-[10px] text-red-500 font-bold flex items-center gap-1.5 bg-red-500/[0.04] p-2.5 rounded-lg border border-red-500/20">
+                  <AlertCircle className="h-3.5 w-3.5" /> {couponError}
+                </span>
+              )}
+            </div>
+
+            {/* 3. Address & Corporate GST Billing Details */}
+            <div className="rounded-[24px] bg-white dark:bg-slate-950/40 border border-slate-200/80 dark:border-white/5 p-6 shadow-sm space-y-4">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Billing & Location Details</span>
+              
               <div className="space-y-3">
                 <div className="space-y-1">
-                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Billing Address *</span>
+                  <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Complete Billing Address *</span>
                   <textarea
                     rows={2}
                     value={billingAddress}
                     onChange={(e) => setBillingAddress(e.target.value)}
-                    placeholder="Enter complete billing address"
-                    className="w-full p-2.5 rounded-lg border border-slate-200 dark:border-white/5 bg-transparent text-xs font-medium"
+                    placeholder="Enter complete billing/shipping street address details"
+                    className="w-full p-3 rounded-xl border border-slate-200 dark:border-white/5 bg-transparent text-xs font-semibold"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">GST Number (Optional)</span>
                     <input
@@ -252,7 +271,7 @@ function CheckoutContent() {
                       value={gstNumber}
                       onChange={(e) => setGstNumber(e.target.value)}
                       placeholder="e.g. 22AAAAA0000A1Z5"
-                      className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-white/5 bg-transparent text-xs font-medium"
+                      className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-white/5 bg-transparent text-xs font-semibold"
                     />
                   </div>
                   <div className="space-y-1">
@@ -261,29 +280,58 @@ function CheckoutContent() {
                       type="text"
                       value={companyName}
                       onChange={(e) => setCompanyName(e.target.value)}
-                      placeholder="e.g. Acme Corp"
-                      className="w-full h-9 px-3 rounded-lg border border-slate-200 dark:border-white/5 bg-transparent text-xs font-medium"
+                      placeholder="e.g. Acme Corporation Ltd"
+                      className="w-full h-10 px-3 rounded-xl border border-slate-200 dark:border-white/5 bg-transparent text-xs font-semibold"
                     />
                   </div>
                 </div>
               </div>
             </div>
+
           </div>
 
-          {/* RIGHT: Payment Gateway Selection */}
+          {/* RIGHT PANELS: Billing summary, Gateway selector and pay action */}
           <div className="space-y-6">
-            <div className="p-6 rounded-[24px] bg-white dark:bg-slate-950/40 border border-slate-200/80 dark:border-white/5 shadow-sm space-y-4">
-              <h3 className="text-sm font-black uppercase tracking-widest text-slate-450">Payment Method</h3>
+            
+            {/* 4. Real-time Invoice Price Breakup */}
+            <div className="rounded-[24px] bg-white dark:bg-slate-950/40 border border-slate-200/80 dark:border-white/5 p-6 shadow-sm space-y-4">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Invoice Summary</span>
+              
+              <div className="space-y-2.5 text-xs font-medium text-slate-500 dark:text-slate-400">
+                <div className="flex justify-between">
+                  <span>Base Amount</span>
+                  <span>{basePrice} INR</span>
+                </div>
+                {discount > 0 && (
+                  <div className="flex justify-between text-emerald-500 font-bold">
+                    <span>Promo Coupon Discount</span>
+                    <span>-{discount} INR</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span>IGST / CGST (18%)</span>
+                  <span>{tax} INR</span>
+                </div>
+                <div className="flex justify-between text-sm font-black text-slate-900 dark:text-white pt-2.5 border-t border-slate-100 dark:border-white/5">
+                  <span>Grand Total (INR)</span>
+                  <span>{grandTotal} INR</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 5. Payments Execution Gateway Selection */}
+            <div className="rounded-[24px] bg-white dark:bg-slate-950/40 border border-slate-200/80 dark:border-white/5 p-6 shadow-sm space-y-5">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block font-headline">Select Payment Gateway</span>
               
               <div className="space-y-3">
                 {[
-                  { id: 'Razorpay', label: 'Razorpay (Cards, UPI, Netbanking)', desc: 'Pay securely using local Indian UPI modes.' },
-                  { id: 'Stripe', label: 'Stripe (Credit / Debit Cards)', desc: 'International visa and master cards processes.' },
-                  { id: 'Cashfree', label: 'Cashfree Pay', desc: 'Secure direct merchant payment gateways.' }
+                  { id: 'Razorpay', title: 'Razorpay Secure', subtitle: 'UPI / Cards / Netbanking' },
+                  { id: 'Stripe', title: 'Stripe Pay', subtitle: 'International Visa & Master Cards' },
+                  { id: 'Cashfree', title: 'Cashfree Merchant', subtitle: 'Direct Netbanking Gateways' }
                 ].map((g: any) => (
                   <label 
                     key={g.id} 
-                    className={`flex items-start gap-3 p-3.5 rounded-xl border cursor-pointer transition-all ${gateway === g.id ? 'border-primary bg-primary/[0.02]' : 'border-slate-150 dark:border-white/5 hover:border-slate-300'}`}
+                    className={`flex items-start gap-3 p-3.5 rounded-2xl border cursor-pointer transition-all ${gateway === g.id ? 'border-primary bg-primary/[0.03]' : 'border-slate-150 dark:border-white/5 hover:border-slate-300'}`}
                   >
                     <input
                       type="radio"
@@ -293,27 +341,27 @@ function CheckoutContent() {
                       onChange={() => setGateway(g.id)}
                       className="mt-1 accent-primary"
                     />
-                    <div className="space-y-0.5">
-                      <span className="text-xs font-bold text-slate-800 dark:text-white block">{g.label}</span>
-                      <span className="text-[10px] text-slate-450 leading-relaxed block">{g.desc}</span>
+                    <div className="space-y-0.5 text-left">
+                      <span className="text-xs font-black text-slate-800 dark:text-white block">{g.title}</span>
+                      <span className="text-[10px] text-slate-450 leading-relaxed font-semibold block">{g.subtitle}</span>
                     </div>
                   </label>
                 ))}
               </div>
 
-              {/* Terms Checkbox */}
-              <label className="flex items-start gap-2.5 pt-2 text-[10px] text-slate-450 font-semibold tracking-wide cursor-pointer">
+              {/* T&C Verification */}
+              <label className="flex items-start gap-2.5 pt-2 text-[10px] text-slate-450 font-bold tracking-wide cursor-pointer text-left">
                 <input
                   type="checkbox"
                   checked={termsAccepted}
                   onChange={(e) => setTermsAccepted(e.target.checked)}
                   className="mt-0.5 accent-primary"
                 />
-                <span>I accept the membership policies, refund rules, and terms of service.</span>
+                <span>I accept terms of enrollment and initial billing cycles policy parameters.</span>
               </label>
 
-              {/* Action Button */}
-              <div className="pt-4 space-y-3">
+              {/* Pay trigger */}
+              <div className="pt-2 space-y-3">
                 <Button 
                   onClick={handleCheckout} 
                   disabled={processing}
@@ -321,11 +369,11 @@ function CheckoutContent() {
                 >
                   {processing ? (
                     <>
-                      <Loader2 className="h-4 w-4 animate-spin text-white" /> Processing Checkout...
+                      <Loader2 className="h-4 w-4 animate-spin text-white" /> Constructing Checkout...
                     </>
                   ) : (
                     <>
-                      Pay {grandTotal} INR <ShieldCheck className="h-4 w-4" />
+                      Pay {grandTotal} INR <Lock className="h-3.5 w-3.5" />
                     </>
                   )}
                 </Button>
@@ -334,6 +382,7 @@ function CheckoutContent() {
                 </div>
               </div>
             </div>
+
           </div>
 
         </div>
