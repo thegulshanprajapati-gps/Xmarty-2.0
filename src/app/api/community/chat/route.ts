@@ -30,6 +30,8 @@ export async function GET(req: Request) {
       await db.collection('community_messages').insertMany(systemMessages);
     }
 
+    const community = await db.collection('communities').findOne({ slug });
+
     const messages = await db.collection('community_messages')
       .find({ community_slug: slug })
       .sort({ created_at: 1 })
@@ -38,6 +40,11 @@ export async function GET(req: Request) {
 
     return NextResponse.json({
       success: true,
+      community: community ? {
+        name: community.name,
+        description: community.description,
+        slug: community.slug
+      } : null,
       messages: messages.map((m: any) => ({
         ...m,
         id: m._id.toString(),

@@ -552,41 +552,37 @@ export default function HomePage() {
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className="hidden lg:flex lg:col-span-7 space-y-6 md:space-y-8 flex-col items-start text-left relative"
               >
-                <div className="badge-doodle-container inline-flex items-center justify-center gap-2.5 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary tracking-wide uppercase font-sans animate-fade-in shadow-sm shadow-primary/5 relative">
+                <div className="badge-doodle-container relative z-10 flex items-center gap-2.5 animate-fade-in">
                   <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse max-md:hidden" />
                   <CustomizableBadge
                     pageSlug="home"
                     sectionKey="hero"
                     badgeKey="badge"
                     defaultText="INDUSTRY READY EDTECH"
-                    className="bg-transparent border-none text-primary p-0 font-sans tracking-wider"
+                    className="font-sans font-extrabold text-xs px-4 py-1.5 shadow-sm shadow-primary/5 bg-primary/10 border-primary/20 text-primary"
                   />
-                  {/* Decorative hand-drawn circle for mobile */}
-                  <svg className="absolute inset-0 w-full h-full text-primary/40 stroke-current stroke-[2] fill-none md:hidden pointer-events-none" viewBox="0 0 160 36" preserveAspectRatio="none">
-                    <rect x="2" y="2" width="156" height="32" rx="16" strokeLinecap="round" />
-                  </svg>
                 </div>
                 
                 <div className="space-y-5 relative w-full flex flex-col items-start">
-                  <h1 className="hero-title-container font-sans text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] relative w-full text-left pb-4">
+                  <h1 className="hero-title-container font-headline text-6xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.1] relative w-full text-left pb-4">
                     <EditableText
                       pageSlug="home"
                       sectionKey="hero"
                       contentKey="title"
                       defaultValue="Learn skills that actually ship."
                       as="span"
-                      className="text-slate-900 dark:text-white font-sans"
+                      className="text-slate-900 dark:text-white font-headline"
                     />
                   </h1>
                   
-                  <div className="hero-subtitle-container w-full max-w-2xl text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-sans font-medium pt-2 text-left">
+                  <div className="hero-subtitle-container w-full max-w-2xl text-lg lg:text-xl text-slate-600 dark:text-slate-300 leading-relaxed font-subtitle font-medium pt-2 text-left">
                     <EditableText
                       pageSlug="home"
                       sectionKey="hero"
                       contentKey="subtitle"
                       defaultValue="XmartyCreator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support."
                       as="span"
-                      className="font-sans"
+                      className="font-subtitle"
                     />
                   </div>
                 </div>

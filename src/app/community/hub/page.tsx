@@ -15,7 +15,7 @@ export default function CommunityHubPage() {
 
   const [communities, setCommunities] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [onlineCount, setOnlineCount] = useState(240);
+  const [onlineCount, setOnlineCount] = useState(0);
 
   // Form State
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -33,6 +33,9 @@ export default function CommunityHubPage() {
       const data = await res.json();
       if (data.success) {
         setCommunities(data.communities || []);
+        if (data.onlineCount !== undefined) {
+          setOnlineCount(data.onlineCount);
+        }
       }
     } catch (e) {
       console.error("Failed to load communities:", e);
@@ -95,9 +98,24 @@ export default function CommunityHubPage() {
 
   if (userLoading || !user) {
     return (
-      <div className="w-full min-h-[70vh] flex flex-col items-center justify-center bg-[#FAFCFF] dark:bg-[#030712]">
-        <Loader2 className="h-10 w-10 animate-spin text-primary" />
-        <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-3">Connecting to Creator Network...</p>
+      <div className="w-full min-h-[70vh] flex flex-col items-center justify-center bg-[#FAFCFF] dark:bg-[#030712] relative overflow-hidden">
+        {/* Soft atmospheric background lights */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[350px] h-[350px] bg-primary/10 rounded-full blur-[100px] pointer-events-none animate-pulse" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[200px] h-[200px] bg-indigo-500/10 rounded-full blur-[80px] pointer-events-none animate-pulse" style={{ animationDelay: '1.5s' }} />
+        
+        {/* Custom premium loader graphic: double ring orbiting layout */}
+        <div className="relative w-24 h-24 flex items-center justify-center">
+          <div className="absolute inset-0 rounded-full border-[3px] border-primary/10 border-t-primary animate-spin" />
+          <div className="absolute inset-2 rounded-full border-[3px] border-indigo-500/5 border-b-indigo-500/40 animate-spin" style={{ animationDuration: '1.5s', animationDirection: 'reverse' }} />
+          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-primary/20 to-indigo-500/20 backdrop-blur-md border border-white/20 dark:border-white/5 animate-pulse" />
+        </div>
+        
+        <h3 className="text-sm font-bold text-slate-800 dark:text-slate-200 mt-6 tracking-wide">
+          Connecting to Creator Network
+        </h3>
+        <p className="text-[10px] text-slate-400 font-semibold tracking-wider uppercase mt-1.5 animate-pulse">
+          Establishing secure tunnel...
+        </p>
       </div>
     );
   }
