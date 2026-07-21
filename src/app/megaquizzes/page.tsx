@@ -8,6 +8,8 @@ import {
   FileText
 } from 'lucide-react';
 import Link from 'next/link';
+import { useContentBlock } from '@/hooks/use-content-block';
+import { EditableText } from '@/components/cms/editable-text';
 
 export default function MegaQuizzesLanding() {
   const [activeTab, setActiveTab] = useState<'register' | 'status'>('register');
@@ -32,6 +34,15 @@ export default function MegaQuizzesLanding() {
   const [statusEmail, setStatusEmail] = useState('');
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
   const [statusResult, setStatusResult] = useState<any>(null);
+
+  // CMS Content
+  const seoTitle = useContentBlock("megaquizzes", "seo", "title", "Mega Quizzes - XmartyCreator", "text");
+  const seoDesc = useContentBlock("megaquizzes", "seo", "description", "Register for the upcoming premium live assessment tracks.", "text");
+  const seoKeywords = useContentBlock("megaquizzes", "seo", "keywords", "mega quiz, live assessment, coding test", "text");
+
+  const heroTitle = useContentBlock("megaquizzes", "hero", "title", "", "text");
+  const heroDesc = useContentBlock("megaquizzes", "hero", "description", "", "text");
+  const heroBannerUrl = useContentBlock("megaquizzes", "hero", "bannerUrl", "", "text");
 
   // Load config on mount
   useEffect(() => {
@@ -96,8 +107,32 @@ export default function MegaQuizzesLanding() {
     }
   };
 
+  const displayTitle = heroTitle.value || config.title;
+  const displayDesc = heroDesc.value || config.description;
+  const displayBannerUrl = heroBannerUrl.value || config.bannerUrl;
+
+  const getImageUrl = (imgBlockValue: any) => {
+    if (!imgBlockValue) return "";
+    if (typeof imgBlockValue === 'string') {
+      if (imgBlockValue.trim().startsWith('{')) {
+        try {
+          return JSON.parse(imgBlockValue).url || imgBlockValue;
+        } catch (e) {
+          return imgBlockValue;
+        }
+      }
+      return imgBlockValue;
+    }
+    return imgBlockValue.url || "";
+  };
+
+  const finalBannerImg = getImageUrl(displayBannerUrl);
+
   return (
     <div className="w-full min-h-screen bg-slate-50 dark:bg-[#04060E] text-slate-900 dark:text-white transition-colors duration-300 relative py-12 px-4 select-none overflow-hidden">
+      <title>{seoTitle.value}</title>
+      <meta name="description" content={seoDesc.value} />
+      <meta name="keywords" content={seoKeywords.value} />
       {/* Animated network lines decoration */}
       <div className="absolute inset-0 opacity-[0.02] dark:opacity-[0.03] bg-[linear-gradient(to_right,#808080_1px,transparent_1px),linear-gradient(to_bottom,#808080_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
       
@@ -108,10 +143,10 @@ export default function MegaQuizzesLanding() {
       <div className="max-w-4xl mx-auto space-y-10 relative z-10">
         
         {/* Dynamic Banner Header */}
-        {config.bannerUrl ? (
+        {finalBannerImg ? (
           <div className="w-full h-48 sm:h-64 rounded-[2.5rem] overflow-hidden border border-slate-200 dark:border-white/5 shadow-2xl relative mb-6">
             <img 
-              src={config.bannerUrl} 
+              src={finalBannerImg} 
               alt="Mega Quiz Banner" 
               className="w-full h-full object-cover"
             />
@@ -120,7 +155,7 @@ export default function MegaQuizzesLanding() {
                 <Award className="h-4 w-4" /> Live Assessment
               </div>
               <h1 className="text-2xl sm:text-4xl font-headline font-black text-white uppercase italic tracking-tight">
-                {config.title}
+                <EditableText pageSlug="megaquizzes" sectionKey="hero" contentKey="title" defaultValue={displayTitle} as="span" />
               </h1>
             </div>
           </div>
@@ -132,7 +167,7 @@ export default function MegaQuizzesLanding() {
               <span>Mega Live Assessments</span>
             </div>
             <h1 className="text-4xl sm:text-5xl font-headline font-black tracking-tight text-slate-900 dark:text-white uppercase italic">
-              {config.title}
+              <EditableText pageSlug="megaquizzes" sectionKey="hero" contentKey="title" defaultValue={displayTitle} as="span" />
             </h1>
           </div>
         )}
@@ -140,7 +175,7 @@ export default function MegaQuizzesLanding() {
         {/* Intro description */}
         <div className="text-center max-w-2xl mx-auto">
           <p className="text-slate-500 dark:text-slate-400 text-sm font-medium leading-relaxed">
-            {config.description}
+            <EditableText pageSlug="megaquizzes" sectionKey="hero" contentKey="description" defaultValue={displayDesc} as="span" />
           </p>
         </div>
 

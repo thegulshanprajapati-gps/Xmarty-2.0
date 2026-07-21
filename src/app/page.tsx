@@ -4,7 +4,7 @@ import { useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import {
   ArrowRight,
   Award,
@@ -64,7 +64,12 @@ function CountUp({ value }: { value: string }) {
     };
   }, [value]);
 
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-50px" });
+
   useEffect(() => {
+    if (!isInView) return;
+    
     let start = 0;
     const end = numericValue;
     if (end === 0) {
@@ -92,16 +97,15 @@ function CountUp({ value }: { value: string }) {
     }, frameRate);
 
     return () => clearInterval(timer);
-  }, [numericValue]);
+  }, [numericValue, isInView]);
 
   const formattedCount = useMemo(() => {
     return count.toLocaleString();
   }, [count]);
 
   return (
-    <span>
-      {formattedCount}
-      {suffix}
+    <span ref={ref}>
+      {formattedCount}{suffix}
     </span>
   );
 }
@@ -359,8 +363,11 @@ export default function HomePage() {
   const subtitleDarkColorBlock = useContentBlock('home', 'hero', 'subtitleDarkColor', '', 'text');
 
   const primaryCtaBlock = useContentBlock('home', 'hero', 'primaryCta', 'Explore Courses', 'text');
+  const primaryCtaLinkBlock = useContentBlock('home', 'hero', 'primaryCtaLink', '/courses', 'text');
   const secondaryCtaBlock = useContentBlock('home', 'hero', 'secondaryCta', 'Join Community', 'text');
+  const secondaryCtaLinkBlock = useContentBlock('home', 'hero', 'secondaryCtaLink', '/community', 'text');
   const loginCtaBlock = useContentBlock('home', 'hero', 'loginCta', 'Login / Register', 'text');
+  const loginCtaLinkBlock = useContentBlock('home', 'hero', 'loginCtaLink', '/login', 'text');
 
   const isBlockEmpty = (blockObj: any) => {
     if (blockObj.value === '') return true;
@@ -609,7 +616,7 @@ export default function HomePage() {
                  <div className="flex flex-row flex-wrap gap-4 justify-start items-center relative z-10 w-full pt-2">
                   {showPrimaryCta && (
                     <Button asChild size="lg" className="h-14 rounded-2xl px-8 text-base font-bold bg-primary text-primary-foreground hover:bg-primary/95 shadow-lg shadow-primary/25 transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10 w-auto shrink-0">
-                      <Link href="/courses" className="inline-flex items-center">
+                      <Link href={primaryCtaLinkBlock.value || "/courses"} className="inline-flex items-center">
                         <EditableText
                           pageSlug="home"
                           sectionKey="hero"
@@ -624,7 +631,7 @@ export default function HomePage() {
                   )}
                   {showSecondaryCta && (
                     <Button asChild variant="outline" size="lg" className="h-14 rounded-2xl border-2 border-slate-200 hover:border-slate-300 dark:border-slate-800 dark:hover:border-slate-700 bg-background/50 hover:bg-background/80 px-8 text-base font-bold transition-all hover:-translate-y-0.5 active:translate-y-0 font-sans z-10 w-auto shrink-0">
-                      <Link href="/community" className="inline-flex items-center">
+                      <Link href={secondaryCtaLinkBlock.value || "/community"} className="inline-flex items-center">
                         <Play className="mr-2 h-4 w-4 fill-current" />
                         <EditableText
                           pageSlug="home"
@@ -638,7 +645,7 @@ export default function HomePage() {
                   )}
                   {showLoginCta && (
                     <Button asChild variant="secondary" size="lg" className="h-14 rounded-2xl px-8 text-base font-bold bg-slate-100 dark:bg-slate-900 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 transition-all hover:-translate-y-0.5 font-sans z-10 w-auto shrink-0">
-                      <Link href="/login">
+                      <Link href={loginCtaLinkBlock.value || "/login"}>
                         <EditableText
                           pageSlug="home"
                           sectionKey="hero"
@@ -1308,7 +1315,7 @@ export default function HomePage() {
                         <StatIcon className="h-7 w-7" />
                       </div>
                       <div className="text-4xl lg:text-5xl font-extrabold text-foreground mb-2 font-sans tracking-tight">
-                        {item.value || item.metric}
+                        <CountUp value={item.value || item.metric} />
                       </div>
                       <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
                         {item.label || item.subtitle}
@@ -1322,8 +1329,7 @@ export default function HomePage() {
         </section>
 
         {/* ── Call to Action Section ────────────────────────────────────── */}
-        <section className="py-20 lg:py-32 relative overflow-hidden bg-slate-900 dark:bg-black border-t border-white/5">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-indigo-500/10 to-transparent pointer-events-none" />
+        <section className="py-20 lg:py-32 relative overflow-hidden bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
             <CustomizableBadge
               pageSlug="home"
@@ -1332,7 +1338,7 @@ export default function HomePage() {
               defaultText="START YOUR JOURNEY"
               className="border-primary/30 text-primary bg-primary/10 px-4 py-1 text-sm font-semibold rounded-full"
             />
-            <h2 className="font-headline text-5xl lg:text-7xl font-extrabold tracking-tight text-white">
+            <h2 className="font-headline text-5xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white">
               <EditableText
                 pageSlug="home"
                 sectionKey="cta"
@@ -1341,7 +1347,7 @@ export default function HomePage() {
                 as="span"
               />
             </h2>
-            <p className="text-xl text-slate-300 font-medium max-w-2xl mx-auto">
+            <p className="text-xl text-slate-600 dark:text-slate-300 font-medium max-w-2xl mx-auto">
               <EditableText
                 pageSlug="home"
                 sectionKey="cta"

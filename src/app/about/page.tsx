@@ -5,12 +5,20 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Award, Users, Rocket, Heart, Twitter, Linkedin, Github } from "lucide-react";
 import { useContentBlock } from "@/hooks/use-content-block";
 import { CustomizableBadge } from "@/components/cms/customizable-badge";
+import { EditableText } from "@/components/cms/editable-text";
 import Image from "next/image";
 
 export default function AboutPage() {
   const seoTitle = useContentBlock("about", "seo", "title", "About Us - XmartyCreator", "text");
   const seoDesc = useContentBlock("about", "seo", "description", "Learn about XmartyCreator, our story, mission, and how we help creators build real software.", "text");
   const seoKeywords = useContentBlock("about", "seo", "keywords", "about us, mission, story, xmartycreator", "text");
+
+  const heroTitle = useContentBlock("about", "hero", "title", "Designing the Future of Tech Education", "text");
+  const heroSubtitle = useContentBlock("about", "hero", "subtitle", "We empower builders, designers, and engineers to create state-of-the-art software systems with production-grade architectures.", "text");
+  const heroImage = useContentBlock("about", "hero", "image", "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80", "text");
+
+  const storyHeading = useContentBlock("about", "story", "heading", "For Creators, By Architects", "text");
+  const storyContent = useContentBlock("about", "story", "content", `<p>In 2021, we set out to build a platform that treated learning like professional development. We didn't just want to teach code; we wanted to teach architectural thinking, scalability, and design excellence.</p><p>Today, XmartyCreator is home to over 45,000 students globally, powered by the Vasant AI Assistant and mentored by some of the brightest minds in the industry.</p>`, "text");
 
   const founderBadge = useContentBlock("about", "founder", "badge", "Meet Our Founder", "text");
   const founderName = useContentBlock("about", "founder", "name", "Mukesh Raj", "text");
@@ -95,10 +103,10 @@ export default function AboutPage() {
               className="border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500 bg-red-500/5"
             />
             <h1 className="text-5xl md:text-6xl font-headline font-black tracking-tight text-slate-900 dark:text-white leading-tight">
-              Designing the Future of Tech Education
+              <EditableText pageSlug="about" sectionKey="hero" contentKey="title" defaultValue="Designing the Future of Tech Education" as="span" />
             </h1>
             <p className="max-w-2xl mx-auto text-lg text-slate-600 dark:text-slate-400 leading-relaxed font-medium">
-              We empower builders, designers, and engineers to create state-of-the-art software systems with production-grade architectures.
+              <EditableText pageSlug="about" sectionKey="hero" contentKey="subtitle" defaultValue="We empower builders, designers, and engineers to create state-of-the-art software systems with production-grade architectures." as="span" />
             </p>
           </div>
         </section>
@@ -115,20 +123,15 @@ export default function AboutPage() {
                 className="border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500 bg-red-500/5"
               />
               <h2 className="text-4xl lg:text-5xl font-headline font-black text-slate-900 dark:text-white leading-tight">
-                For Creators, By Architects
+                <EditableText pageSlug="about" sectionKey="story" contentKey="heading" defaultValue="For Creators, By Architects" as="span" />
               </h2>
               <div className="space-y-4 text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed font-medium">
-                <p>
-                  In 2021, we set out to build a platform that treated learning like professional development. We didn't just want to teach code; we wanted to teach architectural thinking, scalability, and design excellence.
-                </p>
-                <p>
-                  Today, XmartyCreator is home to over 45,000 students globally, powered by the Vasant AI Assistant and mentored by some of the brightest minds in the industry.
-                </p>
+                <EditableText pageSlug="about" sectionKey="story" contentKey="content" defaultValue={`<p>In 2021, we set out to build a platform that treated learning like professional development. We didn't just want to teach code; we wanted to teach architectural thinking, scalability, and design excellence.</p><p>Today, XmartyCreator is home to over 45,000 students globally, powered by the Vasant AI Assistant and mentored by some of the brightest minds in the industry.</p>`} as="div" />
               </div>
             </div>
             
             <div className="flex-1 w-full max-w-lg relative aspect-video lg:aspect-[4/3] rounded-[2.5rem] overflow-hidden border border-slate-200 dark:border-slate-800 shadow-xl">
-              <Image src="https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80" alt="Team Workshop" fill className="object-cover" data-ai-hint="team work" />
+              <Image src={getImageUrl(heroImage.value) || "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80"} alt="Team Workshop" fill className="object-cover" data-ai-hint="team work" />
             </div>
           </div>
         </section>

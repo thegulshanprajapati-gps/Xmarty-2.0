@@ -16,6 +16,7 @@ import { formatINR } from "@/lib/format";
 
 import { useContentBlock } from "@/hooks/use-content-block";
 import { CustomizableBadge } from "@/components/cms/customizable-badge";
+import { EditableText } from "@/components/cms/editable-text";
 import { useUser } from "@/hooks/use-user";
 import { Bookmark, Eye, Key, LayoutDashboard, Settings, User as UserIcon } from "lucide-react";
 
@@ -59,6 +60,9 @@ export default function CoursesPage() {
   const seoTitle = useContentBlock("courses", "seo", "title", "Curriculum - Explore Our Courses", "text");
   const seoDesc = useContentBlock("courses", "seo", "description", "Explore the XmartyCreator curriculum. Practical frontend, backend, design and software courses.", "text");
   const seoKeywords = useContentBlock("courses", "seo", "keywords", "curriculum, coding courses, next.js, web development", "text");
+
+  const heroTitle = useContentBlock("courses", "catalog", "title", "Course Library", "text");
+  const heroSubtitle = useContentBlock("courses", "catalog", "subtitle", "Expert-led courses designed for the enterprise landscape of XmartyCreator.", "text");
 
   const [moduleFolders, setModuleFolders] = useState<any[]>([]);
   const [modulesLoading, setModulesLoading] = useState(false);
@@ -117,9 +121,11 @@ export default function CoursesPage() {
                 defaultText="CURRICULUM"
                 className="text-primary border-primary/20"
               />
-              <h1 className="text-5xl lg:text-7xl font-headline font-bold">Course Library</h1>
+              <h1 className="text-5xl lg:text-7xl font-headline font-bold">
+                <EditableText pageSlug="courses" sectionKey="catalog" contentKey="title" defaultValue="Course Library" as="span" />
+              </h1>
               <p className="text-xl text-muted-foreground max-w-xl">
-                Expert-led courses designed for the enterprise landscape of XmartyCreator.
+                <EditableText pageSlug="courses" sectionKey="catalog" contentKey="subtitle" defaultValue="Expert-led courses designed for the enterprise landscape of XmartyCreator." as="span" />
               </p>
             </div>
             <div className="flex gap-4 w-full md:w-auto">
