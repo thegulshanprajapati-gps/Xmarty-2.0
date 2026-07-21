@@ -1049,6 +1049,62 @@ export default function HomePage() {
           </section>
         )}
 
+        {/* ── Impact Section ────────────────────────────────────────────── */}
+        <section className="py-20 lg:py-32 relative bg-background border-t border-primary/5">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            <div className="text-center max-w-3xl mx-auto space-y-4">
+              <CustomizableBadge
+                pageSlug="home"
+                sectionKey="impact"
+                badgeKey="badge"
+                defaultText="PROVEN EXCELLENCE"
+                className="border-primary/20 text-primary px-4 py-1 text-sm font-semibold rounded-full"
+              />
+              <h2 className="font-headline text-4xl lg:text-5xl font-bold tracking-tight">
+                <EditableText
+                  pageSlug="home"
+                  sectionKey="impact"
+                  contentKey="heading"
+                  defaultValue="Our Impact by the Numbers"
+                  as="span"
+                />
+              </h2>
+              <p className="text-lg text-muted-foreground font-medium">
+                <EditableText
+                  pageSlug="home"
+                  sectionKey="impact"
+                  contentKey="subtitle"
+                  defaultValue="Join thousands of learners who are transforming their careers and skills."
+                  as="span"
+                />
+              </p>
+            </div>
+
+            {impactStats.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {impactStats.map((item: any, idx: number) => {
+                  const iconMap: Record<string, any> = { Users, BookOpen, Video: Play, Award };
+                  const StatIcon = iconMap[item.icon] || Award;
+                  
+                  return (
+                    <div key={idx} className="flex flex-col items-center justify-center p-8 text-center bg-muted/30 rounded-3xl border border-primary/5 hover:border-primary/20 hover:bg-primary/5 transition-all duration-300">
+                      <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
+                        <StatIcon className="h-7 w-7" />
+                      </div>
+                      <div className="text-4xl lg:text-5xl font-extrabold text-foreground mb-2 font-sans tracking-tight">
+                        <CountUp value={item.value || item.metric} />
+                      </div>
+                      <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                        {item.label || item.subtitle}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
+
         {/* Testimonials Section */}
         <section className="flex flex-col justify-center py-16 sm:py-20 lg:py-24 bg-muted/10 border-t border-primary/5">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 w-full">
@@ -1273,62 +1329,6 @@ export default function HomePage() {
             )}
           </div>
         </section>
-        {/* ── Impact Section ────────────────────────────────────────────── */}
-        <section className="py-20 lg:py-32 relative bg-background border-t border-primary/5">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
-            <div className="text-center max-w-3xl mx-auto space-y-4">
-              <CustomizableBadge
-                pageSlug="home"
-                sectionKey="impact"
-                badgeKey="badge"
-                defaultText="PROVEN EXCELLENCE"
-                className="border-primary/20 text-primary px-4 py-1 text-sm font-semibold rounded-full"
-              />
-              <h2 className="font-headline text-4xl lg:text-5xl font-bold tracking-tight">
-                <EditableText
-                  pageSlug="home"
-                  sectionKey="impact"
-                  contentKey="heading"
-                  defaultValue="Our Impact by the Numbers"
-                  as="span"
-                />
-              </h2>
-              <p className="text-lg text-muted-foreground font-medium">
-                <EditableText
-                  pageSlug="home"
-                  sectionKey="impact"
-                  contentKey="subtitle"
-                  defaultValue="Join thousands of learners who are transforming their careers and skills."
-                  as="span"
-                />
-              </p>
-            </div>
-
-            {impactStats.length > 0 && (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                {impactStats.map((item: any, idx: number) => {
-                  const iconMap: Record<string, any> = { Users, BookOpen, Video: Play, Award };
-                  const StatIcon = iconMap[item.icon] || Award;
-                  
-                  return (
-                    <div key={idx} className="flex flex-col items-center justify-center p-8 text-center bg-muted/30 rounded-3xl border border-primary/5 hover:border-primary/20 hover:bg-primary/5 transition-all duration-300">
-                      <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
-                        <StatIcon className="h-7 w-7" />
-                      </div>
-                      <div className="text-4xl lg:text-5xl font-extrabold text-foreground mb-2 font-sans tracking-tight">
-                        <CountUp value={item.value || item.metric} />
-                      </div>
-                      <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
-                        {item.label || item.subtitle}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </section>
-
         {/* ── Call to Action Section ────────────────────────────────────── */}
         <section className="py-20 lg:py-32 relative overflow-hidden bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
           <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
