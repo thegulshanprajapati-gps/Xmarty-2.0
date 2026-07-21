@@ -1087,14 +1087,14 @@ export default function HomePage() {
                   const StatIcon = iconMap[item.icon] || Award;
                   
                   return (
-                    <div key={idx} className="flex flex-col items-center justify-center p-8 text-center bg-muted/30 rounded-3xl border border-primary/5 hover:border-primary/20 hover:bg-primary/5 transition-all duration-300">
-                      <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
-                        <StatIcon className="h-7 w-7" />
+                    <div key={idx} className="flex flex-col items-center justify-center p-6 text-center bg-muted/30 rounded-2xl border border-primary/5 hover:border-primary/20 hover:bg-primary/5 transition-all duration-300 shadow-sm">
+                      <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-4">
+                        <StatIcon className="h-6 w-6" />
                       </div>
-                      <div className="text-4xl lg:text-5xl font-extrabold text-foreground mb-2 font-sans tracking-tight">
+                      <div className="text-3xl lg:text-4xl font-extrabold text-foreground mb-1.5 font-sans tracking-tight">
                         <CountUp value={item.value || item.metric} />
                       </div>
-                      <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                      <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                         {item.label || item.subtitle}
                       </div>
                     </div>
