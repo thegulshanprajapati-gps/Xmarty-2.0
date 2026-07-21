@@ -10,40 +10,96 @@ import { cn } from "@/lib/utils";
 import { EditableText } from "@/components/cms/editable-text";
 import { CustomizableBadge } from "@/components/cms/customizable-badge";
 
+interface ChatMessage {
+  _id: string;
+  senderId: string;
+  senderName: string;
+  senderRole: string;
+  message: string;
+  timestamp: string;
+  channel: string;
+}
+
 export default function CommunityPage() {
   const { user } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [inputValue, setInputValue] = useState("");
+  const [isSending, setIsSending] = useState(false);
 
   // SEO Content Blocks
   const seoTitle = useContentBlock("community", "seo", "title", "Community - XmartyCreator", "text");
   const seoDesc = useContentBlock("community", "seo", "description", "Join the XmartyCreator community. Connect, learn, build and grow together.", "text");
   const seoKeywords = useContentBlock("community", "seo", "keywords", "community, learning, coding, support", "text");
 
-  // Hero Section Blocks
+  // CMS Content Blocks for pinned messages
   const heroTitle = useContentBlock("community", "hero", "title", "Community", "text");
   const heroSubtitle = useContentBlock("community", "hero", "subtitle", "Connects with social...", "text");
-
-  // Video Section Blocks
   const videoEmbedUrl = useContentBlock("community", "video", "youtubeEmbedUrl", "https://www.youtube.com/embed/dQw4w9WgXcQ", "text");
-
-  // Benefits Section Blocks
   const benefitsTitle = useContentBlock("community", "benefits", "title", "Learn, build, and grow together", "text");
   const benefitsSubtitle = useContentBlock("community", "benefits", "subtitle", "Get instant updates, live doubt-solving, weekly challenges, and exclusive resources curated for you.", "text");
-
-  // Channels Section Blocks
   const channelsWhatsappLink = useContentBlock("community", "channels", "whatsappLink", "#", "text");
   const channelsTelegramLink = useContentBlock("community", "channels", "telegramLink", "#", "text");
   const channelsYoutubeLink = useContentBlock("community", "channels", "youtubeLink", "#", "text");
+
+  const fetchMessages = async () => {
+    try {
+      const res = await fetch('/api/chat?channel=general-discussion');
+      if (res.ok) {
+        const data = await res.json();
+        setMessages(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch messages:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMessages();
+    const interval = setInterval(fetchMessages, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
-  }, []);
+  }, [messages]);
+
+  const handleSendMessage = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!inputValue.trim() || isSending) return;
+
+    const currentMessage = inputValue;
+    setInputValue("");
+    setIsSending(true);
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: currentMessage,
+          senderId: user?.id || 'anonymous',
+          senderName: user ? `${user.firstName} ${user.lastName}` : 'Guest User',
+          senderRole: 'user',
+          channel: 'general-discussion'
+        })
+      });
+      if (res.ok) {
+        fetchMessages();
+      }
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      setInputValue(currentMessage); // Restore input on failure
+    } finally {
+      setIsSending(false);
+    }
+  };
 
   return (
-    <div className="flex h-[calc(100vh-64px)] w-full overflow-hidden bg-background text-foreground font-sans">
+    <div className="flex h-[calc(100dvh-80px)] w-full overflow-hidden bg-background text-foreground font-sans relative">
       <title>{String(seoTitle.value)}</title>
       <meta name="description" content={String(seoDesc.value)} />
       <meta name="keywords" content={String(seoKeywords.value)} />
@@ -55,7 +111,7 @@ export default function CommunityPage() {
 
       {/* Sidebar */}
       <aside className={cn(
-        "fixed md:relative z-50 w-64 h-full bg-slate-50 dark:bg-[#0B0D13] border-r border-slate-200 dark:border-slate-800/60 flex flex-col transition-transform duration-300 md:translate-x-0",
+        "fixed top-20 left-0 md:static z-40 w-64 h-[calc(100dvh-80px)] md:h-full bg-slate-50 dark:bg-[#0B0D13] border-r border-slate-200 dark:border-slate-800/60 flex flex-col transition-transform duration-300 md:translate-x-0",
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       )}>
         <div className="h-14 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800/60 shrink-0 font-bold shadow-sm">
@@ -136,22 +192,6 @@ export default function CommunityPage() {
               <span className="font-bold text-base">general-discussion</span>
             </div>
           </div>
-          <div className="flex items-center gap-1 sm:gap-3 text-slate-400">
-            <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex">
-              <Bell className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-8 w-8 hidden sm:flex">
-              <Users className="h-5 w-5" />
-            </Button>
-            <div className="relative hidden md:block">
-              <Search className="h-4 w-4 absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" />
-              <input 
-                type="text" 
-                placeholder="Search" 
-                className="bg-slate-100 dark:bg-slate-900 border-none rounded-md h-7 pl-8 pr-2 text-xs w-36 focus:outline-none focus:ring-1 focus:ring-primary"
-              />
-            </div>
-          </div>
         </header>
 
         {/* Messages List */}
@@ -167,20 +207,19 @@ export default function CommunityPage() {
             </h1>
             <p className="text-slate-600 dark:text-slate-400 text-base max-w-2xl">
               This is the start of the <span className="font-bold text-foreground">#general-discussion</span> channel. 
-              Here you'll find everything related to the XmartyCreator community.
             </p>
           </div>
 
-          {/* Message 1: System/Admin Welcome with CMS Content */}
+          {/* CMS Pinned Message 1 */}
           <div className="flex gap-4 group">
             <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold shrink-0 mt-0.5">
               XC
             </div>
             <div className="flex-1 space-y-1">
               <div className="flex items-center gap-2">
-                <span className="font-bold hover:underline cursor-pointer">XmartyCreator Admin</span>
+                <span className="font-bold">XmartyCreator Admin</span>
                 <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-bold uppercase tracking-widest">System</span>
-                <span className="text-xs text-slate-500">Today at 10:00 AM</span>
+                <span className="text-xs text-slate-500">Pinned</span>
               </div>
               <div className="text-slate-800 dark:text-slate-200 space-y-4 pt-1">
                 <div className="text-lg font-medium">
@@ -202,15 +241,15 @@ export default function CommunityPage() {
             </div>
           </div>
 
-          {/* Message 2: Video Embed */}
+          {/* CMS Pinned Message 2 */}
           <div className="flex gap-4 group">
             <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold shrink-0 mt-0.5">
               M
             </div>
             <div className="flex-1 space-y-1">
               <div className="flex items-center gap-2">
-                <span className="font-bold hover:underline cursor-pointer">Mentor</span>
-                <span className="text-xs text-slate-500">Today at 10:05 AM</span>
+                <span className="font-bold">Mentor</span>
+                <span className="text-xs text-slate-500">Pinned</span>
               </div>
               <div className="text-slate-800 dark:text-slate-200 pt-1">
                 <p className="mb-3">Hey everyone! Check out our latest community update video below. We've got some exciting things planned! 🚀</p>
@@ -227,26 +266,55 @@ export default function CommunityPage() {
               </div>
             </div>
           </div>
-          
+
+          {/* Real-time DB Messages */}
+          {messages.map((msg) => (
+            <div key={msg._id} className="flex gap-4 group hover:bg-slate-50 dark:hover:bg-slate-900/50 p-2 -mx-2 rounded-xl transition-colors">
+              <div className={cn(
+                "w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 mt-0.5",
+                msg.senderRole === 'admin' ? 'bg-red-500' : 'bg-slate-700'
+              )}>
+                {msg.senderName.charAt(0).toUpperCase()}
+              </div>
+              <div className="flex-1 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold">{msg.senderName}</span>
+                  {msg.senderRole === 'admin' && (
+                    <span className="text-[10px] bg-red-500/20 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-widest">Admin</span>
+                  )}
+                  <span className="text-xs text-slate-500">
+                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+                <div className="text-slate-800 dark:text-slate-200 pt-1 text-[15px]">
+                  {msg.message}
+                </div>
+              </div>
+            </div>
+          ))}
+
           <div className="h-4" /> {/* Spacer */}
         </div>
 
         {/* Input Area */}
-        <div className="p-4 shrink-0 bg-white dark:bg-[#030712]">
-          <div className="relative flex items-center bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm focus-within:ring-1 focus-within:ring-primary/50 transition-all">
+        <div className="p-4 shrink-0 bg-white dark:bg-[#030712] border-t border-slate-100 dark:border-slate-800/60">
+          <form onSubmit={handleSendMessage} className="relative flex items-center bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm focus-within:ring-1 focus-within:ring-primary/50 transition-all">
             <div className="flex-1 min-h-[48px] flex items-center px-4">
               <input 
                 type="text" 
-                placeholder="Send message to #general-discussion..." 
-                className="w-full bg-transparent border-none focus:outline-none text-sm text-foreground placeholder:text-slate-500 h-full py-3"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                placeholder={user ? "Message #general-discussion" : "Login to chat..."}
+                disabled={!user || isSending}
+                className="w-full bg-transparent border-none focus:outline-none text-sm text-foreground placeholder:text-slate-500 h-full py-3 disabled:opacity-50"
               />
             </div>
             <div className="pr-2 flex items-center">
-              <Button size="icon" className="h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-transform hover:scale-105 active:scale-95">
+              <Button type="submit" disabled={!user || isSending || !inputValue.trim()} size="icon" className="h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-50">
                 <Send className="h-4 w-4 ml-0.5" />
               </Button>
             </div>
-          </div>
+          </form>
         </div>
       </main>
     </div>
