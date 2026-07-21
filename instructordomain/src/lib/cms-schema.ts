@@ -136,7 +136,16 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
         { key: 'badgeBorderRadius', label: 'Badge Border Radius', type: 'select', options: ['full', 'xl', 'lg', 'md', 'none'] },
         { key: 'heading', label: 'Community Heading', type: 'richtext', placeholder: 'You do not learn alone here.' },
         { key: 'subtitle', label: 'Community Subtitle', type: 'richtext', placeholder: 'Get discussions, live reviews, creator circles...' },
-        { key: 'cta', label: 'Explore Community Link Text', type: 'text', placeholder: 'Explore Community' }
+        { key: 'cta', label: 'Explore Community Link Text', type: 'text', placeholder: 'Explore Community' },
+        { 
+          key: 'features', 
+          label: 'Community Features List', 
+          type: 'list',
+          itemFields: [
+            { key: 'label', label: 'Feature Name (e.g. Daily discussions)', type: 'text' },
+            { key: 'icon', label: 'Icon Name (e.g. MessageSquare, BadgeCheck)', type: 'select', options: ['MessageSquare', 'BadgeCheck', 'GraduationCap', 'Users', 'Star'] }
+          ]
+        }
       ]
     },
     {

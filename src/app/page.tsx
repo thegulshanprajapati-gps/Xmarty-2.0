@@ -391,13 +391,21 @@ export default function HomePage() {
     "testimonials",
     "list",
     defaultTestimonials,
-    "list"
+    "json"
   );
   const communityFeaturesBlock = useContentBlock(
     "home",
     "community",
     "features",
     defaultCommunityFeatures,
+    "json"
+  );
+  
+  const impactStatsBlock = useContentBlock(
+    "home",
+    "impact",
+    "stats",
+    [],
     "json"
   );
 
@@ -444,6 +452,10 @@ export default function HomePage() {
   const testimonialItems = Array.isArray(testimonialsBlock.value)
     ? testimonialsBlock.value
     : defaultTestimonials;
+
+  const impactStats = Array.isArray(impactStatsBlock.value)
+    ? impactStatsBlock.value
+    : [];
 
   const [emblaRef] = useEmblaCarousel({ loop: true, dragFree: true });
   const [heroEmblaRef, heroEmblaApi] = useEmblaCarousel({ loop: true });
@@ -1251,6 +1263,107 @@ export default function HomePage() {
                 </div>
               </div>
             )}
+          </div>
+        </section>
+        {/* ── Impact Section ────────────────────────────────────────────── */}
+        <section className="py-20 lg:py-32 relative bg-background border-t border-primary/5">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+            <div className="text-center max-w-3xl mx-auto space-y-4">
+              <CustomizableBadge
+                pageSlug="home"
+                sectionKey="impact"
+                badgeKey="badge"
+                defaultText="PROVEN EXCELLENCE"
+                className="border-primary/20 text-primary px-4 py-1 text-sm font-semibold rounded-full"
+              />
+              <h2 className="font-headline text-4xl lg:text-5xl font-bold tracking-tight">
+                <EditableText
+                  pageSlug="home"
+                  sectionKey="impact"
+                  contentKey="heading"
+                  defaultValue="Our Impact by the Numbers"
+                  as="span"
+                />
+              </h2>
+              <p className="text-lg text-muted-foreground font-medium">
+                <EditableText
+                  pageSlug="home"
+                  sectionKey="impact"
+                  contentKey="subtitle"
+                  defaultValue="Join thousands of learners who are transforming their careers and skills."
+                  as="span"
+                />
+              </p>
+            </div>
+
+            {impactStats.length > 0 && (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {impactStats.map((item: any, idx: number) => {
+                  const iconMap: Record<string, any> = { Users, BookOpen, Video: Play, Award };
+                  const StatIcon = iconMap[item.icon] || Award;
+                  
+                  return (
+                    <div key={idx} className="flex flex-col items-center justify-center p-8 text-center bg-muted/30 rounded-3xl border border-primary/5 hover:border-primary/20 hover:bg-primary/5 transition-all duration-300">
+                      <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center text-primary mb-6">
+                        <StatIcon className="h-7 w-7" />
+                      </div>
+                      <div className="text-4xl lg:text-5xl font-extrabold text-foreground mb-2 font-sans tracking-tight">
+                        {item.value || item.metric}
+                      </div>
+                      <div className="text-sm font-bold text-muted-foreground uppercase tracking-wider">
+                        {item.label || item.subtitle}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ── Call to Action Section ────────────────────────────────────── */}
+        <section className="py-20 lg:py-32 relative overflow-hidden bg-slate-900 dark:bg-black border-t border-white/5">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-indigo-500/10 to-transparent pointer-events-none" />
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
+            <CustomizableBadge
+              pageSlug="home"
+              sectionKey="cta"
+              badgeKey="badge"
+              defaultText="START YOUR JOURNEY"
+              className="border-primary/30 text-primary bg-primary/10 px-4 py-1 text-sm font-semibold rounded-full"
+            />
+            <h2 className="font-headline text-5xl lg:text-7xl font-extrabold tracking-tight text-white">
+              <EditableText
+                pageSlug="home"
+                sectionKey="cta"
+                contentKey="title"
+                defaultValue="Ready to Build & Ship Real Projects?"
+                as="span"
+              />
+            </h2>
+            <p className="text-xl text-slate-300 font-medium max-w-2xl mx-auto">
+              <EditableText
+                pageSlug="home"
+                sectionKey="cta"
+                contentKey="description"
+                defaultValue="Get instant access to production-grade courses, live mentorship, and a thriving community of creators."
+                as="span"
+              />
+            </p>
+            <div className="pt-8">
+              <Button asChild size="lg" className="h-16 rounded-2xl px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/95 shadow-xl shadow-primary/25 transition-all hover:scale-105 active:scale-95">
+                <Link href="/register">
+                  <EditableText
+                    pageSlug="home"
+                    sectionKey="cta"
+                    contentKey="buttonText"
+                    defaultValue="Start Learning Now"
+                    as="span"
+                  />
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </section>
     </div>
