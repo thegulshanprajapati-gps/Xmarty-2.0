@@ -7,6 +7,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
+  Award,
   BadgeCheck,
   BookOpen,
   BrainCircuit,
@@ -426,9 +427,15 @@ export default function HomePage() {
 
   const communityImageInfo = parseCmsImage(communityImageBlock.value, "https://picsum.photos/seed/xmarty-community-home/900/600");
 
-  const statisticItems = Array.isArray(heroStatsBlock.value)
-    ? heroStatsBlock.value
-    : defaultStats;
+  // Normalize both { label, value } (old default) and { metric, subtitle, icon } (support domain) formats
+  const statisticItems = (() => {
+    const raw = Array.isArray(heroStatsBlock.value) ? heroStatsBlock.value : defaultStats;
+    return raw.map((item: any) => ({
+      label: item.label ?? item.subtitle ?? '',
+      value: item.value ?? item.metric ?? '',
+      icon:  item.icon  ?? 'Users',
+    }));
+  })();
 
   const pathwayItems = Array.isArray(pathwaysBlock.value)
     ? pathwaysBlock.value
@@ -989,6 +996,38 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+        {/* ── Stats Strip Section ─────────────────────────────────────────── */}
+        {statisticItems.length > 0 && (
+          <section className="py-12 sm:py-16 border-t border-b border-primary/10 bg-background">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className={`grid gap-6 ${
+                statisticItems.length === 1 ? 'grid-cols-1 max-w-xs mx-auto' :
+                statisticItems.length === 2 ? 'grid-cols-2 max-w-md mx-auto' :
+                statisticItems.length === 3 ? 'grid-cols-3' :
+                'grid-cols-2 sm:grid-cols-4'
+              }`}>
+                {statisticItems.map((item: any, idx: number) => {
+                  const iconMap: Record<string, any> = { Users, BookOpen, Video: Play, Award };
+                  const StatIcon = iconMap[item.icon] ?? Users;
+                  return (
+                    <div key={idx} className="flex flex-col items-center text-center p-6 rounded-3xl border border-slate-100 dark:border-slate-800/60 bg-background hover:border-primary/30 transition-all duration-300 group shadow-sm hover:shadow-md">
+                      <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+                        <StatIcon className="h-6 w-6 text-primary" />
+                      </div>
+                      <p className="text-3xl sm:text-4xl font-extrabold text-foreground font-sans leading-none group-hover:text-primary transition-colors">
+                        {item.value}
+                      </p>
+                      <p className="mt-2 text-sm font-semibold text-muted-foreground font-sans uppercase tracking-wider">
+                        {item.label}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Testimonials Section */}
         <section className="flex flex-col justify-center py-16 sm:py-20 lg:py-24 bg-muted/10 border-t border-primary/5">
