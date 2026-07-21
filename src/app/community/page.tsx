@@ -1,33 +1,16 @@
 'use client';
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useContentBlock } from "@/hooks/use-content-block";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, Users, Sparkles, Send, Play, Download, CheckCircle2, Hash } from "lucide-react";
+import { MessageSquare, Users, Sparkles, Send, Play, Download, ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
 
-interface ChatMessage {
-  _id: string;
-  senderId: string;
-  senderName: string;
-  senderRole: string;
-  message: string;
-  timestamp: string;
-  channel: string;
-}
-
 export default function CommunityPage() {
   const { user } = useUser();
-  
-  // Chat State
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [inputValue, setInputValue] = useState("");
-  const [isSending, setIsSending] = useState(false);
-
   // SEO Content Blocks
   const seoTitle = useContentBlock("community", "seo", "title", "Community - XmartyCreator", "text");
   const seoDesc = useContentBlock("community", "seo", "description", "Join the XmartyCreator community. Connect, learn, build and grow together.", "text");
@@ -45,6 +28,13 @@ export default function CommunityPage() {
   // Video Section Blocks
   const videoEmbedUrl = useContentBlock("community", "video", "youtubeEmbedUrl", "https://www.youtube.com/embed/dQw4w9WgXcQ", "text");
 
+  // Hub Banner Blocks
+  const hubBadge = useContentBlock("community", "hub", "badgeText", "Live Now", "text");
+  const hubTitle = useContentBlock("community", "hub", "title", "Join our Community Hub", "text");
+  const hubDesc = useContentBlock("community", "hub", "description", "A dedicated space for live chat and discussions.", "text");
+  const hubButtonText = useContentBlock("community", "hub", "buttonText", "Open hub", "text");
+  const hubButtonLink = useContentBlock("community", "hub", "buttonLink", "#", "text");
+
   // Benefits Section Blocks
   const benefitsBadge = useContentBlock("community", "benefits", "badgeText", "Why join our community", "text");
   const benefitsTitle = useContentBlock("community", "benefits", "title", "Learn, build, and grow together", "text");
@@ -58,61 +48,6 @@ export default function CommunityPage() {
   const channelsAppLink = useContentBlock("community", "channels", "appLink", "#", "text");
   const channelsTelegramLink = useContentBlock("community", "channels", "telegramLink", "#", "text");
   const channelsYoutubeLink = useContentBlock("community", "channels", "youtubeLink", "#", "text");
-
-  const fetchMessages = async () => {
-    try {
-      const res = await fetch('/api/chat?channel=general-discussion');
-      if (res.ok) {
-        const data = await res.json();
-        setMessages(data);
-      }
-    } catch (error) {
-      console.error("Failed to fetch messages:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchMessages();
-    const interval = setInterval(fetchMessages, 5000);
-    return () => clearInterval(interval);
-  }, []);
-
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [messages]);
-
-  const handleSendMessage = async (e?: React.FormEvent) => {
-    if (e) e.preventDefault();
-    if (!inputValue.trim() || isSending) return;
-
-    const currentMessage = inputValue;
-    setInputValue("");
-    setIsSending(true);
-
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          message: currentMessage,
-          senderId: user?.id || 'anonymous',
-          senderName: user ? `${user.firstName} ${user.lastName}` : 'Guest User',
-          senderRole: 'user',
-          channel: 'general-discussion'
-        })
-      });
-      if (res.ok) {
-        fetchMessages();
-      }
-    } catch (error) {
-      console.error("Failed to send message:", error);
-      setInputValue(currentMessage);
-    } finally {
-      setIsSending(false);
-    }
-  };
 
   return (
     <div className="w-full bg-[#FAFCFF] dark:bg-[#030712] text-slate-900 dark:text-slate-100 transition-colors duration-300">
@@ -208,6 +143,7 @@ export default function CommunityPage() {
               
               {/* Animated Connection Nodes */}
               <div className="absolute inset-0 z-20 pointer-events-none">
+                {/* Users icon at (200, 80) -> relative left: 50% (200/400), top: 20% (80/400) */}
                 <div 
                   className="absolute pointer-events-auto cursor-pointer transition-transform duration-300 hover:scale-110 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
                   style={{ left: '50%', top: '20%' }}
@@ -217,6 +153,7 @@ export default function CommunityPage() {
                   </div>
                 </div>
 
+                {/* MessageSquare icon at (90, 260) -> relative left: 22.5% (90/400), top: 65% (260/400) */}
                 <div 
                   className="absolute pointer-events-auto cursor-pointer transition-transform duration-300 hover:scale-110 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
                   style={{ left: '22.5%', top: '65%' }}
@@ -226,6 +163,7 @@ export default function CommunityPage() {
                   </div>
                 </div>
 
+                {/* Sparkles icon at (310, 260) -> relative left: 77.5% (310/400), top: 65% (260/400) */}
                 <div 
                   className="absolute pointer-events-auto cursor-pointer transition-transform duration-300 hover:scale-110 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
                   style={{ left: '77.5%', top: '65%' }}
@@ -237,14 +175,17 @@ export default function CommunityPage() {
               </div>
 
               <svg className="w-full h-full relative z-10" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Connecting Lines */}
                 <path d="M200 80 L90 260 M200 80 L310 260 M90 260 L310 260" stroke="currentColor" strokeWidth="2" className="text-indigo-200/40 dark:text-slate-800/40" />
                 <path d="M200 80 L90 260" stroke="url(#line-grad-1)" strokeWidth="2.5" className="node-flow-line" />
                 <path d="M200 80 L310 260" stroke="url(#line-grad-2)" strokeWidth="2.5" className="node-flow-line" />
                 
+                {/* Outer Glows */}
                 <circle cx="200" cy="80" r="32" fill="url(#glow-violet)" className="node-outer-glow" />
                 <circle cx="90" cy="260" r="32" fill="url(#glow-emerald)" className="node-outer-glow" style={{ animationDelay: '-1s' }} />
                 <circle cx="310" cy="260" r="32" fill="url(#glow-cyan)" className="node-outer-glow" style={{ animationDelay: '-2s' }} />
 
+                {/* Gradients */}
                 <defs>
                   <linearGradient id="line-grad-1" x1="200" y1="80" x2="90" y2="260" gradientUnits="userSpaceOnUse">
                     <stop stopColor="#8B5CF6" />
@@ -267,9 +208,23 @@ export default function CommunityPage() {
                     <stop stopColor="#06B6D4" stopOpacity="0.3" />
                     <stop offset="1" stopColor="#06B6D4" stopOpacity="0" />
                   </radialGradient>
+
+                  <linearGradient id="node-violet" x1="200" y1="56" x2="200" y2="104" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#A78BFA" />
+                    <stop offset="1" stopColor="#7C3AED" />
+                  </linearGradient>
+                  <linearGradient id="node-emerald" x1="90" y1="236" x2="90" y2="284" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#34D399" />
+                    <stop offset="1" stopColor="#059669" />
+                  </linearGradient>
+                  <linearGradient id="node-cyan" x1="310" y1="236" x2="310" y2="284" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#22D3EE" />
+                    <stop offset="1" stopColor="#0891B2" />
+                  </linearGradient>
                 </defs>
               </svg>
 
+              {/* Decorative background grid elements */}
               <div className="absolute top-12 left-12 w-2 h-2 rounded-full bg-indigo-300/30 dark:bg-slate-700/30"></div>
               <div className="absolute bottom-12 right-24 w-3.5 h-3.5 rounded-full bg-violet-300/20 dark:bg-slate-700/20"></div>
             </div>
@@ -293,82 +248,40 @@ export default function CommunityPage() {
           </div>
         </section>
 
-        {/* 3. Community Hub Live Chat Section */}
-        <section className="rounded-[2.5rem] bg-white dark:bg-[#0B0D13] border border-slate-200 dark:border-slate-800/60 overflow-hidden shadow-xl flex flex-col h-[600px]">
-          {/* Chat Header */}
-          <header className="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800/60 bg-slate-50 dark:bg-[#07090E] shrink-0">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center">
-                <Hash className="h-5 w-5" />
-              </div>
-              <div>
-                <h3 className="font-bold text-lg leading-tight">Live Community Hub</h3>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Online now
-                </p>
-              </div>
-            </div>
-          </header>
-
-          {/* Chat Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth bg-[url('/chat-bg.png')] bg-repeat opacity-95">
-            {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-muted-foreground space-y-4">
-                <MessageSquare className="h-12 w-12 opacity-20" />
-                <p>Welcome to the Community Hub! Say hello.</p>
-              </div>
-            ) : (
-              messages.map((msg) => (
-                <div key={msg._id} className="flex gap-4 group">
-                  <div className={cn(
-                    "w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 mt-0.5",
-                    msg.senderRole === 'admin' ? 'bg-red-500' : 'bg-indigo-500'
-                  )}>
-                    {msg.senderName.charAt(0).toUpperCase()}
-                  </div>
-                  <div className="flex-1 space-y-1 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl rounded-tl-sm border border-slate-100 dark:border-slate-800 max-w-[85%]">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-foreground">{msg.senderName}</span>
-                      {msg.senderRole === 'admin' && (
-                        <span className="text-[10px] bg-red-500/20 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-widest">Admin</span>
-                      )}
-                      <span className="text-[10px] text-slate-500">
-                        {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                      </span>
-                    </div>
-                    <div className="text-slate-700 dark:text-slate-300 text-[15px]">
-                      {msg.message}
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Chat Input */}
-          <div className="p-4 bg-white dark:bg-[#0B0D13] border-t border-slate-200 dark:border-slate-800/60 shrink-0">
-            <form onSubmit={handleSendMessage} className="relative flex items-center bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/50 transition-all">
-              <div className="flex-1 min-h-[56px] flex items-center px-4">
-                <input 
-                  type="text" 
-                  value={inputValue}
-                  onChange={(e) => setInputValue(e.target.value)}
-                  placeholder={user ? "Type a message in the hub..." : "Please login to chat..."}
-                  disabled={!user || isSending}
-                  className="w-full bg-transparent border-none focus:outline-none text-sm text-foreground placeholder:text-slate-500 h-full py-3 disabled:opacity-50"
-                />
-              </div>
-              <div className="pr-2 flex items-center">
-                <Button type="submit" disabled={!user || isSending || !inputValue.trim()} size="icon" className="h-10 w-10 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-50">
-                  <Send className="h-5 w-5 ml-0.5" />
-                </Button>
-              </div>
-            </form>
+        {/* 3. Community Hub Coming Soon Section */}
+        <section 
+          className="relative rounded-[2.5rem] text-white p-8 md:p-12 overflow-hidden shadow-2xl transition-all duration-300 hover:shadow-xl"
+          style={{ 
+            background: 'linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%)',
+            boxShadow: '0 20px 25px -5px hsl(var(--primary) / 0.15), 0 8px 10px -6px hsl(var(--primary) / 0.15)'
+          }}
+        >
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+          <div 
+            className="absolute top-0 right-0 -translate-y-12 translate-x-12 w-96 h-96 rounded-full blur-3xl pointer-events-none opacity-30"
+            style={{ backgroundColor: 'hsl(var(--primary))' }}
+          ></div>
+          
+          <div className="relative z-10 space-y-6 max-w-xl">
+            <Badge className="bg-white/20 backdrop-blur-md border border-white/20 text-white px-3.5 py-1 rounded-full font-bold text-xs tracking-wider uppercase">
+              {String(hubBadge.value)}
+            </Badge>
+            <h2 className="text-4xl font-extrabold tracking-tight leading-tight">
+              {String(hubTitle.value)}
+            </h2>
+            <p className="text-sm text-white/90 leading-relaxed font-medium">
+              {String(hubDesc.value)}
+            </p>
+            <Button asChild className="bg-white text-slate-900 hover:bg-slate-100 font-bold px-6 h-11 rounded-xl shadow-lg transition-all duration-300 hover:scale-[1.03]">
+              <Link href="/community/hub">
+                {String(hubButtonText.value)}
+              </Link>
+            </Button>
           </div>
         </section>
 
         {/* 4. Why join our community section */}
-        <section className="space-y-10 pt-8">
+        <section className="space-y-10">
           <div className="text-center space-y-3 max-w-2xl mx-auto">
             <Badge className="bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full font-bold text-xs tracking-wider uppercase">
               {String(benefitsBadge.value)}
@@ -382,6 +295,7 @@ export default function CommunityPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1: Direct doubts support */}
             <div className="p-6 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 shadow-sm space-y-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <div className="h-10 w-10 bg-primary/10 dark:bg-primary/25 rounded-xl flex items-center justify-center text-primary">
                 <MessageSquare className="h-5 w-5" />
@@ -394,6 +308,7 @@ export default function CommunityPage() {
               </div>
             </div>
 
+            {/* Card 2: Peer power */}
             <div className="p-6 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 shadow-sm space-y-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <div className="h-10 w-10 bg-primary/10 dark:bg-primary/25 rounded-xl flex items-center justify-center text-primary">
                 <Users className="h-5 w-5" />
@@ -406,6 +321,7 @@ export default function CommunityPage() {
               </div>
             </div>
 
+            {/* Card 3: Exclusive goodies */}
             <div className="p-6 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 shadow-sm space-y-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
               <div className="h-10 w-10 bg-primary/10 dark:bg-primary/25 rounded-xl flex items-center justify-center text-primary">
                 <Sparkles className="h-5 w-5" />
@@ -441,6 +357,8 @@ export default function CommunityPage() {
               <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-emerald-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <i className="fa-brands fa-whatsapp text-8xl"></i>
               </div>
+              
+              {/* Subtle top edge glow */}
               <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
               <div className="space-y-5 relative z-10">
@@ -456,7 +374,7 @@ export default function CommunityPage() {
               </div>
               <Button asChild className="w-full bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 text-white dark:text-emerald-400 border border-transparent dark:border-emerald-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
                 <a href={String(channelsWhatsappLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
-                  Join Group <span className="transition-transform group-hover:translate-x-1">→</span>
+                  Join Group <span className="transition-transform group-hover:translate-x-1">ΓåÆ</span>
                 </a>
               </Button>
             </div>
@@ -466,6 +384,8 @@ export default function CommunityPage() {
               <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-blue-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <Download className="h-24 w-24" />
               </div>
+              
+              {/* Subtle top edge glow */}
               <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-blue-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
               <div className="space-y-5 relative z-10">
@@ -481,7 +401,7 @@ export default function CommunityPage() {
               </div>
               <Button asChild className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-500/10 dark:hover:bg-blue-500/20 text-white dark:text-blue-400 border border-transparent dark:border-blue-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
                 <a href={String(channelsAppLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
-                  Download <span className="transition-transform group-hover:translate-x-1">→</span>
+                  Download <span className="transition-transform group-hover:translate-x-1">ΓåÆ</span>
                 </a>
               </Button>
             </div>
@@ -491,6 +411,8 @@ export default function CommunityPage() {
               <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-cyan-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <i className="fa-brands fa-telegram text-8xl"></i>
               </div>
+              
+              {/* Subtle top edge glow */}
               <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-cyan-400 to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
               <div className="space-y-5 relative z-10">
@@ -506,7 +428,7 @@ export default function CommunityPage() {
               </div>
               <Button asChild className="w-full bg-cyan-500 hover:bg-cyan-600 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/20 text-white dark:text-cyan-400 border border-transparent dark:border-cyan-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
                 <a href={String(channelsTelegramLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
-                  Join Channel <span className="transition-transform group-hover:translate-x-1">→</span>
+                  Join Channel <span className="transition-transform group-hover:translate-x-1">ΓåÆ</span>
                 </a>
               </Button>
             </div>
@@ -516,6 +438,8 @@ export default function CommunityPage() {
               <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-red-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
                 <i className="fa-brands fa-youtube text-8xl"></i>
               </div>
+              
+              {/* Subtle top edge glow */}
               <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-red-400 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
 
               <div className="space-y-5 relative z-10">
@@ -531,7 +455,7 @@ export default function CommunityPage() {
               </div>
               <Button asChild className="w-full bg-red-500 hover:bg-red-600 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-white dark:text-red-400 border border-transparent dark:border-red-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
                 <a href={String(channelsYoutubeLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
-                  Subscribe <span className="transition-transform group-hover:translate-x-1">→</span>
+                  Subscribe <span className="transition-transform group-hover:translate-x-1">ΓåÆ</span>
                 </a>
               </Button>
             </div>
