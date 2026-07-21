@@ -278,7 +278,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
 
         {/* Borderless Floating Character Container (Mobile/Tablet View) */}
         <div className="flex lg:hidden relative w-full h-full overflow-visible items-end justify-center filter drop-shadow-[0_15px_20px_rgba(0,0,0,0.15)] dark:drop-shadow-[0_20px_30px_rgba(0,0,0,0.35)]">
-          {(() => {
+          {heroMobileImageInfo?.url && (() => {
             const isWNumeric = heroMobileImageInfo.width && !isNaN(Number(heroMobileImageInfo.width));
             const isHNumeric = heroMobileImageInfo.height && !isNaN(Number(heroMobileImageInfo.height));
             if (isWNumeric && isHNumeric) {
@@ -351,13 +351,14 @@ export default function HomePage() {
   const heroMobileImageBlock = useContentBlock(
     "home",
     "hero",
-    "mobileImage",
-    "/uploads/hero_mockup.png",
-    "text"
+    "heroMobileAsset",
+    "",
+    "image"
   );
-
-  const heroImageInfo = parseCmsImage(heroImageBlock.value, "/uploads/hero_mockup.png");
-  const heroMobileImageInfo = parseCmsImage(heroMobileImageBlock.value, "/uploads/hero_mockup.png");
+  
+  // Parse images (without fallback, strictly database-driven)
+  const heroImageInfo = parseCmsImage(heroImageBlock.value, "/uploads/placeholder.webp");
+  const heroMobileImageInfo = parseCmsImage(heroMobileImageBlock.value);
 
   const titleDarkColorBlock = useContentBlock('home', 'hero', 'titleDarkColor', '', 'text');
   const subtitleDarkColorBlock = useContentBlock('home', 'hero', 'subtitleDarkColor', '', 'text');
