@@ -1,14 +1,13 @@
 'use client';
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useContentBlock } from "@/hooks/use-content-block";
 import { Button } from "@/components/ui/button";
-import { Hash, Bell, Search, Users, Send, CheckCircle2, Menu, X, Play } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { MessageSquare, Users, Sparkles, Send, Play, Download, CheckCircle2, Hash } from "lucide-react";
 import Link from "next/link";
 import { useUser } from "@/hooks/use-user";
 import { cn } from "@/lib/utils";
-import { EditableText } from "@/components/cms/editable-text";
-import { CustomizableBadge } from "@/components/cms/customizable-badge";
 
 interface ChatMessage {
   _id: string;
@@ -22,7 +21,8 @@ interface ChatMessage {
 
 export default function CommunityPage() {
   const { user } = useUser();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  
+  // Chat State
   const scrollRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -33,13 +33,29 @@ export default function CommunityPage() {
   const seoDesc = useContentBlock("community", "seo", "description", "Join the XmartyCreator community. Connect, learn, build and grow together.", "text");
   const seoKeywords = useContentBlock("community", "seo", "keywords", "community, learning, coding, support", "text");
 
-  // CMS Content Blocks for pinned messages
+  // Hero Section Blocks
+  const heroBadge = useContentBlock("community", "hero", "badgeText", "Community HQ", "text");
   const heroTitle = useContentBlock("community", "hero", "title", "Community", "text");
   const heroSubtitle = useContentBlock("community", "hero", "subtitle", "Connects with social...", "text");
+  const heroWhatsappLink = useContentBlock("community", "hero", "whatsappLink", "#", "text");
+  const heroIntroLink = useContentBlock("community", "hero", "introLink", "#", "text");
+  const heroChannelsStat = useContentBlock("community", "hero", "channelsStat", "WhatsApp, Telegram, App", "text");
+  const heroEventsStat = useContentBlock("community", "hero", "eventsStat", "Weekly sessions", "text");
+
+  // Video Section Blocks
   const videoEmbedUrl = useContentBlock("community", "video", "youtubeEmbedUrl", "https://www.youtube.com/embed/dQw4w9WgXcQ", "text");
+
+  // Benefits Section Blocks
+  const benefitsBadge = useContentBlock("community", "benefits", "badgeText", "Why join our community", "text");
   const benefitsTitle = useContentBlock("community", "benefits", "title", "Learn, build, and grow together", "text");
   const benefitsSubtitle = useContentBlock("community", "benefits", "subtitle", "Get instant updates, live doubt-solving, weekly challenges, and exclusive resources curated for you.", "text");
+
+  // Channels Section Blocks
+  const channelsBadge = useContentBlock("community", "channels", "badgeText", "Join our communities", "text");
+  const channelsTitle = useContentBlock("community", "channels", "title", "Pick your favorite channel", "text");
+  const channelsSubtitle = useContentBlock("community", "channels", "subtitle", "Choose where you want to stay connected with Xmarty Creator", "text");
   const channelsWhatsappLink = useContentBlock("community", "channels", "whatsappLink", "#", "text");
+  const channelsAppLink = useContentBlock("community", "channels", "appLink", "#", "text");
   const channelsTelegramLink = useContentBlock("community", "channels", "telegramLink", "#", "text");
   const channelsYoutubeLink = useContentBlock("community", "channels", "youtubeLink", "#", "text");
 
@@ -92,230 +108,435 @@ export default function CommunityPage() {
       }
     } catch (error) {
       console.error("Failed to send message:", error);
-      setInputValue(currentMessage); // Restore input on failure
+      setInputValue(currentMessage);
     } finally {
       setIsSending(false);
     }
   };
 
   return (
-    <div className="flex h-[calc(100dvh-80px)] w-full overflow-hidden bg-background text-foreground font-sans relative">
+    <div className="w-full bg-[#FAFCFF] dark:bg-[#030712] text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      <style>{`
+        @keyframes flow-dash {
+          to {
+            stroke-dashoffset: -20;
+          }
+        }
+        @keyframes pulse-glow {
+          0%, 100% {
+            transform: scale(1);
+            opacity: 0.4;
+          }
+          50% {
+            transform: scale(1.25);
+            opacity: 0.85;
+          }
+        }
+        @keyframes float-nodes {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-6px);
+          }
+        }
+        .node-flow-line {
+          stroke-dasharray: 6 4;
+          animation: flow-dash 1.5s linear infinite;
+        }
+        .node-outer-glow {
+          transform-origin: center;
+          animation: pulse-glow 3s ease-in-out infinite;
+        }
+        .node-container-float {
+          animation: float-nodes 4s ease-in-out infinite;
+        }
+      `}</style>
       <title>{String(seoTitle.value)}</title>
       <meta name="description" content={String(seoDesc.value)} />
       <meta name="keywords" content={String(seoKeywords.value)} />
 
-      {/* Mobile Sidebar Overlay */}
-      {sidebarOpen && (
-        <div className="fixed inset-0 bg-black/50 z-40 md:hidden" onClick={() => setSidebarOpen(false)} />
-      )}
-
-      {/* Sidebar */}
-      <aside className={cn(
-        "fixed top-20 left-0 md:static z-40 w-64 h-[calc(100dvh-80px)] md:h-full bg-slate-50 dark:bg-[#0B0D13] border-r border-slate-200 dark:border-slate-800/60 flex flex-col transition-transform duration-300 md:translate-x-0",
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      )}>
-        <div className="h-14 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800/60 shrink-0 font-bold shadow-sm">
-          <span className="flex items-center gap-2">
-            <span className="w-5 h-5 rounded-md bg-primary text-primary-foreground flex items-center justify-center text-xs">X</span>
-            XmartyCreator Hub
-          </span>
-          <Button variant="ghost" size="icon" className="md:hidden h-8 w-8" onClick={() => setSidebarOpen(false)}>
-            <X className="h-4 w-4" />
-          </Button>
-        </div>
+      <main className="max-w-5xl mx-auto px-4 py-12 space-y-16">
         
-        <div className="flex-1 overflow-y-auto p-3 space-y-6">
-          <div>
-            <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 px-2">Information</div>
-            <div className="space-y-0.5">
-              <div className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md bg-primary/10 text-primary font-medium cursor-pointer">
-                <Hash className="h-4 w-4 shrink-0" />
-                <span className="truncate">general-discussion</span>
-              </div>
-              <div className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 font-medium cursor-pointer">
-                <Hash className="h-4 w-4 shrink-0" />
-                <span className="truncate">announcements</span>
-              </div>
-              <div className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-slate-600 dark:text-slate-400 hover:bg-slate-200/50 dark:hover:bg-slate-800/50 font-medium cursor-pointer">
-                <Hash className="h-4 w-4 shrink-0" />
-                <span className="truncate">resources</span>
-              </div>
-            </div>
-          </div>
+        {/* 1. Hero Grid Section */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          {/* Left Column info */}
+          <div className="space-y-6">
+            <Badge className="bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20 px-3 py-1 rounded-full font-bold text-xs tracking-wider flex items-center gap-1.5 w-fit">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+              {String(heroBadge.value)}
+            </Badge>
 
-          <div>
-            <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2 px-2">External Channels</div>
-            <div className="space-y-1">
-              {channelsWhatsappLink.value !== '#' && (
-                <Link href={String(channelsWhatsappLink.value)} target="_blank" className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-slate-600 dark:text-slate-400 hover:bg-emerald-500/10 hover:text-emerald-600 dark:hover:text-emerald-400 font-medium transition-colors">
-                  <div className="w-4 h-4 rounded-full bg-emerald-500 flex items-center justify-center shrink-0" />
-                  <span className="truncate">WhatsApp Group</span>
-                </Link>
-              )}
-              {channelsTelegramLink.value !== '#' && (
-                <Link href={String(channelsTelegramLink.value)} target="_blank" className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-slate-600 dark:text-slate-400 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors">
-                  <div className="w-4 h-4 rounded-full bg-blue-500 flex items-center justify-center shrink-0" />
-                  <span className="truncate">Telegram Channel</span>
-                </Link>
-              )}
-              {channelsYoutubeLink.value !== '#' && (
-                <Link href={String(channelsYoutubeLink.value)} target="_blank" className="w-full flex items-center gap-2 px-2 py-1.5 rounded-md text-slate-600 dark:text-slate-400 hover:bg-red-500/10 hover:text-red-600 dark:hover:text-red-400 font-medium transition-colors">
-                  <Play className="h-4 w-4 shrink-0 text-red-500" />
-                  <span className="truncate">YouTube</span>
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-
-        <div className="p-3 border-t border-slate-200 dark:border-slate-800/60 bg-slate-100/50 dark:bg-[#07090E] flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold text-xs shrink-0">
-            {user ? user.firstName?.charAt(0) || 'U' : 'G'}
-          </div>
-          <div className="flex-1 min-w-0">
-            <div className="text-sm font-bold truncate">{user ? `${user.firstName} ${user.lastName}` : 'Guest User'}</div>
-            <div className="text-[10px] text-slate-500 truncate">{user ? 'Member' : 'Viewing Hub'}</div>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Chat Area */}
-      <main className="flex-1 flex flex-col bg-white dark:bg-[#030712] relative min-w-0">
-        {/* Header */}
-        <header className="h-14 flex items-center justify-between px-4 border-b border-slate-200 dark:border-slate-800/60 shrink-0 shadow-sm z-10 bg-white/80 dark:bg-[#030712]/80 backdrop-blur-md">
-          <div className="flex items-center gap-3">
-            <Button variant="ghost" size="icon" className="md:hidden h-8 w-8 -ml-2" onClick={() => setSidebarOpen(true)}>
-              <Menu className="h-5 w-5" />
-            </Button>
-            <div className="flex items-center gap-2">
-              <Hash className="h-5 w-5 text-slate-400" />
-              <span className="font-bold text-base">general-discussion</span>
-            </div>
-          </div>
-        </header>
-
-        {/* Messages List */}
-        <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-8 scroll-smooth">
-          
-          {/* Welcome Intro Banner styled as first message/header */}
-          <div className="pt-10 pb-4 border-b border-slate-200 dark:border-slate-800/60 space-y-4">
-            <div className="w-16 h-16 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-4">
-              <Hash className="h-8 w-8" />
-            </div>
-            <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-              Welcome to #general-discussion!
+            <h1 className="text-5xl font-extrabold tracking-tight text-slate-950 dark:text-white leading-tight">
+              {String(heroTitle.value)}
             </h1>
-            <p className="text-slate-600 dark:text-slate-400 text-base max-w-2xl">
-              This is the start of the <span className="font-bold text-foreground">#general-discussion</span> channel. 
+
+            <p className="text-base text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+              {String(heroSubtitle.value)}
+            </p>
+
+            <div className="flex flex-wrap gap-3 pt-2">
+              <Button asChild className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 hover:scale-[1.03] transition-all duration-300 text-white h-12 px-6 font-bold text-sm rounded-xl shadow-lg shadow-emerald-500/20 flex items-center gap-2">
+                <a href={String(heroWhatsappLink.value)} target="_blank" rel="noopener noreferrer">
+                  <i className="fa-brands fa-whatsapp text-lg"></i> Join WhatsApp
+                </a>
+              </Button>
+              <Button asChild variant="outline" className="group/intro border-slate-200 hover:border-primary/50 hover:bg-primary/5 dark:border-slate-800 dark:hover:bg-primary/10 hover:text-primary hover:scale-[1.03] hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 h-12 px-6 font-bold text-sm rounded-xl flex items-center gap-2">
+                <a href={String(heroIntroLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                  <Play className="h-4 w-4 fill-current transition-transform duration-300 group-hover/intro:scale-110 group-hover/intro:translate-x-0.5" /> Watch Intro
+                </a>
+              </Button>
+            </div>
+
+            {/* Stats Blocks Container */}
+            <div className="grid grid-cols-2 gap-4 pt-4">
+              <div className="p-4 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 shadow-sm space-y-1 hover:shadow-md transition-all duration-300">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">CHANNELS</span>
+                <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{String(heroChannelsStat.value)}</span>
+              </div>
+              <div className="p-4 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 shadow-sm space-y-1 hover:shadow-md transition-all duration-300">
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">LIVE EVENTS</span>
+                <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">{String(heroEventsStat.value)}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column visual: triangle node graphic inside soft container */}
+          <div className="flex justify-center md:justify-end node-container-float">
+            <div className="relative w-full max-w-[420px] aspect-square rounded-[2.5rem] bg-gradient-to-br from-indigo-50/50 to-violet-50/50 dark:from-slate-900/40 dark:to-slate-950/40 border border-indigo-100/50 dark:border-slate-800/50 shadow-inner flex items-center justify-center p-8 overflow-hidden">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(99,102,241,0.08),transparent_50%)]"></div>
+              
+              {/* Animated Connection Nodes */}
+              <div className="absolute inset-0 z-20 pointer-events-none">
+                <div 
+                  className="absolute pointer-events-auto cursor-pointer transition-transform duration-300 hover:scale-110 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
+                  style={{ left: '50%', top: '20%' }}
+                >
+                  <div className="h-12 w-12 rounded-full bg-gradient-to-b from-[#A78BFA] to-[#7C3AED] border-2 border-[#8B5CF6] shadow-lg flex items-center justify-center text-white">
+                    <Users className="h-5 w-5" />
+                  </div>
+                </div>
+
+                <div 
+                  className="absolute pointer-events-auto cursor-pointer transition-transform duration-300 hover:scale-110 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
+                  style={{ left: '22.5%', top: '65%' }}
+                >
+                  <div className="h-12 w-12 rounded-full bg-gradient-to-b from-[#34D399] to-[#059669] border-2 border-[#10B981] shadow-lg flex items-center justify-center text-white">
+                    <MessageSquare className="h-5 w-5" />
+                  </div>
+                </div>
+
+                <div 
+                  className="absolute pointer-events-auto cursor-pointer transition-transform duration-300 hover:scale-110 -translate-x-1/2 -translate-y-1/2 flex items-center justify-center"
+                  style={{ left: '77.5%', top: '65%' }}
+                >
+                  <div className="h-12 w-12 rounded-full bg-gradient-to-b from-[#22D3EE] to-[#0891B2] border-2 border-[#06B6D4] shadow-lg flex items-center justify-center text-white">
+                    <Sparkles className="h-5 w-5" />
+                  </div>
+                </div>
+              </div>
+
+              <svg className="w-full h-full relative z-10" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M200 80 L90 260 M200 80 L310 260 M90 260 L310 260" stroke="currentColor" strokeWidth="2" className="text-indigo-200/40 dark:text-slate-800/40" />
+                <path d="M200 80 L90 260" stroke="url(#line-grad-1)" strokeWidth="2.5" className="node-flow-line" />
+                <path d="M200 80 L310 260" stroke="url(#line-grad-2)" strokeWidth="2.5" className="node-flow-line" />
+                
+                <circle cx="200" cy="80" r="32" fill="url(#glow-violet)" className="node-outer-glow" />
+                <circle cx="90" cy="260" r="32" fill="url(#glow-emerald)" className="node-outer-glow" style={{ animationDelay: '-1s' }} />
+                <circle cx="310" cy="260" r="32" fill="url(#glow-cyan)" className="node-outer-glow" style={{ animationDelay: '-2s' }} />
+
+                <defs>
+                  <linearGradient id="line-grad-1" x1="200" y1="80" x2="90" y2="260" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#8B5CF6" />
+                    <stop offset="1" stopColor="#10B981" />
+                  </linearGradient>
+                  <linearGradient id="line-grad-2" x1="200" y1="80" x2="310" y2="260" gradientUnits="userSpaceOnUse">
+                    <stop stopColor="#8B5CF6" />
+                    <stop offset="1" stopColor="#06B6D4" />
+                  </linearGradient>
+                  
+                  <radialGradient id="glow-violet" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(200 80) rotate(90) scale(32)">
+                    <stop stopColor="#8B5CF6" stopOpacity="0.3" />
+                    <stop offset="1" stopColor="#8B5CF6" stopOpacity="0" />
+                  </radialGradient>
+                  <radialGradient id="glow-emerald" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(90 260) rotate(90) scale(32)">
+                    <stop stopColor="#10B981" stopOpacity="0.3" />
+                    <stop offset="1" stopColor="#10B981" stopOpacity="0" />
+                  </radialGradient>
+                  <radialGradient id="glow-cyan" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(310 260) rotate(90) scale(32)">
+                    <stop stopColor="#06B6D4" stopOpacity="0.3" />
+                    <stop offset="1" stopColor="#06B6D4" stopOpacity="0" />
+                  </radialGradient>
+                </defs>
+              </svg>
+
+              <div className="absolute top-12 left-12 w-2 h-2 rounded-full bg-indigo-300/30 dark:bg-slate-700/30"></div>
+              <div className="absolute bottom-12 right-24 w-3.5 h-3.5 rounded-full bg-violet-300/20 dark:bg-slate-700/20"></div>
+            </div>
+          </div>
+        </section>
+
+        {/* 2. KYP YouTube Video Embed Section */}
+        <section className="space-y-6">
+          <div className="text-center space-y-2 max-w-xl mx-auto">
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white">Watch how it works</h2>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Discover inside walks, live setups and community showcases.</p>
+          </div>
+          <div className="aspect-video w-full max-w-4xl mx-auto rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-2xl shadow-rose-500/10 dark:shadow-rose-950/20 hover:shadow-rose-500/20 hover:scale-[1.01] transition-all duration-500">
+            <iframe 
+              src={String(videoEmbedUrl.value)} 
+              title="YouTube video player" 
+              className="w-full h-full border-none"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowFullScreen
+            ></iframe>
+          </div>
+        </section>
+
+        {/* 3. Community Hub Live Chat Section */}
+        <section className="rounded-[2.5rem] bg-white dark:bg-[#0B0D13] border border-slate-200 dark:border-slate-800/60 overflow-hidden shadow-xl flex flex-col h-[600px]">
+          {/* Chat Header */}
+          <header className="h-16 flex items-center justify-between px-6 border-b border-slate-200 dark:border-slate-800/60 bg-slate-50 dark:bg-[#07090E] shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/20 text-primary flex items-center justify-center">
+                <Hash className="h-5 w-5" />
+              </div>
+              <div>
+                <h3 className="font-bold text-lg leading-tight">Live Community Hub</h3>
+                <p className="text-xs text-muted-foreground flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" /> Online now
+                </p>
+              </div>
+            </div>
+          </header>
+
+          {/* Chat Messages */}
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-6 space-y-6 scroll-smooth bg-[url('/chat-bg.png')] bg-repeat opacity-95">
+            {messages.length === 0 ? (
+              <div className="h-full flex flex-col items-center justify-center text-muted-foreground space-y-4">
+                <MessageSquare className="h-12 w-12 opacity-20" />
+                <p>Welcome to the Community Hub! Say hello.</p>
+              </div>
+            ) : (
+              messages.map((msg) => (
+                <div key={msg._id} className="flex gap-4 group">
+                  <div className={cn(
+                    "w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 mt-0.5",
+                    msg.senderRole === 'admin' ? 'bg-red-500' : 'bg-indigo-500'
+                  )}>
+                    {msg.senderName.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="flex-1 space-y-1 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-2xl rounded-tl-sm border border-slate-100 dark:border-slate-800 max-w-[85%]">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-sm text-foreground">{msg.senderName}</span>
+                      {msg.senderRole === 'admin' && (
+                        <span className="text-[10px] bg-red-500/20 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-widest">Admin</span>
+                      )}
+                      <span className="text-[10px] text-slate-500">
+                        {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
+                    </div>
+                    <div className="text-slate-700 dark:text-slate-300 text-[15px]">
+                      {msg.message}
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+
+          {/* Chat Input */}
+          <div className="p-4 bg-white dark:bg-[#0B0D13] border-t border-slate-200 dark:border-slate-800/60 shrink-0">
+            <form onSubmit={handleSendMessage} className="relative flex items-center bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-primary/50 transition-all">
+              <div className="flex-1 min-h-[56px] flex items-center px-4">
+                <input 
+                  type="text" 
+                  value={inputValue}
+                  onChange={(e) => setInputValue(e.target.value)}
+                  placeholder={user ? "Type a message in the hub..." : "Please login to chat..."}
+                  disabled={!user || isSending}
+                  className="w-full bg-transparent border-none focus:outline-none text-sm text-foreground placeholder:text-slate-500 h-full py-3 disabled:opacity-50"
+                />
+              </div>
+              <div className="pr-2 flex items-center">
+                <Button type="submit" disabled={!user || isSending || !inputValue.trim()} size="icon" className="h-10 w-10 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-50">
+                  <Send className="h-5 w-5 ml-0.5" />
+                </Button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        {/* 4. Why join our community section */}
+        <section className="space-y-10 pt-8">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <Badge className="bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full font-bold text-xs tracking-wider uppercase">
+              {String(benefitsBadge.value)}
+            </Badge>
+            <h2 className="text-3xl font-extrabold text-slate-950 dark:text-white tracking-tight">
+              {String(benefitsTitle.value)}
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+              {String(benefitsSubtitle.value)}
             </p>
           </div>
 
-          {/* CMS Pinned Message 1 */}
-          <div className="flex gap-4 group">
-            <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-bold shrink-0 mt-0.5">
-              XC
-            </div>
-            <div className="flex-1 space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="font-bold">XmartyCreator Admin</span>
-                <span className="text-[10px] bg-primary/20 text-primary px-1.5 py-0.5 rounded font-bold uppercase tracking-widest">System</span>
-                <span className="text-xs text-slate-500">Pinned</span>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="p-6 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 shadow-sm space-y-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+              <div className="h-10 w-10 bg-primary/10 dark:bg-primary/25 rounded-xl flex items-center justify-center text-primary">
+                <MessageSquare className="h-5 w-5" />
               </div>
-              <div className="text-slate-800 dark:text-slate-200 space-y-4 pt-1">
-                <div className="text-lg font-medium">
-                  <EditableText pageSlug="community" sectionKey="hero" contentKey="title" defaultValue="Community" as="span" />
-                </div>
-                <p>
-                  <EditableText pageSlug="community" sectionKey="hero" contentKey="subtitle" defaultValue="Connects with social..." as="span" />
+              <div className="space-y-1.5">
+                <h4 className="font-bold text-slate-900 dark:text-white">Direct doubts support</h4>
+                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
+                  Stuck on a bug? Share your queries and get live community support instantly.
                 </p>
-                <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 max-w-xl shadow-sm">
-                  <div className="font-bold mb-2 text-primary flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4" />
-                    <EditableText pageSlug="community" sectionKey="benefits" contentKey="title" defaultValue="Learn, build, and grow together" as="span" />
-                  </div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400">
-                    <EditableText pageSlug="community" sectionKey="benefits" contentKey="subtitle" defaultValue="Get instant updates, live doubt-solving, weekly challenges, and exclusive resources curated for you." as="span" />
+              </div>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 shadow-sm space-y-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+              <div className="h-10 w-10 bg-primary/10 dark:bg-primary/25 rounded-xl flex items-center justify-center text-primary">
+                <Users className="h-5 w-5" />
+              </div>
+              <div className="space-y-1.5">
+                <h4 className="font-bold text-slate-900 dark:text-white">Peer power</h4>
+                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
+                  Team up for projects, mock interviews, and accountability.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-white dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/80 shadow-sm space-y-4 hover:shadow-md hover:-translate-y-1 transition-all duration-300">
+              <div className="h-10 w-10 bg-primary/10 dark:bg-primary/25 rounded-xl flex items-center justify-center text-primary">
+                <Sparkles className="h-5 w-5" />
+              </div>
+              <div className="space-y-1.5">
+                <h4 className="font-bold text-slate-900 dark:text-white">Exclusive goodies</h4>
+                <p className="text-xs text-slate-400 dark:text-slate-500 leading-relaxed">
+                  Early access templates, notes, and surprise bonuses.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* 5. Pick your favorite channel section */}
+        <section className="space-y-10">
+          <div className="text-center space-y-3 max-w-2xl mx-auto">
+            <Badge className="bg-primary/10 text-primary border border-primary/20 px-3 py-1 rounded-full font-bold text-xs tracking-wider uppercase">
+              {String(channelsBadge.value)}
+            </Badge>
+            <h2 className="text-3xl font-extrabold text-slate-950 dark:text-white tracking-tight">
+              {String(channelsTitle.value)}
+            </h2>
+            <p className="text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+              {String(channelsSubtitle.value)}
+            </p>
+          </div>
+
+          {/* 4 Gradient Channel Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* WhatsApp */}
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between h-auto min-h-[265px] sm:min-h-0 sm:aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-emerald-500/30 hover:shadow-2xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-emerald-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+                <i className="fa-brands fa-whatsapp text-8xl"></i>
+              </div>
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-emerald-400 to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="space-y-5 relative z-10">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-emerald-500/20 text-white">
+                  <i className="fa-brands fa-whatsapp text-2xl"></i>
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="text-xl font-bold font-headline tracking-tight">WhatsApp</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                    Get instant updates, notes, and quick support from the main group.
                   </p>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* CMS Pinned Message 2 */}
-          <div className="flex gap-4 group">
-            <div className="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center text-white font-bold shrink-0 mt-0.5">
-              M
-            </div>
-            <div className="flex-1 space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="font-bold">Mentor</span>
-                <span className="text-xs text-slate-500">Pinned</span>
-              </div>
-              <div className="text-slate-800 dark:text-slate-200 pt-1">
-                <p className="mb-3">Hey everyone! Check out our latest community update video below. We've got some exciting things planned! 🚀</p>
-                {videoEmbedUrl.value !== '#' && videoEmbedUrl.value !== '' && (
-                  <div className="relative w-full max-w-xl aspect-video rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-black shadow-md">
-                    <iframe 
-                      src={String(videoEmbedUrl.value)}
-                      title="Community Video"
-                      className="absolute inset-0 w-full h-full"
-                      allowFullScreen
-                    />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Real-time DB Messages */}
-          {messages.map((msg) => (
-            <div key={msg._id} className="flex gap-4 group hover:bg-slate-50 dark:hover:bg-slate-900/50 p-2 -mx-2 rounded-xl transition-colors">
-              <div className={cn(
-                "w-10 h-10 rounded-full flex items-center justify-center text-white font-bold shrink-0 mt-0.5",
-                msg.senderRole === 'admin' ? 'bg-red-500' : 'bg-slate-700'
-              )}>
-                {msg.senderName.charAt(0).toUpperCase()}
-              </div>
-              <div className="flex-1 space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-bold">{msg.senderName}</span>
-                  {msg.senderRole === 'admin' && (
-                    <span className="text-[10px] bg-red-500/20 text-red-600 dark:text-red-400 px-1.5 py-0.5 rounded font-bold uppercase tracking-widest">Admin</span>
-                  )}
-                  <span className="text-xs text-slate-500">
-                    {new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </span>
-                </div>
-                <div className="text-slate-800 dark:text-slate-200 pt-1 text-[15px]">
-                  {msg.message}
-                </div>
-              </div>
-            </div>
-          ))}
-
-          <div className="h-4" /> {/* Spacer */}
-        </div>
-
-        {/* Input Area */}
-        <div className="p-4 shrink-0 bg-white dark:bg-[#030712] border-t border-slate-100 dark:border-slate-800/60">
-          <form onSubmit={handleSendMessage} className="relative flex items-center bg-slate-100 dark:bg-slate-900 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm focus-within:ring-1 focus-within:ring-primary/50 transition-all">
-            <div className="flex-1 min-h-[48px] flex items-center px-4">
-              <input 
-                type="text" 
-                value={inputValue}
-                onChange={(e) => setInputValue(e.target.value)}
-                placeholder={user ? "Message #general-discussion" : "Login to chat..."}
-                disabled={!user || isSending}
-                className="w-full bg-transparent border-none focus:outline-none text-sm text-foreground placeholder:text-slate-500 h-full py-3 disabled:opacity-50"
-              />
-            </div>
-            <div className="pr-2 flex items-center">
-              <Button type="submit" disabled={!user || isSending || !inputValue.trim()} size="icon" className="h-8 w-8 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground shadow-md transition-transform hover:scale-105 active:scale-95 disabled:opacity-50">
-                <Send className="h-4 w-4 ml-0.5" />
+              <Button asChild className="w-full bg-emerald-500 hover:bg-emerald-600 dark:bg-emerald-500/10 dark:hover:bg-emerald-500/20 text-white dark:text-emerald-400 border border-transparent dark:border-emerald-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
+                <a href={String(channelsWhatsappLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
+                  Join Group <span className="transition-transform group-hover:translate-x-1">→</span>
+                </a>
               </Button>
             </div>
-          </form>
-        </div>
+
+            {/* App */}
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between h-auto min-h-[265px] sm:min-h-0 sm:aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-blue-500/30 hover:shadow-2xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-blue-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+                <Download className="h-24 w-24" />
+              </div>
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-blue-400 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="space-y-5 relative z-10">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/20 text-white">
+                  <Download className="h-5 w-5" />
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="text-xl font-bold font-headline tracking-tight">Mobile App</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                    Access classes, announcements, and community resources in one place.
+                  </p>
+                </div>
+              </div>
+              <Button asChild className="w-full bg-blue-500 hover:bg-blue-600 dark:bg-blue-500/10 dark:hover:bg-blue-500/20 text-white dark:text-blue-400 border border-transparent dark:border-blue-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
+                <a href={String(channelsAppLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
+                  Download <span className="transition-transform group-hover:translate-x-1">→</span>
+                </a>
+              </Button>
+            </div>
+
+            {/* Telegram */}
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between h-auto min-h-[265px] sm:min-h-0 sm:aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-cyan-500/30 hover:shadow-2xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-cyan-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+                <i className="fa-brands fa-telegram text-8xl"></i>
+              </div>
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-cyan-400 to-sky-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="space-y-5 relative z-10">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-cyan-400 to-sky-600 flex items-center justify-center shadow-lg shadow-cyan-500/20 text-white">
+                  <i className="fa-brands fa-telegram text-2xl"></i>
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="text-xl font-bold font-headline tracking-tight">Telegram</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                    Join focused discussion channels and fast-moving updates.
+                  </p>
+                </div>
+              </div>
+              <Button asChild className="w-full bg-cyan-500 hover:bg-cyan-600 dark:bg-cyan-500/10 dark:hover:bg-cyan-500/20 text-white dark:text-cyan-400 border border-transparent dark:border-cyan-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
+                <a href={String(channelsTelegramLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
+                  Join Channel <span className="transition-transform group-hover:translate-x-1">→</span>
+                </a>
+              </Button>
+            </div>
+
+            {/* YouTube */}
+            <div className="relative group overflow-hidden rounded-[24px] bg-white dark:bg-slate-900/40 border border-slate-200/60 dark:border-white/5 p-6 flex flex-col justify-between h-auto min-h-[265px] sm:min-h-0 sm:aspect-[3/4] text-slate-800 dark:text-white shadow-xl hover:-translate-y-2 hover:border-red-500/30 hover:shadow-2xl transition-all duration-300">
+              <div className="absolute top-0 right-0 p-4 opacity-5 dark:opacity-10 text-red-500 pointer-events-none transition-transform duration-500 group-hover:scale-110">
+                <i className="fa-brands fa-youtube text-8xl"></i>
+              </div>
+              <div className="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-red-400 to-rose-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+
+              <div className="space-y-5 relative z-10">
+                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-red-400 to-rose-600 flex items-center justify-center shadow-lg shadow-red-500/20 text-white">
+                  <i className="fa-brands fa-youtube text-2xl"></i>
+                </div>
+                <div className="space-y-1.5">
+                  <h3 className="text-xl font-bold font-headline tracking-tight">YouTube</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-medium">
+                    Watch latest videos, tutorials, and live sessions from Xmarty Creator.
+                  </p>
+                </div>
+              </div>
+              <Button asChild className="w-full bg-red-500 hover:bg-red-600 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-white dark:text-red-400 border border-transparent dark:border-red-500/20 font-bold text-xs h-10 rounded-xl relative z-10 transition-all duration-300">
+                <a href={String(channelsYoutubeLink.value)} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-1.5">
+                  Subscribe <span className="transition-transform group-hover:translate-x-1">→</span>
+                </a>
+              </Button>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
