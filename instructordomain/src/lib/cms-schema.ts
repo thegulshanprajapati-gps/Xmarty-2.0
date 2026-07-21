@@ -46,8 +46,22 @@ export const PAGE_SCHEMAS: Record<string, SectionSchema[]> = {
           label: 'Hero Statistics', 
           type: 'list',
           itemFields: [
-            { key: 'value', label: 'Stat Value (e.g. 50K+)', type: 'text' },
-            { key: 'label', label: 'Stat Label (e.g. Active Learners)', type: 'text' }
+            { key: 'metric', label: 'Stat Metric (e.g. 19,332+)', type: 'text' },
+            { key: 'subtitle', label: 'Stat Subtitle (e.g. Happy Students)', type: 'text' },
+            { key: 'icon', label: 'Icon Name (Users, BookOpen, Video, Award)', type: 'select', options: ['Users', 'BookOpen', 'Video', 'Award'] }
+          ]
+        },
+        {
+          key: 'carouselSlides',
+          label: 'Mobile Hero Slides (Carousel)',
+          type: 'list',
+          itemFields: [
+            { key: 'badge', label: 'Badge Text', type: 'text', placeholder: 'e.g. BUILD & SHIP' },
+            { key: 'title', label: 'Slide Title', type: 'text' },
+            { key: 'subtitle', label: 'Slide Subtitle', type: 'textarea' },
+            { key: 'ctaText', label: 'Button Text', type: 'text' },
+            { key: 'ctaLink', label: 'Button Link', type: 'text', placeholder: 'e.g. /courses' },
+            { key: 'colorStyle', label: 'Color Style', type: 'select', options: ['primary', 'indigo', 'emerald'] }
           ]
         }
       ]
