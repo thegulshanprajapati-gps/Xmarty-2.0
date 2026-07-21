@@ -10,9 +10,10 @@ interface CustomizableBadgeProps {
   badgeKey: string;
   defaultText: string;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export function CustomizableBadge({ pageSlug, sectionKey, badgeKey, defaultText, className }: CustomizableBadgeProps) {
+export function CustomizableBadge({ pageSlug, sectionKey, badgeKey, defaultText, className, children }: CustomizableBadgeProps) {
   const textBlock = useContentBlock(pageSlug, sectionKey, `${badgeKey}Text`, defaultText, "text");
   const bgBlock = useContentBlock(pageSlug, sectionKey, `${badgeKey}Bg`, "", "text");
   const textColBlock = useContentBlock(pageSlug, sectionKey, `${badgeKey}TextColor`, "", "text");
@@ -52,6 +53,7 @@ export function CustomizableBadge({ pageSlug, sectionKey, badgeKey, defaultText,
       )}
       style={customStyles}
     >
+      {children}
       <EditableText
         pageSlug={pageSlug}
         sectionKey={sectionKey}

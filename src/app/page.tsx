@@ -578,15 +578,16 @@ export default function HomePage() {
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 className="hidden lg:flex lg:col-span-7 space-y-6 md:space-y-8 flex-col items-start text-left relative"
               >
-                <div className="badge-doodle-container relative z-10 flex items-center gap-2.5 animate-fade-in">
-                  <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse max-md:hidden" />
+                <div className="badge-doodle-container relative z-10 flex items-center animate-fade-in">
                   <CustomizableBadge
                     pageSlug="home"
                     sectionKey="hero"
                     badgeKey="badge"
                     defaultText="INDUSTRY READY EDTECH"
-                    className="font-sans font-extrabold text-xs px-4 py-1.5 shadow-sm shadow-primary/5 bg-primary/10 border-primary/20 text-primary"
-                  />
+                    className="font-sans font-extrabold text-xs px-4 py-1.5 shadow-sm shadow-primary/5 bg-primary/10 border-primary/20 text-primary gap-1.5"
+                  >
+                    <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse max-md:hidden" />
+                  </CustomizableBadge>
                 </div>
                 
                 <div className="space-y-5 relative w-full flex flex-col items-start">

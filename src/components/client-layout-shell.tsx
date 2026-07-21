@@ -108,6 +108,7 @@ export function ClientLayoutShell({ children }: { children: React.ReactNode }) {
   const isHome = pathname === '/';
   const isProfile = pathname === '/profile' || pathname?.startsWith('/profile/');
   const isCertificate = pathname?.startsWith('/verify-certificate');
+  const isCommunity = pathname === '/community' || pathname?.startsWith('/community/');
   const shouldHideSiteChrome = pathname === '/test' || pathname?.startsWith('/test/') || isCertificate;
   const hideNavbar = shouldHideSiteChrome || isProfile;
 
@@ -146,7 +147,7 @@ export function ClientLayoutShell({ children }: { children: React.ReactNode }) {
           {children}
         </main>
       </PageTransition>
-      {!shouldHideSiteChrome && !isPagePending && !isProfile && <Footer />}
+      {!shouldHideSiteChrome && !isPagePending && !isProfile && !isCommunity && <Footer />}
       {!shouldHideSiteChrome && !isPagePending && <VasantAI />}
       <Toaster />
     </div>
