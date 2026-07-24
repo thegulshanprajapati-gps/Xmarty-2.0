@@ -77,22 +77,22 @@ export function VasantAI() {
       )}
 
       {isOpen && (
-        <Card className="w-80 md:w-96 shadow-2xl border-primary/20 animate-in slide-in-from-bottom-5">
-          <CardHeader className="bg-primary p-4 flex flex-row items-center justify-between">
+        <Card className="w-[320px] md:w-[350px] shadow-2xl border-primary/20 animate-in slide-in-from-bottom-5">
+          <CardHeader className="bg-primary py-2.5 px-3.5 flex flex-row items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <img src="/logo.png" alt="Logo" className="h-5 w-5 object-contain rounded-full bg-white/20 p-0.5" />
               <CardTitle className="text-sm font-headline text-primary-foreground">Vasant AI Assistant</CardTitle>
             </div>
-            <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-white/10" onClick={() => setIsOpen(false)}>
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-primary-foreground hover:bg-white/10" onClick={() => setIsOpen(false)}>
               <X className="h-4 w-4" />
             </Button>
           </CardHeader>
-          <CardContent className="p-0 flex flex-col h-[400px]">
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
+          <CardContent className="p-0 flex flex-col h-[320px] min-h-0">
+            <div className="flex-1 overflow-y-auto p-3 space-y-2.5 scrollbar-hide">
               {messages.map((m, i) => (
                 <div key={i} className={cn("flex", m.role === 'user' ? "justify-end" : "justify-start")}>
                   <div className={cn(
-                    "max-w-[85%] rounded-lg p-3 text-sm",
+                    "max-w-[85%] rounded-xl py-1.5 px-3 text-xs leading-normal",
                     m.role === 'user' ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
                   )}>
                     {m.content}
@@ -101,18 +101,18 @@ export function VasantAI() {
               ))}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-muted rounded-lg p-3">
-                    <Loader2 className="h-4 w-4 animate-spin" />
+                  <div className="bg-muted rounded-xl py-1.5 px-3">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   </div>
                 </div>
               )}
             </div>
 
-            <div className="p-2 border-t flex gap-2 overflow-x-auto">
+            <div className="p-1.5 border-t flex gap-1.5 overflow-x-auto shrink-0 bg-background">
               <Button
                 variant="outline"
                 size="sm"
-                className="whitespace-nowrap rounded-full text-xs h-8"
+                className="whitespace-nowrap rounded-full text-[10px] h-7 px-3"
                 onClick={() => {
                   setMessages(prev => [...prev, { role: 'bot', content: "Thinking of a path for you..." }]);
                   handleSuggestion();
@@ -123,23 +123,23 @@ export function VasantAI() {
               <Button
                 variant="outline"
                 size="sm"
-                className="whitespace-nowrap rounded-full text-xs h-8"
+                className="whitespace-nowrap rounded-full text-[10px] h-7 px-3"
                 onClick={() => setMessages(prev => [...prev, { role: 'bot', content: "Common FAQs: 1. Payment methods 2. Certificate validity 3. Offline access" }])}
               >
                 <Sparkles className="h-3 w-3 mr-1" /> FAQs
               </Button>
             </div>
           </CardContent>
-          <CardFooter className="p-3 bg-muted/30">
-            <form onSubmit={handleChat} className="flex w-full gap-2">
+          <CardFooter className="p-2 bg-muted/30 border-t shrink-0">
+            <form onSubmit={handleChat} className="flex w-full gap-1.5">
               <Input
                 placeholder="Ask Vasant anything..."
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                className="bg-background"
+                className="bg-background h-9 text-xs rounded-xl"
               />
-              <Button type="submit" size="icon" className="shrink-0">
-                <Send className="h-4 w-4" />
+              <Button type="submit" size="icon" className="shrink-0 h-9 w-9 rounded-xl">
+                <Send className="h-3.5 w-3.5" />
               </Button>
             </form>
           </CardFooter>
