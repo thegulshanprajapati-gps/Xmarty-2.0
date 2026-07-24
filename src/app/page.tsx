@@ -360,6 +360,22 @@ export default function HomePage() {
   const heroImageInfo = parseCmsImage(heroImageBlock.value, "/uploads/placeholder.webp");
   const heroMobileImageInfo = parseCmsImage(heroMobileImageBlock.value);
 
+  const [mobileCtaImageUrl, setMobileCtaImageUrl] = useState('');
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.mobile_cta_image) {
+          setMobileCtaImageUrl(data.mobile_cta_image);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  if (mobileCtaImageUrl) {
+    heroMobileImageInfo.url = mobileCtaImageUrl;
+  }
+
   const titleDarkColorBlock = useContentBlock('home', 'hero', 'titleDarkColor', '', 'text');
   const subtitleDarkColorBlock = useContentBlock('home', 'hero', 'subtitleDarkColor', '', 'text');
 
@@ -1261,46 +1277,48 @@ export default function HomePage() {
           </div>
         </section>
         {/* ── Call to Action Section ────────────────────────────────────── */}
-        <section className="py-20 lg:py-32 relative overflow-hidden bg-slate-50 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-8">
-            <CustomizableBadge
-              pageSlug="home"
-              sectionKey="cta"
-              badgeKey="badge"
-              defaultText="START YOUR JOURNEY"
-              className="border-primary/30 text-primary bg-primary/10 px-4 py-1 text-sm font-semibold rounded-full"
-            />
-            <h2 className="font-headline text-5xl lg:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              <EditableText
+        <section className="py-12 md:py-20 bg-transparent relative overflow-hidden">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="relative overflow-hidden bg-gradient-to-r from-red-600 via-red-700 to-red-950 text-white rounded-[2.5rem] md:rounded-[3.5rem] px-6 py-12 md:py-20 shadow-2xl shadow-red-950/20 text-center space-y-6 md:space-y-8 border border-red-500/10">
+              <CustomizableBadge
                 pageSlug="home"
                 sectionKey="cta"
-                contentKey="title"
-                defaultValue="Ready to Build & Ship Real Projects?"
-                as="span"
+                badgeKey="badge"
+                defaultText="START YOUR JOURNEY"
+                className="border-white/20 text-white bg-white/10 px-4 py-1 text-sm font-semibold rounded-full"
               />
-            </h2>
-            <p className="text-xl text-slate-600 dark:text-slate-300 font-medium max-w-2xl mx-auto">
-              <EditableText
-                pageSlug="home"
-                sectionKey="cta"
-                contentKey="description"
-                defaultValue="Get instant access to production-grade courses, live mentorship, and a thriving community of creators."
-                as="span"
-              />
-            </p>
-            <div className="pt-8">
-              <Button asChild size="lg" className="h-16 rounded-2xl px-10 text-lg font-bold bg-primary text-primary-foreground hover:bg-primary/95 shadow-xl shadow-primary/25 transition-all hover:scale-105 active:scale-95">
-                <Link href="/register">
-                  <EditableText
-                    pageSlug="home"
-                    sectionKey="cta"
-                    contentKey="buttonText"
-                    defaultValue="Start Learning Now"
-                    as="span"
-                  />
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+              <h2 className="font-headline text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
+                <EditableText
+                  pageSlug="home"
+                  sectionKey="cta"
+                  contentKey="title"
+                  defaultValue="Ready to Build & Ship Real Projects?"
+                  as="span"
+                />
+              </h2>
+              <p className="text-base sm:text-xl text-red-100/90 font-medium max-w-2xl mx-auto">
+                <EditableText
+                  pageSlug="home"
+                  sectionKey="cta"
+                  contentKey="description"
+                  defaultValue="Get instant access to production-grade courses, live mentorship, and a thriving community of creators."
+                  as="span"
+                />
+              </p>
+              <div className="pt-4 md:pt-6">
+                <Button asChild size="lg" className="h-12 sm:h-16 rounded-full px-6 sm:px-10 text-base sm:text-lg font-bold bg-white text-red-700 hover:bg-white/95 shadow-xl shadow-black/10 transition-all hover:scale-105 active:scale-95">
+                  <Link href="/register">
+                    <EditableText
+                      pageSlug="home"
+                      sectionKey="cta"
+                      contentKey="buttonText"
+                      defaultValue="Start Learning Now"
+                      as="span"
+                    />
+                    <ArrowRight className="ml-2 h-5 w-5 text-red-700" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </section>

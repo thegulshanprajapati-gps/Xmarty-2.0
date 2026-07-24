@@ -19,6 +19,18 @@ function LoginPageInner() {
   const [visible, setVisible] = useState(false);
   const [remember, setRemember] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [loginEnabled, setLoginEnabled] = useState(true);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.login_enabled !== undefined) {
+          setLoginEnabled(data.login_enabled);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleLogout = async () => {
     try { await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' }); } catch {}
@@ -34,6 +46,10 @@ function LoginPageInner() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!loginEnabled) {
+      alert('Login has been temporarily disabled by the administrator.');
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch('/api/auth/login', {
@@ -154,6 +170,13 @@ function LoginPageInner() {
                 </div>
               </div>
 
+              {/* Login Status Alert Banner */}
+              {!loginEnabled && (
+                <div className="p-4 rounded-[1.25rem] border border-red-500/20 bg-red-500/[0.04] text-red-600 dark:text-red-400 text-xs font-bold text-center leading-normal animate-pulse">
+                  ⚠️ Student Portal Login has been temporarily disabled by the administrator.
+                </div>
+              )}
+
               {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
                 
@@ -219,8 +242,8 @@ function LoginPageInner() {
                 {/* Submit Button */}
                 <button 
                   type="submit" 
-                  disabled={loading} 
-                  className="w-full h-11 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-sm mt-2"
+                  disabled={loading || !loginEnabled} 
+                  className={`w-full h-11 rounded-xl bg-gradient-to-r from-primary to-accent text-primary-foreground font-bold shadow-md hover:shadow-lg active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2 text-sm mt-2 ${!loginEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {loading ? (
                     <span>
