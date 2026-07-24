@@ -708,7 +708,7 @@ export default function HomePage() {
                     sectionKey="hero"
                     badgeKey="badge"
                     defaultText="INDUSTRY READY EDTECH"
-                    className="font-sans font-extrabold text-xs px-4 py-1.5 shadow-sm shadow-primary/5 bg-primary/10 border-primary/20 text-primary gap-1.5 rounded-full"
+                    className="font-sans font-extrabold text-xs shadow-sm shadow-primary/5 bg-primary/10 border-primary/20 text-primary gap-1.5"
                   >
                     <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
                   </CustomizableBadge>
@@ -902,7 +902,7 @@ export default function HomePage() {
                 sectionKey="blogs"
                 badgeKey="badge"
                 defaultText="LATEST INSIGHTS"
-                className="border-primary/20 text-primary text-xs px-3.5 py-1.5 rounded-full font-bold bg-primary/10"
+                className="border-primary/20 text-primary text-xs font-bold bg-primary/10 w-fit mx-auto"
               />
               <h2 className="font-headline text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
                 <EditableText
@@ -1277,17 +1277,17 @@ export default function HomePage() {
           </div>
         </section>
         {/* ── Call to Action Section ────────────────────────────────────── */}
-        <section className="py-12 md:py-20 bg-transparent relative overflow-hidden">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="relative overflow-hidden bg-gradient-to-r from-red-600 via-red-700 to-red-950 text-white rounded-[2.5rem] md:rounded-[3.5rem] px-6 py-12 md:py-20 shadow-2xl shadow-red-950/20 text-center space-y-6 md:space-y-8 border border-red-500/10">
+        <section className="py-8 md:py-12 bg-transparent relative overflow-hidden">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="relative overflow-hidden bg-gradient-to-r from-red-600 via-red-700 to-red-950 text-white rounded-[2rem] px-6 sm:px-12 py-8 md:py-12 shadow-xl shadow-red-950/15 text-center space-y-4 md:space-y-5 border border-red-500/10">
               <CustomizableBadge
                 pageSlug="home"
                 sectionKey="cta"
                 badgeKey="badge"
                 defaultText="START YOUR JOURNEY"
-                className="border-white/20 text-white bg-white/10 px-4 py-1 text-sm font-semibold rounded-full"
+                className="border-white/20 text-white bg-white/10 text-xs font-semibold w-fit mx-auto"
               />
-              <h2 className="font-headline text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white">
+              <h2 className="font-headline text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
                 <EditableText
                   pageSlug="home"
                   sectionKey="cta"
@@ -1296,7 +1296,7 @@ export default function HomePage() {
                   as="span"
                 />
               </h2>
-              <p className="text-base sm:text-xl text-red-100/90 font-medium max-w-2xl mx-auto">
+              <p className="text-sm sm:text-base text-red-100/90 font-medium max-w-2xl mx-auto leading-relaxed">
                 <EditableText
                   pageSlug="home"
                   sectionKey="cta"
@@ -1305,8 +1305,8 @@ export default function HomePage() {
                   as="span"
                 />
               </p>
-              <div className="pt-4 md:pt-6">
-                <Button asChild size="lg" className="h-12 sm:h-16 rounded-full px-6 sm:px-10 text-base sm:text-lg font-bold bg-white text-red-700 hover:bg-white/95 shadow-xl shadow-black/10 transition-all hover:scale-105 active:scale-95">
+              <div className="pt-2 md:pt-4">
+                <Button asChild size="lg" className="h-12 sm:h-13 rounded-xl px-6 sm:px-8 text-sm font-bold bg-white text-red-700 hover:bg-white/95 shadow-lg shadow-black/5 transition-all hover:scale-[1.02] active:scale-[0.98]">
                   <Link href="/register">
                     <EditableText
                       pageSlug="home"
@@ -1315,7 +1315,7 @@ export default function HomePage() {
                       defaultValue="Start Learning Now"
                       as="span"
                     />
-                    <ArrowRight className="ml-2 h-5 w-5 text-red-700" />
+                    <ArrowRight className="ml-2 h-4 w-4 text-red-700" />
                   </Link>
                 </Button>
               </div>

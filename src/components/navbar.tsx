@@ -97,10 +97,10 @@ export function Navbar() {
 
   const bottomLinks = [
     { label: 'Home', href: '/', icon: Home },
+    { label: 'About', href: '/about', icon: Info },
     { label: 'Courses', href: '/courses', icon: BookOpen },
     { label: 'Community', href: '/community', icon: Users },
-    { label: 'Blog', href: '/blog', icon: Newspaper },
-    { label: user ? 'Profile' : 'Login', href: user ? '/profile' : '/login', icon: User }
+    { label: 'Blog', href: '/blog', icon: Newspaper }
   ];
 
   const iconMap: Record<string, any> = {
