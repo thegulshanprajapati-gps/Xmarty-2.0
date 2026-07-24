@@ -36,7 +36,7 @@ export default function MegaQuizzesLanding() {
   const [statusResult, setStatusResult] = useState<any>(null);
 
   // CMS Content
-  const seoTitle = useContentBlock("megaquizzes", "seo", "title", "Mega Quizzes - XmartyCreator", "text");
+  const seoTitle = useContentBlock("megaquizzes", "seo", "title", "Mega Quizzes - Xmarty Creator", "text");
   const seoDesc = useContentBlock("megaquizzes", "seo", "description", "Register for the upcoming premium live assessment tracks.", "text");
   const seoKeywords = useContentBlock("megaquizzes", "seo", "keywords", "mega quiz, live assessment, coding test", "text");
 

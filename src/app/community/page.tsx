@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 export default function CommunityPage() {
   const { user } = useUser();
   // SEO Content Blocks
-  const seoTitle = useContentBlock("community", "seo", "title", "Community - XmartyCreator", "text");
-  const seoDesc = useContentBlock("community", "seo", "description", "Join the XmartyCreator community. Connect, learn, build and grow together.", "text");
+  const seoTitle = useContentBlock("community", "seo", "title", "Community - Xmarty Creator", "text");
+  const seoDesc = useContentBlock("community", "seo", "description", "Join the Xmarty Creator community. Connect, learn, build and grow together.", "text");
   const seoKeywords = useContentBlock("community", "seo", "keywords", "community, learning, coding, support", "text");
 
   // Hero Section Blocks

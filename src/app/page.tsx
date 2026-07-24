@@ -179,7 +179,7 @@ const defaultCarouselSlides = [
   {
     badge: "BUILD & SHIP",
     title: "Learn skills that actually ship.",
-    subtitle: "XmartyCreator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support.",
+    subtitle: "Xmarty Creator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support.",
     ctaText: "Explore Courses",
     ctaLink: "/courses",
     colorStyle: "primary",
@@ -256,7 +256,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
               return (
                 <Image
                   src={heroImageInfo.url}
-                  alt={heroImageInfo.alt || "XmartyCreator"}
+                  alt={heroImageInfo.alt || "Xmarty Creator"}
                   width={Number(heroImageInfo.width)}
                   height={Number(heroImageInfo.height)}
                   priority
@@ -267,7 +267,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
             return (
               <Image
                 src={heroImageInfo.url}
-                alt={heroImageInfo.alt || "XmartyCreator"}
+                alt={heroImageInfo.alt || "Xmarty Creator"}
                 fill
                 priority
                 className="object-contain object-bottom select-none pointer-events-none"
@@ -285,7 +285,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
               return (
                 <Image
                   src={heroMobileImageInfo.url}
-                  alt={heroMobileImageInfo.alt || "XmartyCreator"}
+                  alt={heroMobileImageInfo.alt || "Xmarty Creator"}
                   width={Number(heroMobileImageInfo.width)}
                   height={Number(heroMobileImageInfo.height)}
                   priority
@@ -296,7 +296,7 @@ function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroIma
             return (
               <Image
                 src={heroMobileImageInfo.url}
-                alt={heroMobileImageInfo.alt || "XmartyCreator"}
+                alt={heroMobileImageInfo.alt || "Xmarty Creator"}
                 fill
                 priority
                 className="object-contain object-bottom max-h-full select-none pointer-events-none"
@@ -314,14 +314,14 @@ export default function HomePage() {
     "home",
     "seo",
     "title",
-    "XmartyCreator - Learn Skills that Actually Ship",
+    "Xmarty Creator - Learn Skills that Actually Ship",
     "text"
   );
   const seoDescBlock = useContentBlock(
     "home",
     "seo",
     "description",
-    "XmartyCreator helps creators learn production-grade development, build real projects, and grow with AI guidance.",
+    "Xmarty Creator helps creators learn production-grade development, build real projects, and grow with AI guidance.",
     "text"
   );
   const seoKeywordsBlock = useContentBlock(
@@ -634,7 +634,7 @@ export default function HomePage() {
                       pageSlug="home"
                       sectionKey="hero"
                       contentKey="subtitle"
-                      defaultValue="XmartyCreator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support."
+                      defaultValue="Xmarty Creator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support."
                       as="span"
                       className="font-subtitle"
                     />
@@ -731,7 +731,7 @@ export default function HomePage() {
                     pageSlug="home"
                     sectionKey="hero"
                     contentKey="subtitle"
-                    defaultValue="XmartyCreator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support."
+                    defaultValue="Xmarty Creator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support."
                     as="span"
                   />
                 </div>
@@ -781,7 +781,7 @@ export default function HomePage() {
                   <div className="relative w-full max-w-md mx-auto aspect-[16/10] rounded-[2.5rem] overflow-hidden border shadow-lg bg-background/50 backdrop-blur-md group mt-6 select-none">
                     <Image
                       src={heroMobileImageInfo.url}
-                      alt="XmartyCreator Mobile Visual"
+                      alt="Xmarty Creator Mobile Visual"
                       fill
                       priority
                       className="object-cover w-full h-full"
@@ -797,7 +797,7 @@ export default function HomePage() {
                     <div className="relative w-full max-w-md mx-auto aspect-[16/10] rounded-[2.5rem] overflow-hidden border shadow-lg bg-background/50 backdrop-blur-md group mt-6 select-none">
                       <Image
                         src={heroImageInfo.url}
-                        alt="XmartyCreator Mobile Visual"
+                        alt="Xmarty Creator Mobile Visual"
                         fill
                         priority
                         className="object-cover w-full h-full animate-fade-in"
@@ -827,41 +827,43 @@ export default function HomePage() {
           </div>
         </section>
 
-        <section className="flex flex-col justify-center py-16 sm:py-20 lg:py-24">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-14 w-full">
+        <section className="flex flex-col justify-center py-16 sm:py-20 lg:py-24 bg-[#faf9f6] dark:bg-background">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12 w-full">
+
+            {/* Section Header */}
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-              <div className="space-y-4">
+              <div className="space-y-3">
                 <CustomizableBadge
                   pageSlug="home"
                   sectionKey="pathways"
                   badgeKey="tag"
                   defaultText="LEARNING PATH"
-                  className="border-muted/20 text-foreground"
+                  className="border-muted/20 text-foreground text-xs font-bold tracking-widest"
                 />
-                <h2 className="font-headline text-4xl lg:text-6xl font-bold tracking-tight">
+                <h2 className="font-headline text-4xl lg:text-6xl font-extrabold tracking-tight whitespace-nowrap">
                   <EditableText
                     pageSlug="home"
                     sectionKey="pathways"
                     contentKey="heading"
-                    defaultValue="Everything connects."
+                    defaultValue="Connects Everything."
                     as="span"
                   />
                 </h2>
               </div>
-              <p className="max-w-xl text-lg text-muted-foreground leading-relaxed">
+              <p className="max-w-sm text-base text-muted-foreground leading-relaxed">
                 <EditableText
                   pageSlug="home"
                   sectionKey="pathways"
                   contentKey="subtitle"
-                  defaultValue="Courses, AI guidance, community practice, and career readiness work together instead of feeling scattered."
+                  defaultValue="Explore our specialized learning tracks designed to take you from beginner to professional."
                   as="span"
-                  className="text-lg leading-relaxed"
                 />
               </p>
             </div>
 
-            <div className="flex flex-wrap justify-center gap-6">
-              {pathwayItems.map((item: any) => {
+            {/* Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {pathwayItems.map((item: any, idx: number) => {
                 const Icon =
                   typeof item.icon === "string"
                     ? (({
@@ -869,28 +871,55 @@ export default function HomePage() {
                         BrainCircuit,
                         Users,
                         BriefcaseBusiness,
+                        GraduationCap,
+                        MessageSquare,
                       } as Record<string, any>)[item.icon] ?? BookOpen)
                     : item.icon ?? BookOpen;
 
                 return (
-                  <Link href={item.link || "/courses"} key={item.title} className="block group w-full sm:w-[calc(50%-12px)] lg:w-[calc(25%-18px)] max-w-sm">
-                    <Card className="h-full border-muted/5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl rounded-[2rem] group-hover:border-primary/20">
-                      <CardContent className="p-7 space-y-5">
-                        <div className="grid h-14 w-14 place-items-center rounded-2xl bg-muted/10 text-foreground group-hover:bg-primary/10 group-hover:text-primary transition-all duration-350">
-                          <Icon className="h-7 w-7" />
-                        </div>
-                        <div className="space-y-2">
-                          <h3 className="font-headline text-2xl font-bold leading-tight group-hover:text-primary transition-colors duration-300" dangerouslySetInnerHTML={{ __html: item.title }} />
-                          <p className="text-sm leading-relaxed text-muted-foreground" dangerouslySetInnerHTML={{ __html: item.description || item.desc }} />
-                        </div>
-                      </CardContent>
-                    </Card>
+                  <Link
+                    href={item.link || "/courses"}
+                    key={item.title}
+                    className="block group"
+                  >
+                    <div className="relative h-full bg-white dark:bg-slate-900/60 border border-slate-200/80 dark:border-slate-800 rounded-[1.75rem] p-7 flex flex-col gap-5 shadow-sm transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-primary/20 overflow-hidden">
+
+                      {/* CORE TRACK badge top-right */}
+                      <span className="absolute top-5 right-5 text-[9px] font-bold tracking-[0.18em] uppercase text-slate-400 dark:text-slate-500">
+                        CORE TRACK
+                      </span>
+
+                      {/* Icon box */}
+                      <div className="h-14 w-14 rounded-2xl flex items-center justify-center bg-primary/8 dark:bg-primary/10 text-primary group-hover:bg-primary group-hover:text-white transition-all duration-300 shadow-sm">
+                        <Icon className="h-6 w-6" />
+                      </div>
+
+                      {/* Content */}
+                      <div className="flex flex-col gap-2 flex-1">
+                        <h3
+                          className="font-headline text-xl font-bold leading-snug text-foreground group-hover:text-primary transition-colors duration-300"
+                          dangerouslySetInnerHTML={{ __html: item.title }}
+                        />
+                        <p
+                          className="text-sm leading-relaxed text-muted-foreground"
+                          dangerouslySetInnerHTML={{ __html: item.description || item.desc }}
+                        />
+                      </div>
+
+                      {/* CHOOSE THIS PATH CTA — shows on hover */}
+                      <div className="flex items-center gap-1.5 text-primary text-xs font-bold tracking-wider uppercase opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300 pt-1">
+                        Choose This Path
+                        <ArrowRight className="h-3.5 w-3.5" />
+                      </div>
+
+                    </div>
                   </Link>
                 );
               })}
             </div>
           </div>
         </section>
+
 
         {/* Featured courses removed */}
 

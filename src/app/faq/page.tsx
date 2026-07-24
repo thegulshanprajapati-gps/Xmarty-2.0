@@ -4,8 +4,8 @@ import { useContentBlock } from '@/hooks/use-content-block';
 
 const defaultFaqs = [
   {
-    q: 'What is XmartyCreator?',
-    a: 'XmartyCreator is an enterprise EdTech orchestration platform that helps you ship courses, communities, and learning experiences with premium UI and modern workflows.',
+    q: 'What is Xmarty Creator?',
+    a: 'Xmarty Creator is an enterprise EdTech orchestration platform that helps you ship courses, communities, and learning experiences with premium UI and modern workflows.',
   },
   {
     q: 'Do I need an account to browse?',
@@ -22,8 +22,8 @@ const defaultFaqs = [
 ];
 
 export default function FAQPage() {
-  const seoTitle = useContentBlock('faq', 'seo', 'title', 'FAQ • XmartyCreator', 'text');
-  const seoDesc = useContentBlock('faq', 'seo', 'description', 'Frequently asked questions about XmartyCreator.', 'text');
+  const seoTitle = useContentBlock('faq', 'seo', 'title', 'FAQ • Xmarty Creator', 'text');
+  const seoDesc = useContentBlock('faq', 'seo', 'description', 'Frequently asked questions about Xmarty Creator.', 'text');
 
   const headingBlock = useContentBlock('faq', 'hero', 'heading', 'Frequently Asked Questions', 'text');
   const subtitleBlock = useContentBlock('faq', 'hero', 'subtitle', 'Quick answers to the most common questions. If you need help, use the Contact page.', 'text');

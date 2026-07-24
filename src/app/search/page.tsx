@@ -64,14 +64,14 @@ const STATIC_BLOGS = [
   },
   {
     id: '2',
-    title: 'Mastering the XmartyCreator Workflow',
-    slug: 'mastering-the-xmartycreator-workflow',
+    title: 'Mastering the Xmarty Creator Workflow',
+    slug: 'mastering-the-Xmarty Creator-workflow',
     excerpt: 'A comprehensive guide to using our dynamic CMS and enterprise modules for your next big project...',
     author: 'Marcus Aurelius',
     date: 'Oct 20, 2024',
     readTime: '12 min',
     category: 'Guide',
-    href: '/blog/mastering-the-xmartycreator-workflow'
+    href: '/blog/mastering-the-Xmarty Creator-workflow'
   },
   {
     id: '3',
@@ -330,7 +330,7 @@ function SearchContent() {
       ) : (
         <div className="text-center py-20 text-muted-foreground">
           <Search className="h-12 w-12 mx-auto mb-3 opacity-20" />
-          <p className="font-bold text-lg">XmartyCreator Unified Search</p>
+          <p className="font-bold text-lg">Xmarty Creator Unified Search</p>
           <p className="text-sm max-w-md mx-auto mt-1">
             Search keywords to look inside course content, blog posts, pages information, contact email, and platform details.
           </p>

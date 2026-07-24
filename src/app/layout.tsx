@@ -8,14 +8,14 @@ import { getDb } from '@/lib/mongodb';
 
 export const metadata: Metadata = {
   title: {
-    default: "XmartyCreator",
-    template: "%s | XmartyCreator"
+    default: "Xmarty Creator",
+    template: "%s | Xmarty Creator"
   },
   description: "Create and manage certificates, courses, and communities.",
   keywords: ["education", "courses", "certificates", "exam", "learning"],
-  authors: [{ name: "XmartyCreator Team" }],
+  authors: [{ name: "Xmarty Creator Team" }],
   openGraph: {
-    title: "XmartyCreator",
+    title: "Xmarty Creator",
     description: "Create and manage certificates, courses, and communities.",
     type: "website"
   }
@@ -25,7 +25,7 @@ const defaultSettings = {
   themeMode: 'light',
   primaryColor: '#FF0000',
   secondaryColor: '#FF0000',
-  siteName: 'XmartyCreator',
+  siteName: 'Xmarty Creator',
 };
 
 function hexToHslString(hex: string): string {

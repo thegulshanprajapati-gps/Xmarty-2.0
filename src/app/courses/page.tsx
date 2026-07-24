@@ -58,11 +58,11 @@ const COURSES = [
 
 export default function CoursesPage() {
   const seoTitle = useContentBlock("courses", "seo", "title", "Curriculum - Explore Our Courses", "text");
-  const seoDesc = useContentBlock("courses", "seo", "description", "Explore the XmartyCreator curriculum. Practical frontend, backend, design and software courses.", "text");
+  const seoDesc = useContentBlock("courses", "seo", "description", "Explore the Xmarty Creator curriculum. Practical frontend, backend, design and software courses.", "text");
   const seoKeywords = useContentBlock("courses", "seo", "keywords", "curriculum, coding courses, next.js, web development", "text");
 
   const heroTitle = useContentBlock("courses", "catalog", "title", "Course Library", "text");
-  const heroSubtitle = useContentBlock("courses", "catalog", "subtitle", "Expert-led courses designed for the enterprise landscape of XmartyCreator.", "text");
+  const heroSubtitle = useContentBlock("courses", "catalog", "subtitle", "Expert-led courses designed for the enterprise landscape of Xmarty Creator.", "text");
 
   const [moduleFolders, setModuleFolders] = useState<any[]>([]);
   const [modulesLoading, setModulesLoading] = useState(false);
@@ -125,7 +125,7 @@ export default function CoursesPage() {
                 <EditableText pageSlug="courses" sectionKey="catalog" contentKey="title" defaultValue="Course Library" as="span" />
               </h1>
               <p className="text-xl text-muted-foreground max-w-xl">
-                <EditableText pageSlug="courses" sectionKey="catalog" contentKey="subtitle" defaultValue="Expert-led courses designed for the enterprise landscape of XmartyCreator." as="span" />
+                <EditableText pageSlug="courses" sectionKey="catalog" contentKey="subtitle" defaultValue="Expert-led courses designed for the enterprise landscape of Xmarty Creator." as="span" />
               </p>
             </div>
             <div className="flex gap-4 w-full md:w-auto">

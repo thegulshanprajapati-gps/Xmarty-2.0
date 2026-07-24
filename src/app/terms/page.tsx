@@ -3,11 +3,11 @@
 import { useContentBlock } from '@/hooks/use-content-block';
 
 export default function TermsPage() {
-  const seoTitle = useContentBlock('terms', 'seo', 'title', 'Terms of Service • XmartyCreator', 'text');
-  const seoDesc = useContentBlock('terms', 'seo', 'description', 'Terms of Service for XmartyCreator.', 'text');
+  const seoTitle = useContentBlock('terms', 'seo', 'title', 'Terms of Service • Xmarty Creator', 'text');
+  const seoDesc = useContentBlock('terms', 'seo', 'description', 'Terms of Service for Xmarty Creator.', 'text');
 
   const headingBlock = useContentBlock('terms', 'hero', 'heading', 'Terms of Service', 'text');
-  const subtitleBlock = useContentBlock('terms', 'hero', 'subtitle', 'By using XmartyCreator, you agree to these terms. Please read them carefully.', 'text');
+  const subtitleBlock = useContentBlock('terms', 'hero', 'subtitle', 'By using Xmarty Creator, you agree to these terms. Please read them carefully.', 'text');
 
   const useTitle = useContentBlock('terms', 'sections', 'useTitle', 'Acceptable use', 'text');
   const useDesc = useContentBlock('terms', 'sections', 'useDesc', 'Do not misuse the service, attempt unauthorized access, or interfere with normal operation.', 'text');

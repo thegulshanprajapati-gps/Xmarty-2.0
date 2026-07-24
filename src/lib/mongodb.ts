@@ -24,7 +24,7 @@ export default clientPromise;
 
 let indexesEnsured = false;
 
-export async function getDb(dbName = 'xmartycreator') {
+export async function getDb(dbName = 'xmarty') {
   const conn = await clientPromise;
   const db = conn.db(dbName);
   

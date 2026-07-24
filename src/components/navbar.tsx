@@ -214,7 +214,7 @@ export function Navbar() {
                   pageSlug="navbar"
                   sectionKey="brand"
                   contentKey="siteName"
-                  defaultValue="XmartyCreator"
+                  defaultValue="Xmarty Creator"
                   as="span"
                   className="font-headline text-xl font-bold tracking-tight text-foreground/90 group-hover:text-primary transition-colors"
                 />

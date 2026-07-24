@@ -9,7 +9,7 @@ const channels = [
   {
     id: "general-discussion",
     name: "General Discussion",
-    description: "Talk about anything related to XmartyCreator, programming, or just hang out.",
+    description: "Talk about anything related to Xmarty Creator, programming, or just hang out.",
     icon: <Users className="h-6 w-6" />,
     color: "bg-blue-500",
     members: 1240

@@ -10,8 +10,8 @@ import { Mail, Phone, MapPin, Send, Clock } from "lucide-react";
 import { useContentBlock } from "@/hooks/use-content-block";
 
 export default function ContactPage() {
-  const seoTitle = useContentBlock("contact", "seo", "title", "Contact Us - XmartyCreator", "text");
-  const seoDesc = useContentBlock("contact", "seo", "description", "Get in touch with the XmartyCreator support and admissions team.", "text");
+  const seoTitle = useContentBlock("contact", "seo", "title", "Contact Us - Xmarty Creator", "text");
+  const seoDesc = useContentBlock("contact", "seo", "description", "Get in touch with the Xmarty Creator support and admissions team.", "text");
   const seoKeywords = useContentBlock("contact", "seo", "keywords", "contact, support, help, email, address", "text");
 
   const badgeText = useContentBlock("contact", "hero", "badge", "Get In Touch", "text");
@@ -21,7 +21,7 @@ export default function ContactPage() {
   const platformHeading = useContentBlock("contact", "info", "heading", "Platform Channels", "text");
   const platformSub = useContentBlock("contact", "info", "sub", "Have direct questions regarding course catalogs or active connections? Speak to our team.", "text");
 
-  const emailVal = useContentBlock("contact", "channels", "emailVal", "hello@xmartycreator.com", "text");
+  const emailVal = useContentBlock("contact", "channels", "emailVal", "hello@Xmarty Creator.com", "text");
   const emailDesc = useContentBlock("contact", "channels", "emailDesc", "Fast replies within 2-hour cycles.", "text");
   const phoneVal = useContentBlock("contact", "channels", "phoneVal", "+91 98765 43210", "text");
   const phoneDesc = useContentBlock("contact", "channels", "phoneDesc", "Available Mon-Fri (IST).", "text");
@@ -113,7 +113,7 @@ export default function ContactPage() {
                     <Input 
                       id="email" 
                       type="email" 
-                      placeholder="john@xmartycreator.com" 
+                      placeholder="john@Xmarty Creator.com" 
                       className="h-10 rounded-lg border border-slate-200 bg-slate-50 text-slate-950 dark:border-slate-800 dark:bg-slate-900/50 dark:text-white focus-visible:ring-red-500 focus-visible:ring-1 text-sm" 
                     />
                   </div>

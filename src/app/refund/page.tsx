@@ -3,8 +3,8 @@
 import { useContentBlock } from '@/hooks/use-content-block';
 
 export default function RefundPage() {
-  const seoTitle = useContentBlock('refund', 'seo', 'title', 'Refund Policy • XmartyCreator', 'text');
-  const seoDesc = useContentBlock('refund', 'seo', 'description', 'Refund Policy for XmartyCreator.', 'text');
+  const seoTitle = useContentBlock('refund', 'seo', 'title', 'Refund Policy • Xmarty Creator', 'text');
+  const seoDesc = useContentBlock('refund', 'seo', 'description', 'Refund Policy for Xmarty Creator.', 'text');
 
   const headingBlock = useContentBlock('refund', 'hero', 'heading', 'Refund Policy', 'text');
   const subtitleBlock = useContentBlock('refund', 'hero', 'subtitle', 'We aim to be fair and transparent. Refund eligibility can vary by product and purchase type.', 'text');

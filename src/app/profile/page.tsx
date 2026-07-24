@@ -425,7 +425,7 @@ function ProfileContent() {
               Authentication Required
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium leading-relaxed max-w-xs mx-auto">
-              Please sign in to your XmartyCreator account to view your personalized dashboard, assessments, and certifications.
+              Please sign in to your Xmarty Creator account to view your personalized dashboard, assessments, and certifications.
             </p>
           </div>
 

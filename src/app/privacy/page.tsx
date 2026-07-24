@@ -3,8 +3,8 @@
 import { useContentBlock } from '@/hooks/use-content-block';
 
 export default function PrivacyPage() {
-  const seoTitle = useContentBlock('privacy', 'seo', 'title', 'Privacy Policy • XmartyCreator', 'text');
-  const seoDesc = useContentBlock('privacy', 'seo', 'description', 'Privacy Policy for XmartyCreator.', 'text');
+  const seoTitle = useContentBlock('privacy', 'seo', 'title', 'Privacy Policy • Xmarty Creator', 'text');
+  const seoDesc = useContentBlock('privacy', 'seo', 'description', 'Privacy Policy for Xmarty Creator.', 'text');
 
   const headingBlock = useContentBlock('privacy', 'hero', 'heading', 'Privacy Policy', 'text');
   const subtitleBlock = useContentBlock('privacy', 'hero', 'subtitle', 'This policy explains what we collect, why we collect it, and how you control your data.', 'text');

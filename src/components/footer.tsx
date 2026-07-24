@@ -54,7 +54,7 @@ export function Footer() {
     'footer',
     'content',
     'aboutText',
-    'XmartyCreator: A world-class EdTech ecosystem designed for industrial mastery. We merge architectural excellence with personalized AI mentoring.',
+    'Xmarty Creator: A world-class EdTech ecosystem designed for industrial mastery. We merge architectural excellence with personalized AI mentoring.',
     'text'
   );
 
@@ -83,7 +83,7 @@ export function Footer() {
             <Link href="/" className="flex items-center gap-3 group">
               <img src="/logo.png" alt="Logo" className="h-10 w-10 object-contain" />
               <span className="font-headline text-2xl font-bold tracking-tight text-primary">
-                {settings?.siteName || 'XmartyCreator'}
+                {settings?.siteName || 'Xmarty Creator'}
               </span>
             </Link>
 
@@ -92,7 +92,7 @@ export function Footer() {
                 pageSlug="footer"
                 sectionKey="content"
                 contentKey="aboutText"
-                defaultValue="XmartyCreator: A world-class EdTech ecosystem designed for industrial mastery. We merge architectural excellence with personalized AI mentoring."
+                defaultValue="Xmarty Creator: A world-class EdTech ecosystem designed for industrial mastery. We merge architectural excellence with personalized AI mentoring."
                 as="span"
                 className="text-sm leading-relaxed"
               />
@@ -185,7 +185,7 @@ export function Footer() {
               pageSlug="footer"
               sectionKey="content"
               contentKey="copyright"
-              defaultValue="XmartyCreator"
+              defaultValue="Xmarty Creator"
               as="span"
               className="font-bold text-primary"
             />. All rights reserved.

@@ -183,7 +183,7 @@ export default function PlatformUpdatesPage() {
                   Notices & Updates
                 </h1>
                 <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed max-w-xl">
-                  Stay informed with the latest updates, announcements, and important information from the XmartyCreator ecosystem.
+                  Stay informed with the latest updates, announcements, and important information from the Xmarty Creator ecosystem.
                 </p>
               </div>
 

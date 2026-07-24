@@ -9,22 +9,22 @@ import { EditableText } from "@/components/cms/editable-text";
 import Image from "next/image";
 
 export default function AboutPage() {
-  const seoTitle = useContentBlock("about", "seo", "title", "About Us - XmartyCreator", "text");
-  const seoDesc = useContentBlock("about", "seo", "description", "Learn about XmartyCreator, our story, mission, and how we help creators build real software.", "text");
-  const seoKeywords = useContentBlock("about", "seo", "keywords", "about us, mission, story, xmartycreator", "text");
+  const seoTitle = useContentBlock("about", "seo", "title", "About Us - Xmarty Creator", "text");
+  const seoDesc = useContentBlock("about", "seo", "description", "Learn about Xmarty Creator, our story, mission, and how we help creators build real software.", "text");
+  const seoKeywords = useContentBlock("about", "seo", "keywords", "about us, mission, story, Xmarty Creator", "text");
 
   const heroTitle = useContentBlock("about", "hero", "title", "Designing the Future of Tech Education", "text");
   const heroSubtitle = useContentBlock("about", "hero", "subtitle", "We empower builders, designers, and engineers to create state-of-the-art software systems with production-grade architectures.", "text");
   const heroImage = useContentBlock("about", "hero", "image", "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?auto=format&fit=crop&w=800&q=80", "text");
 
   const storyHeading = useContentBlock("about", "story", "heading", "For Creators, By Architects", "text");
-  const storyContent = useContentBlock("about", "story", "content", `<p>In 2021, we set out to build a platform that treated learning like professional development. We didn't just want to teach code; we wanted to teach architectural thinking, scalability, and design excellence.</p><p>Today, XmartyCreator is home to over 45,000 students globally, powered by the Vasant AI Assistant and mentored by some of the brightest minds in the industry.</p>`, "text");
+  const storyContent = useContentBlock("about", "story", "content", `<p>In 2021, we set out to build a platform that treated learning like professional development. We didn't just want to teach code; we wanted to teach architectural thinking, scalability, and design excellence.</p><p>Today, Xmarty Creator is home to over 45,000 students globally, powered by the Vasant AI Assistant and mentored by some of the brightest minds in the industry.</p>`, "text");
 
   const founderBadge = useContentBlock("about", "founder", "badge", "Meet Our Founder", "text");
   const founderName = useContentBlock("about", "founder", "name", "Mukesh Raj", "text");
-  const founderTitle = useContentBlock("about", "founder", "title", "Founder & CEO, XmartyCreator", "text");
+  const founderTitle = useContentBlock("about", "founder", "title", "Founder & CEO, Xmarty Creator", "text");
   const founderQuote = useContentBlock("about", "founder", "quote", `"Our mission is simple: we don't just teach syntax, we forge digital architects who build production-grade, scalable software from day one."`, "text");
-  const founderBio = useContentBlock("about", "founder", "bio", `<p>Mukesh Raj started XmartyCreator with a vision to revolutionize tech education. With years of experience leading engineering teams and building enterprise architectures, he realized that traditional coursework fails to prepare students for real-world software creation.</p><p>By introducing AI-mentorship (Vasant AI) and codebases that mirror real tech environments, he bridged the gap between learning and architectural execution. Under his leadership, XmartyCreator has grown into a global community.</p>`, "text");
+  const founderBio = useContentBlock("about", "founder", "bio", `<p>Mukesh Raj started Xmarty Creator with a vision to revolutionize tech education. With years of experience leading engineering teams and building enterprise architectures, he realized that traditional coursework fails to prepare students for real-world software creation.</p><p>By introducing AI-mentorship (Vasant AI) and codebases that mirror real tech environments, he bridged the gap between learning and architectural execution. Under his leadership, Xmarty Creator has grown into a global community.</p>`, "text");
   const founderBackText = useContentBlock("about", "founder", "back_text", "We believe tech education is not about memorizing commands, but mastering software engineering principles that stand the test of time.", "text");
   const founderBackAdditionalText = useContentBlock("about", "founder", "back_additional_text", "<p>Through hands-on system architecture challenges, live mentoring sessions, and open-source project contributions, we help you transition from a coder to a senior software architect.</p>", "text");
   const founderImageBlock = useContentBlock("about", "founder", "image", "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&w=600&q=80", "text");
@@ -126,7 +126,7 @@ export default function AboutPage() {
                 <EditableText pageSlug="about" sectionKey="story" contentKey="heading" defaultValue="For Creators, By Architects" as="span" />
               </h2>
               <div className="space-y-4 text-slate-600 dark:text-slate-400 text-sm md:text-base leading-relaxed font-medium">
-                <EditableText pageSlug="about" sectionKey="story" contentKey="content" defaultValue={`<p>In 2021, we set out to build a platform that treated learning like professional development. We didn't just want to teach code; we wanted to teach architectural thinking, scalability, and design excellence.</p><p>Today, XmartyCreator is home to over 45,000 students globally, powered by the Vasant AI Assistant and mentored by some of the brightest minds in the industry.</p>`} as="div" />
+                <EditableText pageSlug="about" sectionKey="story" contentKey="content" defaultValue={`<p>In 2021, we set out to build a platform that treated learning like professional development. We didn't just want to teach code; we wanted to teach architectural thinking, scalability, and design excellence.</p><p>Today, Xmarty Creator is home to over 45,000 students globally, powered by the Vasant AI Assistant and mentored by some of the brightest minds in the industry.</p>`} as="div" />
               </div>
             </div>
             
@@ -244,7 +244,7 @@ export default function AboutPage() {
                 The Pillars of Our Mission
               </h2>
               <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base font-medium">
-                At XmartyCreator, we are driven by core standards designed to empower developers and creators globally.
+                At Xmarty Creator, we are driven by core standards designed to empower developers and creators globally.
               </p>
             </div>
 
@@ -276,11 +276,11 @@ export default function AboutPage() {
                 className="border-red-200 dark:border-red-500/20 text-red-600 dark:text-red-500 bg-red-500/5"
               />
               <h2 className="text-4xl lg:text-5xl font-headline font-black text-slate-900 dark:text-white">Frequently Asked Questions</h2>
-              <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Everything you need to know about the XmartyCreator ecosystem.</p>
+              <p className="text-lg text-slate-500 dark:text-slate-400 font-medium">Everything you need to know about the Xmarty Creator ecosystem.</p>
             </div>
             <Accordion type="single" collapsible className="w-full space-y-4">
               {[
-                { q: "Is XmartyCreator suitable for beginners?", a: "Absolutely. Our curriculum starts from foundations and scales to enterprise levels, ensuring anyone with passion can learn." },
+                { q: "Is Xmarty Creator suitable for beginners?", a: "Absolutely. Our curriculum starts from foundations and scales to enterprise levels, ensuring anyone with passion can learn." },
                 { q: "What makes Vasant AI different?", a: "Vasant is trained specifically on our curriculum to provide context-aware, 24/7 technical guidance that feels like a real tutor." },
                 { q: "Do I get a certificate?", a: "Yes, every completed course includes an industry-verified digital certificate that you can share on LinkedIn." },
                 { q: "Can I access courses offline?", a: "Our platform is optimized for web access, but all resource materials and code templates are downloadable for offline use." }

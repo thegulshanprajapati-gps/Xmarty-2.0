@@ -21,50 +21,50 @@ export function ClientLayoutShell({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!mounted) return;
     
-    let title = "XmartyCreator";
+    let title = "Xmarty Creator";
     if (pathname === '/') {
-      title = "Home | XmartyCreator";
+      title = "Home | Xmarty Creator";
     } else if (pathname === '/login') {
-      title = "Sign In | XmartyCreator";
+      title = "Sign In | Xmarty Creator";
     } else if (pathname === '/register') {
-      title = "Join Us | XmartyCreator";
+      title = "Join Us | Xmarty Creator";
     } else if (pathname.startsWith('/profile/settings')) {
       title = "Settings | Student Dashboard";
     } else if (pathname.startsWith('/profile')) {
-      title = "Student Dashboard | XmartyCreator";
+      title = "Student Dashboard | Xmarty Creator";
     } else if (pathname.startsWith('/verify-certificate')) {
-      title = "Verify Student Credential | XmartyCreator";
+      title = "Verify Student Credential | Xmarty Creator";
     } else if (pathname.startsWith('/courses')) {
-      title = "Browse Courses | XmartyCreator";
+      title = "Browse Courses | Xmarty Creator";
     } else if (pathname.startsWith('/community')) {
-      title = "Community Hub | XmartyCreator";
+      title = "Community Hub | Xmarty Creator";
     } else if (pathname.startsWith('/blog')) {
-      title = "Insight Blogs | XmartyCreator";
+      title = "Insight Blogs | Xmarty Creator";
     } else if (pathname.startsWith('/test')) {
-      title = "Assessment | XmartyCreator";
+      title = "Assessment | Xmarty Creator";
     } else if (pathname.startsWith('/about')) {
-      title = "About Us | XmartyCreator";
+      title = "About Us | Xmarty Creator";
     } else if (pathname.startsWith('/contact')) {
-      title = "Contact Us | XmartyCreator";
+      title = "Contact Us | Xmarty Creator";
     } else if (pathname.startsWith('/faq')) {
-      title = "FAQ | XmartyCreator";
+      title = "FAQ | Xmarty Creator";
     } else if (pathname.startsWith('/privacy')) {
-      title = "Privacy Policy | XmartyCreator";
+      title = "Privacy Policy | Xmarty Creator";
     } else if (pathname.startsWith('/terms')) {
-      title = "Terms of Service | XmartyCreator";
+      title = "Terms of Service | Xmarty Creator";
     } else if (pathname.startsWith('/refund')) {
-      title = "Refund Policy | XmartyCreator";
+      title = "Refund Policy | Xmarty Creator";
     } else if (pathname.startsWith('/updates')) {
-      title = "Latest Updates | XmartyCreator";
+      title = "Latest Updates | Xmarty Creator";
     } else if (pathname.startsWith('/leaderboard')) {
-      title = "Leaderboard Rankings | XmartyCreator";
+      title = "Leaderboard Rankings | Xmarty Creator";
     } else if (pathname.startsWith('/search')) {
-      title = "Search Results | XmartyCreator";
+      title = "Search Results | Xmarty Creator";
     } else {
       const parts = pathname.split('/').filter(Boolean);
       if (parts.length > 0) {
         const capitalized = parts.map(p => p.charAt(0).toUpperCase() + p.slice(1).replace(/-/g, ' ')).join(' - ');
-        title = `${capitalized} | XmartyCreator`;
+        title = `${capitalized} | Xmarty Creator`;
       }
     }
     document.title = title;

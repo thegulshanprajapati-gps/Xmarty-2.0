@@ -27,7 +27,7 @@ export const CMSProvider = ({ children }: { children: React.ReactNode }) => {
         themeMode: row?.theme_settings?.themeMode || 'light',
         primaryColor: row?.primary_color || '12 90% 55%',
         secondaryColor: row?.secondary_color || row?.primary_color || '12 90% 55%',
-        siteName: row?.site_name || 'XmartyCreator',
+        siteName: row?.site_name || 'Xmarty Creator',
         logo: row?.logo || null,
         ...row,
       });
@@ -37,7 +37,7 @@ export const CMSProvider = ({ children }: { children: React.ReactNode }) => {
         themeMode: 'light',
         primaryColor: '12 90% 55%',
         secondaryColor: '12 90% 55%',
-        siteName: 'XmartyCreator',
+        siteName: 'Xmarty Creator',
       });
     } finally {
       setLoading(false);
