@@ -110,58 +110,11 @@ function CountUp({ value }: { value: string }) {
   );
 }
 
-const defaultStats = [
-  { label: "Active learners", value: "45K+" },
-  { label: "Industry projects", value: "120+" },
-  { label: "Mentor sessions", value: "8K+" },
-];
+const defaultStats: any[] = [];
 
-const defaultPathways = [
-  {
-    title: "Build Production Skills",
-    desc: "Learn modern frontend, backend, architecture, and deployment through practical course tracks.",
-    icon: BookOpen,
-  },
-  {
-    title: "Practice With AI Guidance",
-    desc: "Use Vasant AI for quick explanations, debugging help, and personalized learning direction.",
-    icon: BrainCircuit,
-  },
-  {
-    title: "Grow With Community",
-    desc: "Join study circles, code reviews, discussions, and creator groups that keep momentum alive.",
-    icon: Users,
-  },
-  {
-    title: "Prepare For Careers",
-    desc: "Turn projects into portfolio proof and follow updates for internships, placements, and launches.",
-    icon: BriefcaseBusiness,
-  },
-];
+const defaultPathways: any[] = [];
 
-const defaultTestimonials = [
-  {
-    name: "Aman Gupta",
-    role: "Full-Stack Developer @ Razorpay",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?fit=crop&w=200&h=200",
-    rating: "5",
-    review: "This is the best learning platform. I built 3 real-world projects that got me hired!"
-  },
-  {
-    name: "Sneha Reddy",
-    role: "Frontend Engineer @ Razorpay",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?fit=crop&w=200&h=200",
-    rating: "5",
-    review: "The Vasant AI guidance is like having a Senior Engineer next to you 24/7. Highly recommend!"
-  },
-  {
-    name: "Rohan Verma",
-    role: "Freelance Creator",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?fit=crop&w=200&h=200",
-    rating: "5",
-    review: "Very practical courses. I learned production-grade Next.js, database integration and styling in days."
-  }
-];
+const defaultTestimonials: any[] = [];
 
 const iconMap: Record<string, any> = {
   MessageSquare,
@@ -169,41 +122,9 @@ const iconMap: Record<string, any> = {
   GraduationCap,
 };
 
-const defaultCommunityFeatures = [
-  { icon: MessageSquare, label: "Daily discussions" },
-  { icon: BadgeCheck, label: "Project reviews" },
-  { icon: GraduationCap, label: "Career updates" },
-];
+const defaultCommunityFeatures: any[] = [];
 
-const defaultCarouselSlides = [
-  {
-    badge: "BUILD & SHIP",
-    title: "Learn skills that actually ship.",
-    subtitle: "Xmarty Creator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support.",
-    ctaText: "Explore Courses",
-    ctaLink: "/courses",
-    colorStyle: "primary",
-    image: "/uploads/hero_mockup.png"
-  },
-  {
-    badge: "AI MENTORSHIP",
-    title: "24/7 AI-Guided Mentorship",
-    subtitle: "Use Vasant AI for concept explanations, code debugging, and personalized learning paths at any hour.",
-    ctaText: "Ask Vasant AI",
-    ctaLink: "#",
-    colorStyle: "indigo",
-    image: "/uploads/hero_mockup.png"
-  },
-  {
-    badge: "STUDY CIRCLES",
-    title: "Grow with the Community",
-    subtitle: "Join peer discussion channels, live review sessions, and creator circles to speed up your learning track.",
-    ctaText: "Join Community",
-    ctaLink: "/community",
-    colorStyle: "emerald",
-    image: "https://picsum.photos/seed/xmarty-community-home/900/600"
-  }
-];
+const defaultCarouselSlides: any[] = [];
 
 function InteractiveHeroVisual({ heroImageInfo, heroMobileImageInfo }: { heroImageInfo: any; heroMobileImageInfo: any }) {
   const [rotate, setRotate] = useState({ x: 0, y: 0 });

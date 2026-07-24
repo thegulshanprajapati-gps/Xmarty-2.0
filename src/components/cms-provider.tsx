@@ -158,7 +158,15 @@ export const CMSProvider = ({
     const initCMS = async () => {
       setLoading(true);
       try {
-        await Promise.all([refreshSettings(), refreshContentBlocks(), refreshFonts()]);
+        // If SSR already provided initial data, skip redundant fetches for speed.
+        // Only fetch fonts (not pre-injected) and conditionally refresh settings/blocks.
+        const needsSettings = !initialSettings;
+        const needsBlocks = !initialContentBlocks || initialContentBlocks.length === 0;
+        await Promise.all([
+          needsSettings ? refreshSettings() : Promise.resolve(),
+          needsBlocks   ? refreshContentBlocks() : Promise.resolve(),
+          refreshFonts(),
+        ]);
       } catch (err) {
         console.error('Error initializing CMS', err);
       } finally {
@@ -166,7 +174,7 @@ export const CMSProvider = ({
       }
     };
     initCMS();
-  }, [refreshSettings, refreshContentBlocks, refreshFonts]);
+  }, []);  // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!settings) return;
