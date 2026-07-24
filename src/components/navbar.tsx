@@ -95,13 +95,27 @@ export function Navbar() {
     { labelKey: 'contact', defaultLabel: 'Contact', href: '/contact' },
   ];
 
-  const bottomLinks = [
-    { label: 'Home', href: '/', icon: Home },
-    { label: 'About', href: '/about', icon: Info },
-    { label: 'Courses', href: '/courses', icon: BookOpen },
-    { label: 'Community', href: '/community', icon: Users },
-    { label: 'Blog', href: '/blog', icon: Newspaper }
+  // All possible bottom nav items
+  const allNavItems = {
+    home:      { label: 'Home',      href: '/',          icon: Home },
+    about:     { label: 'About',     href: '/about',     icon: Info },
+    courses:   { label: 'Courses',   href: '/courses',   icon: BookOpen },
+    community: { label: 'Community', href: '/community', icon: Users },
+    blog:      { label: 'Blog',      href: '/blog',      icon: Newspaper },
+    login:     { label: user ? 'Profile' : 'Login', href: user ? '/profile' : '/login', icon: User },
+  } as const;
+
+  // Build ordered list from settings, filtering login if disabled
+  const savedNavOrder: { id: string }[] = settings?.nav_order || [
+    { id: 'home' }, { id: 'about' }, { id: 'courses' }, { id: 'community' }, { id: 'blog' }
   ];
+  const loginEnabled: boolean = settings?.login_enabled ?? false;
+
+  const bottomLinks = savedNavOrder
+    .filter(item => item.id !== 'login' || loginEnabled)
+    .map(item => allNavItems[item.id as keyof typeof allNavItems])
+    .filter(Boolean);
+
 
   const iconMap: Record<string, any> = {
     '/': Home,
