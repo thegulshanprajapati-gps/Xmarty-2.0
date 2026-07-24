@@ -443,6 +443,16 @@ export default function HomePage() {
 
   const communityImageInfo = parseCmsImage(communityImageBlock.value, "https://picsum.photos/seed/xmarty-community-home/900/600");
 
+  const blogsImageBlock = useContentBlock(
+    "home",
+    "blogs",
+    "image",
+    "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80",
+    "text"
+  );
+
+  const blogsImageInfo = parseCmsImage(blogsImageBlock.value, "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=900&q=80");
+
   // Normalize both { label, value } (old default) and { metric, subtitle, icon } (support domain) formats
   const statisticItems = (() => {
     const raw = Array.isArray(heroStatsBlock.value) ? heroStatsBlock.value : defaultStats;
@@ -672,166 +682,118 @@ export default function HomePage() {
                 </div>
               </motion.div>
 
-              {/* Mobile/Tablet Carousel Hero Section */}
-              <div className="block lg:hidden w-full relative z-10 px-1">
-                <div className="embla overflow-hidden" ref={heroEmblaRef}>
-                  <div className="embla__container flex">
-                    {carouselSlides.map((slide: any, idx: number) => {
-                      const isIndigo = slide.colorStyle === 'indigo';
-                      const isEmerald = slide.colorStyle === 'emerald';
-                      
-                      let containerClass = "rounded-[2rem] border border-white/30 dark:border-slate-800/20 bg-white/35 dark:bg-[#120f18]/30 backdrop-blur-xl p-6 sm:p-8 shadow-[0_24px_60px_-15px_rgba(139,92,246,0.1)] shadow-primary/5 flex flex-col items-center text-center space-y-6 relative overflow-hidden min-h-[520px] justify-between select-none";
-                      let glowClass = "absolute -top-12 -right-12 w-44 h-44 bg-primary/15 rounded-full blur-3xl pointer-events-none animate-pulse";
-                      let badgeClass = "badge-doodle-container inline-flex items-center justify-center gap-2 px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-bold text-primary tracking-wider uppercase font-sans shadow-sm select-none";
-                      let buttonClass = "w-full h-14 rounded-2xl px-6 text-sm font-bold bg-gradient-to-r from-primary to-indigo-600 hover:from-primary/95 hover:to-indigo-600/95 text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/35 transition-all duration-300 active:scale-[0.98] font-sans shrink-0 mt-auto flex items-center justify-center gap-2 select-none";
-                      
-                      let Icon = Sparkles;
-                      
-                      if (isIndigo) {
-                        containerClass = "rounded-[2rem] border border-indigo-500/10 bg-white/35 dark:bg-[#120f18]/30 backdrop-blur-xl p-6 sm:p-8 shadow-[0_24px_60px_-15px_rgba(99,102,241,0.1)] shadow-indigo-500/5 flex flex-col items-center text-center space-y-6 relative overflow-hidden min-h-[520px] justify-between select-none";
-                        glowClass = "absolute -top-12 -right-12 w-44 h-44 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none animate-pulse";
-                        badgeClass = "inline-flex items-center justify-center gap-2 px-3.5 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase font-sans shadow-sm select-none";
-                        buttonClass = "w-full h-14 rounded-2xl px-6 text-sm font-bold bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-600/95 hover:to-violet-600/95 text-white shadow-lg shadow-indigo-600/25 hover:shadow-xl hover:shadow-indigo-600/35 transition-all duration-300 active:scale-[0.98] font-sans shrink-0 mt-auto flex items-center justify-center gap-2 select-none";
-                        Icon = BrainCircuit;
-                      } else if (isEmerald) {
-                        containerClass = "rounded-[2rem] border border-emerald-500/10 bg-white/35 dark:bg-[#120f18]/30 backdrop-blur-xl p-6 sm:p-8 shadow-[0_24px_60px_-15px_rgba(16,185,129,0.1)] shadow-emerald-500/5 flex flex-col items-center text-center space-y-6 relative overflow-hidden min-h-[520px] justify-between select-none";
-                        glowClass = "absolute -top-12 -right-12 w-44 h-44 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none animate-pulse";
-                        badgeClass = "inline-flex items-center justify-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-600 dark:text-emerald-400 tracking-wider uppercase font-sans shadow-sm select-none";
-                        buttonClass = "w-full h-14 rounded-2xl px-6 text-sm font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-600/95 hover:to-teal-600/95 text-white shadow-lg shadow-emerald-600/25 hover:shadow-xl hover:shadow-emerald-600/35 transition-all duration-300 active:scale-[0.98] font-sans shrink-0 mt-auto flex items-center justify-center gap-2 select-none";
-                        Icon = Users;
-                      }
- 
-                      const isAiCta = slide.ctaLink === '#' || String(slide.ctaText).toLowerCase().includes('vasant') || String(slide.ctaLink).toLowerCase().includes('vasant');
- 
-                      return (
-                        <div className="embla__slide flex-[0_0_100%] min-w-0 px-2 select-none" key={idx}>
-                          <div className={containerClass}>
-                            <div className={glowClass} />
-                            
-                            <div className="flex flex-col items-center text-center space-y-5 w-full select-none">
-                              <div className={badgeClass}>
-                                <Icon className="h-3 w-3 animate-pulse" />
-                                <span>{slide.badge}</span>
-                              </div>
- 
-                              <div className="space-y-1 select-none">
-                                <h2 className="text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight font-sans">
-                                  {slide.title}
-                                </h2>
-                                <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed font-sans font-medium">
-                                  {slide.subtitle}
-                                </p>
-                              </div>
- 
-                              {/* Dynamic Image Graphic Area */}
-                              {(() => {
-                                const slideImgInfo = parseCmsImage(
-                                  slide.image,
-                                  isEmerald
-                                    ? "https://picsum.photos/seed/xmarty-community-home/900/600"
-                                    : "/uploads/hero_mockup.png"
-                                );
-                                return (
-                                  <div className="relative w-full h-44 rounded-2xl overflow-hidden border border-slate-200/30 dark:border-slate-800/30 bg-slate-50/20 dark:bg-slate-950/15 flex items-center justify-center group shadow-sm mt-1 shrink-0 select-none">
-                                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-indigo-500/5 opacity-50" />
-                                    {slideImgInfo.url.includes('hero_mockup') ? (
-                                      <div className="relative w-full h-full flex items-end justify-center pt-2 select-none">
-                                        <Image
-                                          src={slideImgInfo.url}
-                                          alt="Visual mockup"
-                                          width={200}
-                                          height={170}
-                                          className="object-contain object-bottom transition-transform duration-500 group-hover:scale-105 max-h-full select-none pointer-events-none"
-                                        />
-                                      </div>
-                                    ) : (
-                                      <Image
-                                        src={slideImgInfo.url}
-                                        alt="Visual illustration"
-                                        fill
-                                        className="object-cover object-center transition-transform duration-500 group-hover:scale-105 select-none pointer-events-none"
-                                      />
-                                    )}
-                                  </div>
-                                );
-                              })()}
- 
-                              {/* Custom badges or statistics overlay */}
-                              {isIndigo ? (
-                                <div className="w-full bg-slate-50/40 dark:bg-slate-900/30 rounded-xl p-2.5 border border-slate-100/50 dark:border-slate-800/30 text-left space-y-1 select-none">
-                                  <div className="flex items-start gap-2 select-none">
-                                    <div className="bg-primary text-primary-foreground text-[8px] font-bold px-1 py-0.5 rounded shrink-0">BOT</div>
-                                    <div className="text-[10px] text-slate-600 dark:text-slate-300 bg-slate-100/50 dark:bg-slate-800/50 p-2 rounded-lg rounded-tl-none leading-normal">
-                                      Namaste! I am Vasant, your learning assistant...
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : isEmerald ? (
-                                <div className="flex flex-wrap gap-1.5 justify-center w-full">
-                                  <div className="flex items-center gap-1 rounded-full border px-2.5 py-1 bg-background text-[9px] font-bold shrink-0 shadow-sm">
-                                    <MessageSquare className="h-3 w-3 text-emerald-500" />
-                                    <span>Daily discussions</span>
-                                  </div>
-                                  <div className="flex items-center gap-1 rounded-full border px-2.5 py-1 bg-background text-[9px] font-bold shrink-0 shadow-sm">
-                                    <BadgeCheck className="h-3 w-3 text-emerald-500" />
-                                    <span>Project reviews</span>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div className="grid grid-cols-3 gap-2 w-full pt-1">
-                                  {statisticItems.slice(0, 3).map((item: any) => (
-                                    <div key={item.label} className="rounded-xl border border-slate-200/50 dark:border-slate-800/50 bg-background/60 p-2 shadow-sm flex flex-col justify-center items-center text-center">
-                                      <p className="text-base font-black text-slate-900 dark:text-white font-sans leading-none">
-                                        <CountUp value={item.value} />
-                                      </p>
-                                      <p className="mt-1 text-[8px] font-bold text-slate-500 dark:text-slate-400 font-sans uppercase tracking-wider leading-tight">{item.label}</p>
-                                    </div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
+              {/* Mobile/Tablet Static Hero Section */}
+              <div className="block lg:hidden w-full relative z-10 px-4 text-center space-y-6">
+                
+                {/* 1. Badge */}
+                <div className="flex justify-center">
+                  <CustomizableBadge
+                    pageSlug="home"
+                    sectionKey="hero"
+                    badgeKey="badge"
+                    defaultText="INDUSTRY READY EDTECH"
+                    className="font-sans font-extrabold text-xs px-4 py-1.5 shadow-sm shadow-primary/5 bg-primary/10 border-primary/20 text-primary gap-1.5 rounded-full"
+                  >
+                    <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+                  </CustomizableBadge>
+                </div>
+                
+                {/* 2. Heading */}
+                <h1 className="font-headline text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                  <EditableText
+                    pageSlug="home"
+                    sectionKey="hero"
+                    contentKey="title"
+                    defaultValue="Learn skills that actually ship."
+                    as="span"
+                  />
+                </h1>
 
-                            <div className="w-full pt-3">
-                              {isAiCta ? (
-                                <Button 
-                                  onClick={() => window.dispatchEvent(new CustomEvent('open-vasant-ai'))}
-                                  size="lg" 
-                                  className={buttonClass}
-                                >
-                                  <span className="inline-flex items-center justify-center">
-                                    <span>{slide.ctaText}</span>
-                                    <BrainCircuit className="ml-2 h-4 w-4" />
-                                  </span>
-                                </Button>
-                              ) : (
-                                <Button asChild size="lg" className={buttonClass}>
-                                  <Link href={slide.ctaLink || "/courses"} className="inline-flex items-center justify-center">
-                                    <span>{slide.ctaText}</span>
-                                    <ArrowRight className="ml-2 h-4 w-4" />
-                                  </Link>
-                                </Button>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
+                {/* 3. Subtitle */}
+                <div className="text-slate-600 dark:text-slate-350 text-sm leading-relaxed font-medium max-w-lg mx-auto">
+                  <EditableText
+                    pageSlug="home"
+                    sectionKey="hero"
+                    contentKey="subtitle"
+                    defaultValue="XmartyCreator helps creators learn production-grade development, build real portfolio projects, and grow with AI-guided support."
+                    as="span"
+                  />
+                </div>
+
+                {/* 4. CTA Buttons */}
+                <div className="flex flex-col gap-3 max-w-sm mx-auto pt-2">
+                  {showPrimaryCta && (
+                    <Button asChild size="lg" className="h-14 rounded-2xl text-sm font-bold bg-primary text-primary-foreground hover:bg-primary/95 shadow-lg shadow-primary/25 font-sans w-full">
+                      <Link href={primaryCtaLinkBlock.value || "/courses"} className="inline-flex items-center justify-center font-bold">
+                        <EditableText
+                          pageSlug="home"
+                          sectionKey="hero"
+                          contentKey="primaryCta"
+                          defaultValue="Explore Courses"
+                          as="span"
+                        />
+                        <ArrowRight className="ml-2 h-4 w-4" />
+                      </Link>
+                    </Button>
+                  )}
+                  {showSecondaryCta && (
+                    <Button asChild variant="outline" size="lg" className="h-14 rounded-2xl border-2 bg-background/50 text-sm font-bold font-sans w-full">
+                      <Link href={secondaryCtaLinkBlock.value || "/community"} className="inline-flex items-center justify-center font-bold">
+                        <Play className="mr-2 h-4.5 w-4.5 fill-current" />
+                        <EditableText
+                          pageSlug="home"
+                          sectionKey="hero"
+                          contentKey="secondaryCta"
+                          defaultValue="Join Community"
+                          as="span"
+                        />
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+
+                {/* 5. Statistics Pill / Floating Tag */}
+                <div className="flex justify-center pt-2">
+                  <div className="flex items-center gap-1.5 rounded-full border px-4 py-2 bg-background shadow-md text-xs font-bold text-slate-800 dark:text-slate-200">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 mr-0.5 animate-pulse" />
+                    <span>+300% Practice Score</span>
                   </div>
                 </div>
 
-                {/* Dots indicators */}
-                <div className="flex justify-center gap-2 mt-4">
-                  {carouselSlides.map((_: any, idx: number) => (
-                    <button
-                      key={idx}
-                      onClick={() => heroEmblaApi && heroEmblaApi.scrollTo(idx)}
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        currentHeroSlide === idx ? 'w-6 bg-primary' : 'w-2 bg-slate-300 dark:bg-slate-700'
-                      }`}
-                      aria-label={`Go to slide ${idx + 1}`}
+                {/* 6. Mockup Image Container */}
+                {heroMobileImageInfo?.url ? (
+                  <div className="relative w-full max-w-md mx-auto aspect-[16/10] rounded-[2.5rem] overflow-hidden border shadow-lg bg-background/50 backdrop-blur-md group mt-6 select-none">
+                    <Image
+                      src={heroMobileImageInfo.url}
+                      alt="XmartyCreator Mobile Visual"
+                      fill
+                      priority
+                      className="object-cover w-full h-full"
                     />
-                  ))}
-                </div>
+                    {/* Floating badge over mockup */}
+                    <div className="absolute bottom-4 right-4 bg-background/95 dark:bg-slate-900/95 backdrop-blur border border-border px-3 py-1 rounded-xl shadow-md flex items-center gap-1.5 z-10 text-[10px] font-bold">
+                      <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+                      <span>Fully Booked</span>
+                    </div>
+                  </div>
+                ) : (
+                  heroImageInfo?.url && (
+                    <div className="relative w-full max-w-md mx-auto aspect-[16/10] rounded-[2.5rem] overflow-hidden border shadow-lg bg-background/50 backdrop-blur-md group mt-6 select-none">
+                      <Image
+                        src={heroImageInfo.url}
+                        alt="XmartyCreator Mobile Visual"
+                        fill
+                        priority
+                        className="object-cover w-full h-full animate-fade-in"
+                      />
+                      <div className="absolute bottom-4 right-4 bg-background/95 dark:bg-slate-900/95 backdrop-blur border border-border px-3 py-1 rounded-xl shadow-md flex items-center gap-1.5 z-10 text-[10px] font-bold">
+                        <Sparkles className="h-3.5 w-3.5 text-primary animate-pulse" />
+                        <span>Fully Booked</span>
+                      </div>
+                    </div>
+                  )
+                )}
+                
               </div>
             </div>
           </div>
@@ -917,102 +879,70 @@ export default function HomePage() {
         {/* Featured courses removed */}
 
         <section className="flex flex-col justify-center py-12 sm:py-16 lg:py-20 bg-muted/20">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-            <div className="rounded-2xl bg-background p-6 md:p-8 shadow-xl border border-primary/5 grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-8 items-center">
-              <div className="space-y-4 text-center lg:text-left">
-                <CustomizableBadge
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+            <div className="rounded-[2.5rem] bg-background p-8 md:p-12 shadow-xl border border-primary/5 flex flex-col items-center text-center space-y-6">
+              <CustomizableBadge
+                pageSlug="home"
+                sectionKey="blogs"
+                badgeKey="badge"
+                defaultText="LATEST INSIGHTS"
+                className="border-primary/20 text-primary text-xs px-3.5 py-1.5 rounded-full font-bold bg-primary/10"
+              />
+              <h2 className="font-headline text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                <EditableText
                   pageSlug="home"
-                  sectionKey="community"
-                  badgeKey="badge"
-                  defaultText="COMMUNITY POWER"
-                  className="border-primary/20 text-primary text-xs px-2.5 py-0.5"
+                  sectionKey="blogs"
+                  contentKey="heading"
+                  defaultValue="EXPLORE EDUCATIONAL BLOGS"
+                  as="span"
                 />
-                <h2 className="font-headline text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight">
-                  <EditableText
-                    pageSlug="home"
-                    sectionKey="community"
-                    contentKey="heading"
-                    defaultValue="You do not learn alone here."
-                    as="span"
-                  />
-                </h2>
-                <p className="text-sm sm:text-base leading-relaxed text-muted-foreground">
-                  <EditableText
-                    pageSlug="home"
-                    sectionKey="community"
-                    contentKey="subtitle"
-                    defaultValue="Get discussions, live reviews, creator circles, and launch updates so your learning keeps moving after every lesson."
-                    as="span"
-                    className="text-sm sm:text-base leading-relaxed"
-                  />
-                </p>
-                <div className="flex flex-wrap gap-2 justify-center lg:justify-start">
-                  {communityFeatures.map((item: any, idx: number) => {
-                    const IconComponent = typeof item.icon === 'string' ? (iconMap[item.icon] ?? MessageSquare) : (item.icon ?? MessageSquare);
-                    return (
-                      <div key={idx} className="flex items-center gap-1.5 rounded-lg border px-3 py-1.5 bg-background shadow-sm hover:border-primary/20 transition-colors shrink-0">
-                        <IconComponent className="h-3.5 w-3.5 text-primary" />
-                        <span className="text-xs font-bold text-foreground">{item.label}</span>
-                      </div>
-                    );
-                  })}
+              </h2>
+              <p className="text-sm sm:text-base leading-relaxed text-muted-foreground max-w-2xl">
+                <EditableText
+                  pageSlug="home"
+                  sectionKey="blogs"
+                  contentKey="subtitle"
+                  defaultValue="Stay updated with tutorials, career guidance, technology trends, exam tips, and industry insights written by experts."
+                  as="span"
+                />
+              </p>
+
+              {/* Featured Image */}
+              <div className="relative w-full max-w-2xl overflow-hidden rounded-[2rem] aspect-[16/10] border shadow-md my-4">
+                <Image
+                  src={blogsImageInfo.url}
+                  alt={blogsImageInfo.alt || "Explore Educational Blogs"}
+                  fill
+                  className="object-cover w-full h-full"
+                />
+              </div>
+
+              {/* Highlight Tags */}
+              <div className="flex flex-wrap gap-3 justify-center pt-2">
+                <div className="flex items-center gap-1.5 rounded-full border px-4 py-2 bg-background shadow-sm text-xs font-semibold text-slate-700 dark:text-slate-350">
+                  <MessageSquare className="h-4 w-4 text-emerald-500" />
+                  <span>Daily discussions</span>
                 </div>
-                <div className="pt-2 flex justify-center lg:justify-start">
-                  <Button asChild variant="outline" size="sm" className="h-11 rounded-xl border-2 px-6 font-bold">
-                    <Link href="/community">
-                      <EditableText
-                        pageSlug="home"
-                        sectionKey="community"
-                        contentKey="cta"
-                        defaultValue="Explore Community"
-                        as="span"
-                      />
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Link>
-                  </Button>
+                <div className="flex items-center gap-1.5 rounded-full border px-4 py-2 bg-background shadow-sm text-xs font-semibold text-slate-700 dark:text-slate-350">
+                  <BadgeCheck className="h-4 w-4 text-emerald-500" />
+                  <span>Project reviews</span>
                 </div>
               </div>
-              <div 
-                className="relative overflow-hidden rounded-[2rem] flex items-center justify-center"
-                style={{ aspectRatio: (!communityImageInfo.width && !communityImageInfo.height) ? '16/9' : undefined }}
-              >
-                {(() => {
-                  const isWNumeric = communityImageInfo.width && !isNaN(Number(communityImageInfo.width));
-                  const isHNumeric = communityImageInfo.height && !isNaN(Number(communityImageInfo.height));
-                  if (isWNumeric && isHNumeric) {
-                    return (
-                      <Image
-                        src={communityImageInfo.url}
-                        alt={communityImageInfo.alt || "XmartyCreator community session"}
-                        width={Number(communityImageInfo.width)}
-                        height={Number(communityImageInfo.height)}
-                        className="object-cover rounded-[2rem]"
-                      />
-                    );
-                  }
-                  if (!communityImageInfo.width && !communityImageInfo.height) {
-                    return (
-                      <Image
-                        src={communityImageInfo.url}
-                        alt={communityImageInfo.alt || "XmartyCreator community session"}
-                        fill
-                        className="object-cover w-full h-full"
-                      />
-                    );
-                  }
-                  return (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={communityImageInfo.url}
-                      alt={communityImageInfo.alt || "XmartyCreator community session"}
-                      style={{
-                        width: communityImageInfo.width ? (isNaN(Number(communityImageInfo.width)) ? communityImageInfo.width : `${communityImageInfo.width}px`) : 'auto',
-                        height: communityImageInfo.height ? (isNaN(Number(communityImageInfo.height)) ? communityImageInfo.height : `${communityImageInfo.height}px`) : 'auto',
-                      }}
-                      className="rounded-[2rem] object-cover"
+
+              {/* Read Blogs Button */}
+              <div className="pt-4">
+                <Button asChild size="lg" className="h-14 rounded-2xl px-10 text-base font-bold bg-[#009688] hover:bg-[#00796B] text-white shadow-lg shadow-[#009688]/20 transition-all duration-300 hover:scale-[1.02]">
+                  <Link href="/blogs" className="inline-flex items-center">
+                    <EditableText
+                      pageSlug="home"
+                      sectionKey="blogs"
+                      contentKey="cta"
+                      defaultValue="Read Blogs"
+                      as="span"
                     />
-                  );
-                })()}
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>

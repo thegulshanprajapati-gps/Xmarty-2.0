@@ -1,0 +1,9 @@
+- `[x]` Restore original `src/app/community/page.tsx` design layout
+- `[x]` Inject the Chat functionality (state, API fetching/sending) into the restored layout
+- `[x]` Replace the "Coming Soon" Hub section with the Live Chat box
+- `[x]` Ensure Footer remains hidden on this page (already handled in layout shell)
+- `[x]` Verify responsiveness of the embedded chat
+- `[x]` Link Admin Live Chat in the Admin Sidebar items
+- `[x]` Style Admin Live Chat with dashboard shell, custom headers, and multi-channel selectors
+- `[x]` Polish mobile slide-overs, close keys, and chat alignment styles on mobile view
+- `[x]` Replace the "Community Power" section on the Homepage with the new "Explore Educational Blogs" link section linking to `/blogs`
