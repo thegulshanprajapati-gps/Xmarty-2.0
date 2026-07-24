@@ -1277,48 +1277,72 @@ export default function HomePage() {
           </div>
         </section>
         {/* ── Call to Action Section ────────────────────────────────────── */}
-        <section className="py-8 md:py-12 bg-transparent relative overflow-hidden">
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="relative overflow-hidden bg-gradient-to-r from-red-600 via-red-700 to-red-950 text-white rounded-[2rem] px-6 sm:px-12 py-8 md:py-12 shadow-xl shadow-red-950/15 text-center space-y-4 md:space-y-5 border border-red-500/10">
-              <CustomizableBadge
-                pageSlug="home"
-                sectionKey="cta"
-                badgeKey="badge"
-                defaultText="START YOUR JOURNEY"
-                className="border-white/20 text-white bg-white/10 text-xs font-semibold w-fit mx-auto"
-              />
-              <h2 className="font-headline text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
-                <EditableText
+        <section className="py-10 md:py-16 bg-transparent relative overflow-hidden">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="relative overflow-hidden rounded-[2rem] text-white text-center">
+
+              {/* Rich layered background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-red-500 via-red-700 to-rose-950 z-0" />
+              <div className="absolute -top-20 -left-20 h-72 w-72 rounded-full bg-white/5 blur-3xl z-0" />
+              <div className="absolute -bottom-16 -right-16 h-64 w-64 rounded-full bg-rose-300/10 blur-2xl z-0" />
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-96 w-96 rounded-full bg-red-400/10 blur-3xl z-0" />
+              {/* Subtle grid texture */}
+              <div className="absolute inset-0 opacity-[0.04] z-0" style={{backgroundImage: 'linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)', backgroundSize: '40px 40px'}} />
+
+              {/* Content */}
+              <div className="relative z-10 px-8 sm:px-16 md:px-24 py-12 md:py-16 space-y-5 md:space-y-6">
+                <CustomizableBadge
                   pageSlug="home"
                   sectionKey="cta"
-                  contentKey="title"
-                  defaultValue="Ready to Build & Ship Real Projects?"
-                  as="span"
+                  badgeKey="badge"
+                  defaultText="START YOUR JOURNEY"
+                  className="border-white/25 text-white bg-white/15 backdrop-blur-sm text-xs font-bold tracking-widest w-fit mx-auto shadow-sm"
                 />
-              </h2>
-              <p className="text-sm sm:text-base text-red-100/90 font-medium max-w-2xl mx-auto leading-relaxed">
-                <EditableText
-                  pageSlug="home"
-                  sectionKey="cta"
-                  contentKey="description"
-                  defaultValue="Get instant access to production-grade courses, live mentorship, and a thriving community of creators."
-                  as="span"
-                />
-              </p>
-              <div className="pt-2 md:pt-4">
-                <Button asChild size="lg" className="h-12 sm:h-13 rounded-xl px-6 sm:px-8 text-sm font-bold bg-white text-red-700 hover:bg-white/95 shadow-lg shadow-black/5 transition-all hover:scale-[1.02] active:scale-[0.98]">
-                  <Link href="/register">
-                    <EditableText
-                      pageSlug="home"
-                      sectionKey="cta"
-                      contentKey="buttonText"
-                      defaultValue="Start Learning Now"
-                      as="span"
-                    />
-                    <ArrowRight className="ml-2 h-4 w-4 text-red-700" />
+                <h2 className="font-headline text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight drop-shadow-sm">
+                  <EditableText
+                    pageSlug="home"
+                    sectionKey="cta"
+                    contentKey="title"
+                    defaultValue="Ready to Build & Ship Real Projects?"
+                    as="span"
+                  />
+                </h2>
+                <p className="text-sm sm:text-base md:text-lg text-red-100/85 font-medium max-w-2xl mx-auto leading-relaxed">
+                  <EditableText
+                    pageSlug="home"
+                    sectionKey="cta"
+                    contentKey="description"
+                    defaultValue="Get instant access to production-grade courses, live mentorship, and a thriving community of creators."
+                    as="span"
+                  />
+                </p>
+
+                {/* Divider dots */}
+                <div className="flex items-center justify-center gap-1.5 opacity-40">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className={`block rounded-full bg-white ${i === 2 ? 'h-1.5 w-6' : 'h-1 w-1'}`} />
+                  ))}
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
+                  <Button asChild size="lg" className="h-12 sm:h-14 rounded-full px-8 sm:px-10 text-sm sm:text-base font-bold bg-white text-red-700 hover:bg-white/95 shadow-xl shadow-black/20 transition-all hover:scale-[1.03] active:scale-[0.97] border-0">
+                    <Link href="/register">
+                      <EditableText
+                        pageSlug="home"
+                        sectionKey="cta"
+                        contentKey="buttonText"
+                        defaultValue="Start Learning Now"
+                        as="span"
+                      />
+                      <ArrowRight className="ml-2 h-4 w-4 text-red-700" />
+                    </Link>
+                  </Button>
+                  <Link href="/courses" className="text-white/75 text-sm font-medium hover:text-white transition-colors underline underline-offset-4 decoration-white/30 hover:decoration-white/70">
+                    Browse Courses →
                   </Link>
-                </Button>
+                </div>
               </div>
+
             </div>
           </div>
         </section>
