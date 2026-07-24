@@ -72,7 +72,7 @@ export function VasantAI() {
           className="h-14 w-14 rounded-full shadow-2xl bg-background border border-border text-primary hover:bg-muted hover:scale-105 transition-transform"
           size="icon"
         >
-          <Bot className="h-6 w-6" />
+          <img src="/logo.png" alt="Logo" className="h-7 w-7 object-contain rounded-full" />
         </Button>
       )}
 
@@ -80,7 +80,7 @@ export function VasantAI() {
         <Card className="w-80 md:w-96 shadow-2xl border-primary/20 animate-in slide-in-from-bottom-5">
           <CardHeader className="bg-primary p-4 flex flex-row items-center justify-between">
             <div className="flex items-center gap-2">
-              <Bot className="h-5 w-5 text-primary-foreground" />
+              <img src="/logo.png" alt="Logo" className="h-5 w-5 object-contain rounded-full bg-white/20 p-0.5" />
               <CardTitle className="text-sm font-headline text-primary-foreground">Vasant AI Assistant</CardTitle>
             </div>
             <Button variant="ghost" size="icon" className="h-8 w-8 text-primary-foreground hover:bg-white/10" onClick={() => setIsOpen(false)}>
